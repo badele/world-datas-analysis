@@ -31,7 +31,9 @@ for FIELD in $FIELDS; do
     python data_manipulation.py --input covid-19/global/datas/JHU_downloaded.csv -f "Country_Region:${COUNTRIES}" -f "Province_State:" -f "?:${FIELD}>=$POPFILTER" --output covid-19/global/datas/${FIELD}_day_distance.csv
 
     # Convert to gnuplot format
-    python csv_to.py --input covid-19/global/datas/${FIELD}_day_distance.csv --format gnuplot --block-by Country_Region --output covid-19/global/datas/${FIELD}_day_distance.dat
+    python csv_to.py --input covid-19/global/datas/${FIELD}_day_distance.csv \
+    --comment "Source: https://github.com/CSSEGISandData/COVID-19" \
+    --comment "Filtered with -f 'Country_Region:${COUNTRIES}' -f 'Province_State:' -f '?:${FIELD}>=$POPFILTER'" --format gnuplot --block-by Country_Region --output covid-19/global/datas/${FIELD}_day_distance.dat
 done
 ```
 
