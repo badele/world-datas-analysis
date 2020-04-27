@@ -13,31 +13,31 @@ ap.add_argument("--output", type=str,
                 help="output filename")
 args = vars(ap.parse_args())
 
+COLUMNS = ['cases', 'recovered', 'deaths']
+
 
 def loadData(field, url):
-    data = pd.read_csv(url)
-    data = data.rename(columns={
+    df = pd.read_csv(url)
+
+    df = df.rename(columns={
         'Country/Region': 'Country_Region',
         'Province/State': 'Province_State',
         field: 'value'
     })
 
-    data = data.melt(id_vars=["Province_State", "Country_Region", "Lat", "Long"],
-                     var_name="date",
-                     value_name="value")
+    df = df.melt(id_vars=["Province_State", "Country_Region", "Lat", "Long"],
+                 var_name="date",
+                 value_name=field)
 
-    iscountry = data['Province_State'].isnull()
-    data_country = data.loc[iscountry].copy()
-    data_country.loc[iscountry, 'zone'] = 'country'
-    data_country['field'] = field
+    # Country & State
+    iscountry = df['Province_State'].isnull()
+    df.loc[iscountry, 'zone'] = 'country'
+    df.loc[~iscountry, 'zone'] = 'state'
 
-    data_state = data[~iscountry].copy()
-    data_state.loc[~iscountry, 'zone'] = 'state'
-    data_state['field'] = field
+    # Merge country and state
+    df = df.set_index(['Country_Region', 'Province_State', 'date'])
 
-    data = data_country.append(data_state)
-
-    return data
+    return df
 
 
 #######################################
@@ -59,6 +59,9 @@ provinces = population[~population['Province_State'].isnull()]
 provinces = provinces.set_index('Province_State')
 provinces['zone'] = 'state'
 
+countries = countries.drop(['Long_'], axis=1)
+provinces = provinces.drop(['Long_'], axis=1)
+
 
 #######################################
 # Datas
@@ -77,19 +80,41 @@ deaths = loadData(
 )
 
 
-data = cases.append(recovered)
-data = data.append(deaths)
+# Merge column
+df = cases.copy()
+df['recovered'] = recovered['recovered']
+df['deaths'] = deaths['deaths']
 
-data = pd.merge(
-    data, population[['Province_State', 'Country_Region', 'population']],
+# Update columns
+#df = df.drop(['Lat', 'Long'], axis=1)
+df[COLUMNS] = df[COLUMNS].fillna(0)
+df[COLUMNS] = df[COLUMNS].astype(int)
+
+df = df.reset_index()
+df = pd.merge(
+    df, population,
     left_on=['Province_State', 'Country_Region'],
     right_on=['Province_State', 'Country_Region']
 )
 
 # Add/Update column informations
-data['per_pop'] = (data['value'] / data['population']).astype(float)
-data['date'] = pd.to_datetime(data['date'])
+for column in COLUMNS:
+    df[f'pct_{column}'] = (
+        df[column] / df['population']*100).astype(float)
+
+# Convert date
+df['date'] = pd.to_datetime(df['date'])
+
+df = df.drop(['Long_', 'Combined_Key', 'Lat_y'], axis=1)
+df = df.rename({'Lat_x': 'Lat'}, axis=1)
+
+# Order column
+df = df[['date', 'cases', 'recovered', 'deaths', 'pct_cases', 'pct_recovered', 'pct_deaths', 'Country_Region', 'Province_State',
+         'zone', 'UID', 'iso2', 'iso3', 'FIPS', 'Admin2', 'Lat', 'Long', 'population']]
+
+# Sort
+df = df.sort_values(['Country_Region', 'Province_State', 'date'])
 
 # Save file
-data.to_csv(args['output'],  sep=",",
-            index_label="idx", float_format='%.6f')
+df.to_csv(args['output'],  sep=",", index=False,
+          index_label="idx", float_format='%.6f')
