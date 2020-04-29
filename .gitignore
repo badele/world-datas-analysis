@@ -1,4 +1,4 @@
 .venv
-covid-19/global/datas/*.csv
-covid-19/global/pictures/*.svg
-covid-19/global/pictures/*.eps
+global/covid-19/datas/*_downloaded.csv
+global/covid-19/pictures/*.svg
+global/covid-19/pictures/*.eps
