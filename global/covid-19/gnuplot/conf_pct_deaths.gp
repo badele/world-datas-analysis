@@ -5,7 +5,7 @@ limitline=150
 
 ttitle="Nb de décès Covid19 par pays au ".tdate
 ytitle="Pour 1 million habitants"
-xtitle="Jours (à partir du 1er décès constaté)"
+xtitle="Jours (à partir du 1er décès constaté) pour 1 million habitants"
 ltitle='Barre de '.limitline.' décès pour 1 million habitants"
 
 # Title

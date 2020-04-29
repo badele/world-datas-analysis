@@ -5,7 +5,7 @@ limitline=1700
 
 ttitle="Nb de cas Covid19 par pays au ".tdate
 ytitle="Pour 1 million habitants"
-xtitle="Jours (à partir du 1er cas constaté)"
+xtitle="Jours (à partir du 1er cas constaté pour pour 1 million habitants)"
 ltitle='Barre de '.limitline.' cas pour 1 million habitants'
 
 # Title
