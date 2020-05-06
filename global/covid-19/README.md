@@ -2,9 +2,18 @@
 
 ## Download JHU datas
 ```
+# Download datas from official JHU repository
 python global/covid-19/download_from_jhu.py
-sqlite3 world-datas-analysis.db < import_global_covid19_jhu.sql
+
+# Clean and join datas
+sqlite3 world-datas-analysis.db < global/covid-19/import_global_covid19_jhu.sql
+
+# Export to CSV
+sqlite3 world-datas-analysis.db < global/covid-19/export_global_covid19_jhu.sql
 ```
+
+
+
 # Graph datas
 
 ### Cases
