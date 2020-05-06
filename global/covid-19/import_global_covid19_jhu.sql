@@ -140,7 +140,7 @@ DROP VIEW IF EXISTS v_global_covid19_JHU;
 CREATE VIEW IF NOT EXISTS v_global_covid19_JHU
 AS
 SELECT
-    date(date),
+    date(date) as date,
     cases,
     recovered,
     deaths,
