@@ -1,5 +1,11 @@
 .venv
+
+#Downloaded
 global/covid-19/datas/*_downloaded.csv
+countries/datas/*_downloaded.csv
+
 global/covid-19/pictures/*.svg
 global/covid-19/pictures/*.eps
 world-datas-analysis.db
+
+test

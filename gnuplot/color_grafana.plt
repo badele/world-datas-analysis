@@ -1,3 +1,8 @@
+# Constant
+cbackground="#212121"
+ctext="#D8D9DA"
+cgrid='#464646'
+
 set style line 1 lw 1.2 pt 7 ps 1 lc rgb '#77BE69'
 set style line 2 lw 1.2 pt 7 ps 1 lc rgb '#FADE2B'
 set style line 3 lw 1.2 pt 7 ps 1 lc rgb '#F24865'
