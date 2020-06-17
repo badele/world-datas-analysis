@@ -4,7 +4,7 @@ datafilename='global/covid-19/datas/'.prefixname.'.gdata'
 tdate=system('grep "^202" '.datafilename.' | cut -d" " -f1 | sort | tail -n1')
 
 # Vars
-nbdays = 75
+nbdays = 120
 addday = 2
 limitline=1700
 

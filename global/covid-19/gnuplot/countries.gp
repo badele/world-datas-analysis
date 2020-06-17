@@ -1,7 +1,3 @@
-# Constant
-cbackground="#212121"
-ctext="#D8D9DA"
-cgrid='#464646'
 
 set encoding "utf8"
 set locale "fr_FR.UTF-8"
