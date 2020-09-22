@@ -4,6 +4,8 @@ import os
 import argparse
 import pandas as pd
 
+import lib.python.net as net
+
 # Download Covid-19 datas from https://github.com/CSSEGISandData/COVID-19
 
 COLUMNS = ['cases', 'recovered', 'deaths']
@@ -33,12 +35,38 @@ def loadAndExportData(field, url):
 
     return df
 
+#######################################
+# Download datas
+#######################################
+# Population
+net.downloadHttpFile(
+    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/UID_ISO_FIPS_LookUp_Table.csv',
+    '/tmp/wda_UID_ISO_FIPS_LookUp_Table.csv'
+)
+
+# Cases
+net.downloadHttpFile(
+    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
+    '/tmp/wda_time_series_covid19_confirmed_global.csv'
+)
+
+# Recovered
+net.downloadHttpFile(
+    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv',
+    '/tmp/wda_time_series_covid19_recovered_global.csv'
+)
+
+# Deaths
+net.downloadHttpFile(
+    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
+    '/tmp/wda_time_series_covid19_deaths_global.csv'
+)
 
 #######################################
 # population
 #######################################
 population = pd.read_csv(
-    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/UID_ISO_FIPS_LookUp_Table.csv')
+    '/tmp/wda_UID_ISO_FIPS_LookUp_Table.csv')
 population = population.rename(columns={
     'Population': 'population',
 })
@@ -53,13 +81,13 @@ population.to_csv(
 #######################################
 cases = loadAndExportData(
     'cases',
-    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'
+    '/tmp/wda_time_series_covid19_confirmed_global.csv'
 )
 recovered = loadAndExportData(
     'recovered',
-    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
+    '/tmp/wda_time_series_covid19_recovered_global.csv'
 )
 deaths = loadAndExportData(
     'deaths',
-    'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'
+    '/tmp/wda_time_series_covid19_deaths_global.csv'
 )

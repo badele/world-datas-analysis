@@ -9,3 +9,5 @@ global/covid-19/pictures/*.eps
 world-datas-analysis.db
 
 test
+fit.log
+__pycache__
