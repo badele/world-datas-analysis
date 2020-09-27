@@ -12,5 +12,5 @@ pip install -r requirements.txt
 ## Sample
 
 
-- [International Covid-19](global/covid-19/README.md)
+- [International Covid-19](international/covid-19/README.md)
 - **In progress** [French Covid-19](countries/french/covid-19/README.md)
