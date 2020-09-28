@@ -26,32 +26,51 @@ def convert2gnuplot(df, args):
     result += "\n"
 
     # Add datas
-    group_by_columns = args['block_by'].split(',')
-    g = df.groupby(group_by_columns)
-    lastcolumn = list(g.groups)[-1]
+    if  args['block_by']:
+        group_by_columns = args['block_by'].split(',')
+        g = df.groupby(group_by_columns)
+        lastcolumn = list(g.groups)[-1]
 
-    for groupname, items in g:
+        for groupname, items in g:
+            # Quoting string content contains a space
+            for column in items.columns:
+                if items[column].dtype == object:
+                    mask = items[column].astype(str).str.contains(" ")
+                    items[column][mask] = '"' + items[column][mask] + '"'
+
+            text = tabulate(
+                items,
+                headers=items.columns,
+                floatfmt=".6f",
+                showindex="never",
+                tablefmt='plain'
+            )
+
+            # Show comments
+            result += f"# {group_by_columns[0]}={groupname}\n"
+            # Write datas
+            result += text
+
+            if groupname != lastcolumn:
+                result += "\n\n\n"
+    else:
         # Quoting string content contains a space
-        for column in items.columns:
-            if items[column].dtype == object:
-                mask = items[column].astype(str).str.contains(" ")
-                items[column][mask] = '"' + items[column][mask] + '"'
+        for column in df.columns:
+            if df[column].dtype == object:
+                mask = df[column].astype(str).str.contains(" ")
+                df[column][mask] = '"' + df[column][mask] + '"'
 
         text = tabulate(
-            items,
-            headers=items.columns,
+            df,
+            headers=df.columns,
             floatfmt=".6f",
             showindex="never",
             tablefmt='plain'
         )
 
-        # Show comments
-        result += f"# {group_by_columns[0]}={groupname}\n"
         # Write datas
         result += text
 
-        if groupname != lastcolumn:
-            result += "\n\n\n"
 
     return result
 
