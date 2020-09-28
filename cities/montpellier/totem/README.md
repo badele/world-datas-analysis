@@ -14,9 +14,10 @@ sqlite3 world-datas-analysis.db < cities/montpellier/totem/export_cities_montpel
 # Export gdata
 QUERY="SELECT * FROM cities_montpellier_totem_downloaded"
 SOURCE="https://docs.google.com/spreadsheets/d/e/2PACX-1vQVtdpXMHB4g9h75a0jw8CsrqSuQmP5eMIB2adpKR5hkRggwMwzFy5kB-AIThodhVHNLxlZYm8fuoWj/pub?gid=59478853&single=true&output=csv"
+INTERVALE="1H"
 
 python sql_to_gnuplot.py --db world-datas-analysis.db \
 --query "$QUERY" --comment "Source: $SOURCE" \
---block-by methode \
+--comment "Groupé par intervale de $INTERVALE" \
 --output  cities/montpellier/totem/datas/albert_1er.gdata
 ```
