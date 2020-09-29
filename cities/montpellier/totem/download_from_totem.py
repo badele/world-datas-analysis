@@ -16,8 +16,8 @@ import lib.python.net as net
 # https://docs.google.com/spreadsheets/d/e/2PACX-1vQVtdpXMHB4g9h75a0jw8CsrqSuQmP5eMIB2adpKR5hkRggwMwzFy5kB-AIThodhVHNLxlZYm8fuoWj/pub?gid=734724637&single=true&output=csv
 
 
-
-def getSeason(date):
+SAISON=["Printemps", "Eté", "Automne", "Hiver"]
+def getIdxSeason(date):
     # https://stackoverflow.com/a/24582617/2015612
 
     doy =  date.dayofyear
@@ -28,17 +28,24 @@ def getSeason(date):
     fall = range(264+int(is_leap), 355+int(is_leap))
 
     if doy in spring:
-        season = 'Printemps'
+        season = 0
     elif doy in summer:
-        season = 'Eté'
+        season = 1
     elif doy in fall:
-        season = 'Automne'
+        season = 2
     else:
-        season = 'Hiver'
+        season = 3
 
     return season
 
-def getTimeSlot(date):
+
+def getSeason(date):
+    # https://stackoverflow.com/a/24582617/2015612
+
+     return SAISON[getIdxSeason(date)]
+
+TRANCHE = ["Nuit", "Matin", "Après-Midi","Soir"]
+def getIdxTimeSlot(date):
     # https://stackoverflow.com/a/24582617/2015612
 
     hour =  date.hour
@@ -48,21 +55,24 @@ def getTimeSlot(date):
     afternoom = range(12,18)
 
     if hour in night:
-        timeslot = 'Nuit'
+        idxslot = 0
     elif hour in morning:
-        timeslot = 'Matin'
+        idxslot = 1
     elif hour in afternoom:
-        timeslot = 'Après-Midi'
+        idxslot = 2
     else:
-        timeslot = 'Soir'
+        idxslot = 3
 
-    return timeslot
+    return idxslot
 
+def getTimeSlot(date):
+    # https://stackoverflow.com/a/24582617/2015612
 
+     return TRANCHE[getIdxTimeSlot(date)]
+
+JOUR=["Lundi", "Mardi", "Mecredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 def getDayName(date):
-    days = ["Lundi", "Mardi", "Mecredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
-
-    return days[date.dayofweek]
+    return JOUR[date.dayofweek]
 
 
 
@@ -74,18 +84,19 @@ def analyseTotemDatas(totemname, url):
 
     # Rename column
     df = df.rename(columns={
-        'Heure / Time': 'heure',
+        'Date': 'date',
+        'Heure / Time': 'horaire',
         'Vélos depuis la mise en service / Grand total': 'comptage_cumul',
         "Vélos ce jour / Today's total": 'comptage_quotidien'
     })
 
     # Define datetime
-    df["datetime"] = df['Date'] + ' ' + df['heure']
+    df["datetime"] = df['date'] + ' ' + df['horaire']
     df['datetime'] = pd.to_datetime(df['datetime'],format='%d/%m/%Y %H:%M:%S')
 
     # Filter and sort
     df = df[~df["comptage_cumul"].isnull()]
-    df = df[~df['heure'].str.match("00:00:00")]
+    df = df[~df['horaire'].str.match("00:00:00")]
 
     # Format cumul column
     df['methode']="Relevé"
@@ -108,26 +119,33 @@ def analyseTotemDatas(totemname, url):
 
     # Estimate value
     df['comptage_cumul'] = df['comptage_cumul'].interpolate(method='linear',order=2).round(0)
-    df['methode'][df['methode'].isnull()]="Estimé"
+    df.loc[df['methode'].isnull(),'methode'] ="Estimé"
     df['comptage_minuit'] = df['comptage_minuit'].fillna(method='ffill')
     df['comptage_quotidien'] = df['comptage_cumul'] - df['comptage_minuit']
 
     # Complete column
+    df['date'] = df['datetime'].dt.strftime('%Y-%m-%d')
+    df['horaire'] = df['datetime'].dt.strftime('%H:%M:%S')
     df['annee'] = df['datetime'].dt.year
     df['mois'] = df['datetime'].dt.month
     df['jours'] = df['datetime'].dt.day
     df['heure'] = df['datetime'].dt.hour
     df['minute'] = df['datetime'].dt.minute
-    df['jour_année'] = df['datetime'].dt.dayofyear
+    df['jour_annee'] = df['datetime'].dt.dayofyear
+    df['idx_semaine'] = df['datetime'].dt.week
+    df['idx_jour'] = df['datetime'].dt.dayofweek
     df['jour_semaine'] = df['datetime'].apply(getDayName)
+    df['idx_tranche'] = df['datetime'].apply(getIdxTimeSlot)
     df['tranche_horaire'] = df['datetime'].apply(getTimeSlot)
+    df['idx_saison'] = df['datetime'].apply(getIdxSeason)
     df['saison'] = df['datetime'].apply(getSeason)
+
 
     # Sort
     df = df.sort_values(by=['datetime'])
 
     # Select column
-    df = df[["datetime", "annee", "mois", "jours", "heure", "minute", "jour_année", "jour_semaine", "tranche_horaire", "saison", "comptage_cumul", "comptage_quotidien", "methode"]]
+    df = df[["date", "horaire", "annee", "mois", "jours", "heure", "minute", "jour_annee", "idx_semaine", "idx_jour",  "jour_semaine", "idx_tranche", "tranche_horaire", "idx_saison", "saison", "comptage_cumul", "comptage_quotidien", "methode"]]
 
     df.to_csv(
         f'cities/montpellier/totem/datas/{totemname}_downloaded.csv',

@@ -20,4 +20,6 @@ python sql_to_gnuplot.py --db world-datas-analysis.db \
 --query "$QUERY" --comment "Source: $SOURCE" \
 --comment "Groupé par intervale de $INTERVALE" \
 --output  cities/montpellier/totem/datas/albert_1er.gdata
+
+gnuplot  -e dayrange=7 gnuplot/color_grafana.plt cities/montpellier/totem/gnuplot/all_days.gp
 ```
