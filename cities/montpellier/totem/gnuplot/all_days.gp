@@ -47,14 +47,19 @@ set xlabel xtitle textcolor rgb ctext font ',15'
 
 # Some informations
 set arrow 1 from "2020-07-06" ,graph 0 to "2020-07-06",graph 1 dt 3 lw 2 lc rgb '#F24865' nohead front
-set label 1 "100.000eme le 6 Juillet / 100.000 en 17 semaines" at "2020-07-06",graph 1 offset -1 , -1 right font ",12" tc rgb '#AAAAAA'
+set label 1 "100.000eme le 6 Juillet / 100.000 en 17 semaines" at "2020-07-06",graph 1 offset -1 , -1 right font ",10" tc rgb '#AAAAAA'
 
 set arrow 2 from "2020-09-18" ,graph 0 to "2020-09-18",graph 1 dt 3 lw 2 lc rgb '#F24865' nohead front
-set label 2 "200.000eme le 18 Septembre / 100.000 en 11 semaines" at "2020-09-18",graph 1 offset -1 , -1 right font ",12" tc rgb '#AAAAAA'
+set label 2 "200.000eme le 18 Septembre / 100.000 en 11 semaines" at "2020-09-18",graph 1 offset -1 , -1 right font ",10" tc rgb '#AAAAAA'
 
 set style rect fc rgb "#F4FFFFFF" fs solid 1 noborder
 set obj rect from debutconfine, graph 0 to finconfine, graph 1 front
-set label 3 textconfine at debutconfine,graph 1 offset 8 , -1 left font ",12" tc rgb '#AAAAAA'
+set label 3 textconfine at debutconfine,graph 1 offset 8 , -1 left font ",10" tc rgb '#AAAAAA'
+
+set style rect fc rgb "#F4FFFFFF" fs solid 1 noborder
+set obj rect from debutvacete, graph 0 to finvacete, graph 1 front
+set label 4 textvacete at debutvacete,graph 1 offset 8 , -1 left font ",10" tc rgb '#AAAAAA'
+
 
 # Legend
 unset key
