@@ -5,6 +5,11 @@ set locale "fr_FR.UTF-8"
 # Load custom gnuplot definition
 load 'cities/montpellier/totem/gnuplot/conf_all_days.gp'
 
+# Function
+delta(x) = ( vD = x - prev_value, prev_value = x, max(0,vD))
+max(x,y) = (x > y) ? x : y
+
+
 # Datafile
 set datafile separator whitespace
 set datafile missing "?"
@@ -26,8 +31,8 @@ set grid
 set xdata time
 set timefmt "%Y-%m-%d %H:%M:%S"
 set xtics format "%d\n%b"
-# set xrange [startdate:enddate]
-# set xtics  startdate,86400
+set xrange [startdate:enddate]
+set xtics  startdate,xticstep
 set mxtics
 set mytics
 set ytics
@@ -41,12 +46,15 @@ set xlabel xtitle textcolor rgb ctext font ',15'
 
 
 # Some informations
-set arrow 1 from "2020-07-06" ,graph 0 to "2020-07-06",graph 1 dt 3 lw 2 lc rgb '#5694F2' nohead
+set arrow 1 from "2020-07-06" ,graph 0 to "2020-07-06",graph 1 dt 3 lw 2 lc rgb '#F24865' nohead front
 set label 1 "100.000eme le 6 Juillet / 100.000 en 17 semaines" at "2020-07-06",graph 1 offset -1 , -1 right font ",12" tc rgb '#AAAAAA'
 
-set arrow 2 from "2020-09-18" ,graph 0 to "2020-09-18",graph 1 dt 3 lw 2 lc rgb '#5694F2' nohead
+set arrow 2 from "2020-09-18" ,graph 0 to "2020-09-18",graph 1 dt 3 lw 2 lc rgb '#F24865' nohead front
 set label 2 "200.000eme le 18 Septembre / 100.000 en 11 semaines" at "2020-09-18",graph 1 offset -1 , -1 right font ",12" tc rgb '#AAAAAA'
 
+set style rect fc rgb "#F4FFFFFF" fs solid 1 noborder
+set obj rect from debutconfine, graph 0 to finconfine, graph 1 front
+set label 3 textconfine at debutconfine,graph 1 offset 8 , -1 left font ",12" tc rgb '#AAAAAA'
 
 # Legend
 unset key
@@ -61,7 +69,7 @@ set origin 0, 0.3
 set size 1, 0.7
 
 # Plot
-plot datafilename using 1:16 every 24 title 'Cumul' with impulses ls 1
+plot datafilename using 1:16  with impulses ls 1
 
 set origin 0, 0.0
 set size 1, 0.3
@@ -74,8 +82,10 @@ unset title
 set xtics format "%d\n%b"
 set style fill solid border -1
 set ylabel ytitle2 textcolor rgb ctext font ',15'
+set yrange [0:]
 
-plot datafilename using 1:17 every 24 title 'Cumul' with impulses ls 2
+prev_value = 0
+plot datafilename using 1:(delta(column(16))) every everyjump with boxes ls 2
 
 # Save also to svg format
 # set terminal svg enhanced size 1024,728
