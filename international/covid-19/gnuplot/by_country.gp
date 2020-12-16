@@ -36,7 +36,7 @@ do for [i=1:nb_countries] {
 
 # Overide some vars
 ttitle="Statistique décès Covid-19 pour ".COUNTRIES[0+1]." au ".tdate
-startdate="2020-01-27"
+startdate="2020-01-26"
 
 
 # png
@@ -53,7 +53,7 @@ set xdata time
 set timefmt "%Y-%m-%d"
 set xtics format "%d\n%b"
 set xrange [startdate:enddate]
-set xtics  startdate,86400*7
+set xtics  startdate,86400*dayrange
 set mxtics
 set mytics
 set ytics
@@ -80,7 +80,7 @@ unset key
 
 everydays = 7
 
-plot datafilename using 1:(peopleratio(column(field))) every everydays title COUNTRIES[1] with linespoints ls 1
+plot datafilename using 1:(peopleratio(column(field))) every dayrange title COUNTRIES[1] with linespoints ls 1
 
 # Plot
 set origin 0, 0.0
@@ -91,7 +91,7 @@ set size 1, 0.3
 #set style data histograms
 
 unset title
-set ylabel "Nb Décès / jour" textcolor rgb ctext font ',15'
+set ylabel "Nb Décès / Semaine" textcolor rgb ctext font ',15'
 set xtics format "%d\n%b"
 set style fill solid border -1
 set tmargin 0.0
