@@ -43,7 +43,7 @@ set xdata time
 set timefmt "%Y-%m-%d"
 set xtics format "%d\n%b"
 set xrange [startdate:enddate]
-set xtics  startdate,86400*7
+set xtics  startdate,86400*dayrange
 set mxtics
 set mytics
 set ytics

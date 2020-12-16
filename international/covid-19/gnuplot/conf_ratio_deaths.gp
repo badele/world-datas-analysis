@@ -4,7 +4,8 @@ datafilename='international/covid-19/datas/'.prefixname.'.gdata'
 tdate=system('grep "^202" '.datafilename.' | cut -d" " -f1 | sort | tail -n1')
 nbdays=system('grep "^202" '.datafilename.' | cut -d" "  -f1 | sort | uniq | wc -l')
 startdate="2020-02-24"
-enddate=system('grep "^202" '.datafilename.' | cut -d" "  -f1 | sort | uniq | tail -n1')
+#enddate=system('grep "^202" '.datafilename.' | cut -d" "  -f1 | sort | uniq | tail -n1')
+enddate = system('date  "+%Y-%m-%d" -d "+1 days"')
 
 # Vars
 addday = 8

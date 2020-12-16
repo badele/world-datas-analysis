@@ -2,6 +2,9 @@
 
 ## Download JHU datas and Graph
 ```
+# Use virtualenn python environment
+source .venv/bin/activate
+
 # Download datas from official JHU repository
 python international/covid-19/download_from_jhu.py
 

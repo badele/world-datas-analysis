@@ -33,7 +33,7 @@ def loadAndExportData(field, url):
     df = df[["date", "Country_Region", "Province_State",  "field", "value"]]
 
     df.to_csv(
-        f'global/covid-19/datas/global_covid19_JHU_{field}_downloaded.csv',
+        f'international/covid-19/datas/global_covid19_JHU_{field}_downloaded.csv',
         index=False
     )
 
@@ -76,7 +76,7 @@ population = population.rename(columns={
 })
 # Save JHU datas files
 population.to_csv(
-    'global/covid-19/datas/global_covid19_JHU_locations_downloaded.csv',
+    'international/covid-19/datas/global_covid19_JHU_locations_downloaded.csv',
     index=False
 )
 
