@@ -24,8 +24,11 @@ from ftplib import FTP
 
 
 
-def downloadHttpFile(url,filename):
+def downloadHttpFile(url,filename,messagz=None):
     if not os.path.exists(filename):
+        if messagz is not None:
+            print(messagz)
+        
         r = requests.get(url, allow_redirects=True)
         with open(filename, 'wb') as f:
             f.write(r.content)
