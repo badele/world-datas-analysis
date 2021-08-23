@@ -1,16 +1,21 @@
-.venv
+# Database
+world-datas-analysis.db
 
-#Downloaded
-international/covid-19/datas/*_downloaded.csv
-cities/montpellier/totem/datas/*_downloaded.csv
-countries/datas/*_downloaded.csv
+# Downloaded
+*_downloaded.csv
+
+# Full export
+*_full.csv
+
 
 international/covid-19/pictures/*.svg
 international/covid-19/pictures/*.eps
-world-datas-analysis.db
 
 test
 fit.log
+
+# Python
+.venv
 __pycache__
 
 international/covid-19/datas/countries_ratio_deaths_for_1000000hab_*.gdata
