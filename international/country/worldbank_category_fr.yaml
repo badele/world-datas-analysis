@@ -1,0 +1,17 @@
+block:
+    css: section.nav-item
+    multiple: true
+    type: Text
+    children:
+        category:
+            css: 'h3 a'
+            type: Text
+        indicator:
+            css: 'li a'
+            multiple: true
+            type: Text
+        indicatorlink:
+            css: 'li a'
+            multiple: true
+            type: Attribute
+            attribute: href
