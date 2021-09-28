@@ -32,14 +32,11 @@ pd.set_option("display.width", 1000)
 DEFAULT_MISSING = pd._libs.parsers.STR_NA_VALUES
 DEFAULT_MISSING = DEFAULT_MISSING.remove("NA")
 
-NB_ZIP_FILE = 0
-
-
 def download_indicator_description(conn):
     extractor = Extractor.from_yaml_file(
         "./international/country/worldbank_category_fr.yaml"
     )
-    r = requests.get("https://donnees.banquemondiale.org/indicateur/")
+    r = requests.get("https://donnees.banquemondiale.org/indicateur/?tab=all")
     data = extractor.extract(r.text)
 
     categories = []
@@ -51,7 +48,7 @@ def download_indicator_description(conn):
 
         for idx in range(len(block["indicator"])):
             indicator = block["indicator"][idx]
-            m = re.match(r"/indicateur/(.*)\?view=chart", block["indicatorlink"][idx])
+            m = re.match(r"/indicateur/(.*)\?view=chart", block["link"][idx])
             id = m.group(1)
             indicators.append(("FR", catid, id, indicator))
 
@@ -64,52 +61,52 @@ def download_indicator_description(conn):
     df_indicator.to_sql("worldbank_indicator", conn, if_exists="replace", index=False)
 
 
-def download_country_datas(geoid, iso3):
-    global NB_ZIP_FILE
+# def download_country_datas(geoid, iso3):
+#     global NB_ZIP_FILE
 
-    zipfilename = f"/tmp/worldbank_{iso3}.zip"
-    if not os.path.exists(zipfilename):
-        net.downloadHttpFile(
-            f"https://api.worldbank.org/v2/en/country/{iso3}?downloadformat=csv",
-            zipfilename,
-            f"Download worldbank {iso3} country",
-        )
+#     zipfilename = f"/tmp/worldbank_{iso3}.zip"
+#     if not os.path.exists(zipfilename):
+#         net.downloadHttpFile(
+#             f"https://api.worldbank.org/v2/en/country/{iso3}?downloadformat=csv",
+#             zipfilename,
+#             f"Download worldbank {iso3} country",
+#         )
 
-    if zipfile.is_zipfile(zipfilename):
-        with zipfile.ZipFile(zipfilename, "r") as ziparchive:
-            ziparchive.extractall("/tmp/worldbank")
-        NB_ZIP_FILE += 1
+#     if zipfile.is_zipfile(zipfilename):
+#         with zipfile.ZipFile(zipfilename, "r") as ziparchive:
+#             ziparchive.extractall("/tmp/worldbank")
+#         NB_ZIP_FILE += 1
 
-        #######################################
-        # Country
-        #######################################
-        print(f"Export {iso3} to sql")
-        datafilename = glob.glob(f"/tmp/worldbank/API_{iso3}_DS2_en_csv_v2_*.csv")
-        if len(datafilename) > 0:
-            df = pd.read_csv(
-                datafilename[0], sep=",", skiprows=4, na_values=DEFAULT_MISSING
-            )
-            df.columns = df.columns.str.replace(" ", "")
-            df.drop(df.columns[len(df.columns) - 1], axis=1, inplace=True)
-            df.drop(["CountryName"], axis=1, inplace=True)
-            df.drop(["IndicatorName"], axis=1, inplace=True)
+#         #######################################
+#         # Country
+#         #######################################
+#         print(f"Export {iso3} to sql")
+#         datafilename = glob.glob(f"/tmp/worldbank/API_{iso3}_DS2_en_csv_v2_*.csv")
+#         if len(datafilename) > 0:
+#             df = pd.read_csv(
+#                 datafilename[0], sep=",", skiprows=4, na_values=DEFAULT_MISSING
+#             )
+#             df.columns = df.columns.str.replace(" ", "")
+#             df.drop(df.columns[len(df.columns) - 1], axis=1, inplace=True)
+#             df.drop(["CountryName"], axis=1, inplace=True)
+#             df.drop(["IndicatorName"], axis=1, inplace=True)
 
-            df = pd.melt(
-                df,
-                id_vars=["CountryCode", "IndicatorCode"],
-                var_name="year",
-                value_name="value",
-            )
-            df["year"] = df["year"].astype("int32")
-            df = df[df["value"].notna()]
+#             df = pd.melt(
+#                 df,
+#                 id_vars=["CountryCode", "IndicatorCode"],
+#                 var_name="year",
+#                 value_name="value",
+#             )
+#             df["year"] = df["year"].astype("int32")
+#             df = df[df["value"].notna()]
 
-            mode = "append"
-            if NB_ZIP_FILE <= 1:
-                mode = "replace"
+#             mode = "append"
+#             if NB_ZIP_FILE <= 1:
+#                 mode = "replace"
 
-            df.to_sql(
-                "x_downloaded_worldbank_country", conn, if_exists=mode, index=False
-            )
+#             df.to_sql(
+#                 "x_downloaded_worldbank_country", conn, if_exists=mode, index=False
+#             )
 
 
 def get_translated_indicator_name(conn):
@@ -123,14 +120,50 @@ def get_translated_indicator_name(conn):
         print(m.groups(0))
 
 
-conn = sql.connect("world-datas-analysis.db")
+def download_worldbank_datas():
+    zipfilename = f"/tmp/worldbank_csv.zip"
+    if not os.path.exists(zipfilename):
+        print(f"Download {zipfilename}")
+        net.downloadHttpFile(
+            f"http://databank.worldbank.org/data/download/WDI_csv.zip",
+            zipfilename,
+        )
+
+    if not os.path.exists('/tmp/worldbank/WDIData.csv'):
+        if zipfile.is_zipfile(zipfilename):
+            print("Unzip worldbank datas")
+            with zipfile.ZipFile(zipfilename, "r") as ziparchive:
+                ziparchive.extractall("/tmp/worldbank")
+
+def pivot_datas():
+    if not os.path.exists('/tmp/worldbank/WDIData_pivot.csv'):
+            df = pd.read_csv('/tmp/worldbank/WDIData.csv')
+            df.drop(["Country Name"], axis=1, inplace=True)
+            df.drop(["Indicator Name"], axis=1, inplace=True)
+
+            df = pd.melt(
+                df,
+                id_vars=["Country Code", "Indicator Code"],
+                var_name="year",
+                value_name="value",
+            )
+#            df["year"] = df["year"].astype("int32")
+            df = df[df["value"].notna()]
+            df.rename(columns={
+                'Country Code': 'COUNTRYCODE',
+                'Indicator Code': 'INDICATORCODE',
+                'year': 'YEAR'
+            },
+            inplace=True)
+
+            df.to_csv('/tmp/worldbank/WDIData_Pivot.csv',index=False)
 
 ############################
-# Get indicators description
+# Download Datas
 ############################
 
-download_indicator_description(conn)
+#download_indicator_description(conn)
 
-df = pd.read_sql("SELECT geoid,iso3 from v_geonames_country", conn)
-for index, row in df.iterrows():
-    download_country_datas(row["GEOID"], row["iso3"])
+
+download_worldbank_datas()
+pivot_datas()
