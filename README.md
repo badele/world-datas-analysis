@@ -37,6 +37,11 @@ pip install --only-binary=:all: -r requirements.txt
 # Use virtualenn python environment
 source .venv/bin/activate
 
+# owid
+dataset/owid/download.sh
+dataset/owid/import.sh
+
+
 # Level 1 (geoname)
 python dataset/100-geonames/download.py
 sqlite3 -bail world-datas-analysis.db < dataset/100-geonames/import.sql
@@ -51,4 +56,19 @@ sqlite3 -bail world-datas-analysis.db < dataset/200-worldbank/import.sql
 
 # Summary
 sqlite3 -bail world-datas-analysis.db < db_summary.sql
+```
+
+```
+
+
+
+SELECT * from datasets
+INNER JOIN namespaces ON datasets.namespace = namespaces.name
+WHERE namespaces.isArchived = 0
+
+SELECT * from variables
+INNER JOIN datasets ON variables.datasetId = datasets.id
+INNER JOIN namespaces ON datasets.namespace = namespaces.name
+WHERE namespaces.isArchived = 0
+
 ```
