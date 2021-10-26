@@ -5,12 +5,15 @@
 -- Dataset
 --------------------------------------
 
-DROP TABLE IF EXISTS db_dataset;
-CREATE TABLE IF NOT EXISTS db_dataset(
+--DROP TABLE IF EXISTS wda_dataset;
+CREATE TABLE IF NOT EXISTS wda_dataset(
     provider	    TEXT,
+    scope TEXT,
+    nb_scopes INTEGER,
+    nb_variables INTEGER,
     source	    TEXT,
     licence       TEXT,
-    PRIMARY KEY(provider)
+    PRIMARY KEY(provider,scope)
 );
 
 

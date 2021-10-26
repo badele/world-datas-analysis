@@ -9,19 +9,18 @@ source .venv/bin/activate
 pip install --only-binary=:all: -r requirements.txt
 ```
 
-## Multiples indicators;
+## indicators;
 
 | Status | Nb indicators               | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
 |--------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [/]    | ~ 1436 indicators           | Countries   | [World of bank](https://donnees.banquemondiale.org/indicateur/?tab=all)                                                                       |                                                                                                                     |
-| [/]    | ~ 1400 indicators           | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                       |                                                                                                                     |
+| [x]    | 6204 indicators             | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                       |                                                                                                                     |
+| [x]    | 18 (geoloc)                 | Cities      | [geonames](https://download.geonames.org/export/dump/)                                                                                  |                                                                                                                     |
 
 
 
 | Status | Category                    | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
 |--------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
 | [x]    | Covid                       | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                  | [International Covid-19](international/covid-19/README.md) / [French Covid-19](countries/french/covid-19/README.md) |
-| [x]    | Population                  | Countries   | [geonames](https://download.geonames.org/export/dump/)                                                                                  |                                                                                                                     |
 | [_]    | Population                  | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                            |                                                                                                                     |
 | [_]    | Population                  | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                    |                                                                                                                     |
 | [_]    | Population                  | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                        |                                                                                                                     |
@@ -43,10 +42,8 @@ dataset/owid/import.sh
 
 
 # Level 1 (geoname)
-python dataset/100-geonames/download.py
-sqlite3 -bail world-datas-analysis.db < dataset/100-geonames/import.sql
-#sqlite3 -bail world-datas-analysis.db < international/countryexport_geonames.sql
-#international/countryexport_geonames.sh
+dataset/geonames/download.sh
+dataset/geonames/import.sh
 
 # Worldbnk
 python dataset/200-worldbank/download.py
