@@ -21,3 +21,11 @@ fit.log
 __pycache__
 
 international/covid-19/datas/countries_ratio_deaths_for_1000000hab_*.gdata
+
+# R
+renv
+.RData
+.Rproj.user
+.Rhistory
+Rplots*
+.Rprofile
