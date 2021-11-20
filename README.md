@@ -11,10 +11,11 @@ pip install --only-binary=:all: -r requirements.txt
 
 ## indicators;
 
-| Status | Nb indicators               | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
-|--------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [x]    | 6204 indicators             | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                       |                                                                                                                     |
-| [x]    | 18 (geoloc)                 | Cities      | [geonames](https://download.geonames.org/export/dump/)                                                                                  |                                                                                                                     |
+| Status | Nb vars | Nb indicators               | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
+|--------|---------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| [x]    |    6204 | multiple indicators         | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                       |                                                                                                                     |
+| [x]    |      18 | geoloc & admin code         | Cities      | [geonames](https://download.geonames.org/export/dump/)                                                                                  |                                                                                                                     |
+| [/]    |         | street observation          | Streets     | [Vigilo](https://vigilo.city/fr/)                                                                                                       |                                                                                                                     |
 
 
 
@@ -26,7 +27,6 @@ pip install --only-binary=:all: -r requirements.txt
 | [_]    | Population                  | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                        |                                                                                                                     |
 | [_]    | Weather                     | Cities      | [European Climate Assessment & Dataset](https://www.ecad.eu/dailydata/predefinedseries.php)                                             |                                                                                                                     |
 | [_]    | Weather                     | Cities      | [European Centre for Medium-Range Weather Forecasts](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch) |                                                                                                                     |
-| [_]    | vigilo                      | Montpellier | [Vigilo](https://vigilo.city/fr/)                                                                                                       |                                                                                                                     |
 | [_]    | bike counter                | Montpellier | [Montpellier 3M/Velocité](https://compteurs.velocite-montpellier.fr/)                                                                   |                                                                                                                     |
 | [_]    | Rental bike                 | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                |                                                                                                                     |
 | [_]    | universitetetioslo          | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                               |                                                                                                                     |
@@ -37,17 +37,17 @@ pip install --only-binary=:all: -r requirements.txt
 source .venv/bin/activate
 
 # owid
-dataset/owid/download.sh
-dataset/owid/import.sh
+importer/owid/download.sh
+importer/owid/import.sh
 
 
 # Level 1 (geoname)
-dataset/geonames/download.sh
-dataset/geonames/import.sh
+importer/geonames/download.sh
+importer/geonames/import.sh
 
 # Worldbnk
-python dataset/200-worldbank/download.py
-sqlite3 -bail world-datas-analysis.db < dataset/200-worldbank/import.sql
+python importer/200-worldbank/download.py
+sqlite3 -bail world-datas-analysis.db < importer/200-worldbank/import.sql
 #international/countryexport_worldbank.sh
 #python international/country/download_from_ourworldindata.py
 
