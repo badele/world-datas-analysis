@@ -21,11 +21,15 @@ suppressPackageStartupMessages({
 #' Datsun 710            22.8     4   108.0    93   3.85   2.320   18.61    1    1      4      1
 #' Hornet 4 Drive        21.4     6   258.0   110   3.08   3.215   19.44    1    0      3      1
 write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "NA") {
-  # Compute columns size
+  # Convert rownames to column
   if (rowname) {
     df <- tibble::rownames_to_column(df, rowname)
   }
-  
+
+  # Replace NA
+  df[is.na(df)] <- replace_na
+
+  # Compute column size
   maxwidthname <- nchar(colnames(df))
   maxwidthvalue <- sapply(df, function(x) max(nchar(x)))
   maxcols <- pmax(maxwidthname,maxwidthvalue)
