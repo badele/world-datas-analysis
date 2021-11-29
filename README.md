@@ -13,9 +13,9 @@ pip install --only-binary=:all: -r requirements.txt
 
 | Status | Nb vars | Nb indicators               | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
 |--------|---------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [x]    |    6204 | multiple indicators         | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                       |                                                                                                                     |
+| [x]    |    6204 | multiple indicators         | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                                  |                                                                                                                     |
 | [x]    |      18 | geoloc & admin code         | Cities      | [geonames](https://download.geonames.org/export/dump/)                                                                                  |                                                                                                                     |
-| [/]    |         | street observation          | Streets     | [Vigilo](https://vigilo.city/fr/)                                                                                                       |                                                                                                                     |
+| [x]    |       9 | street observation          | Streets     | [Vigilo](https://vigilo.city/fr/)                                                                                                       |                                                                                                                     |
 
 
 
@@ -51,14 +51,15 @@ sqlite3 -bail world-datas-analysis.db < importer/200-worldbank/import.sql
 #international/countryexport_worldbank.sh
 #python international/country/download_from_ourworldindata.py
 
+# Vigilo
+./importer/vigilo/import_and_export.sh
+
 # Summary
 sqlite3 -bail world-datas-analysis.db < db_summary.sql
 ```
 
+
 ```
-
-
-
 SELECT * from datasets
 INNER JOIN namespaces ON datasets.namespace = namespaces.name
 WHERE namespaces.isArchived = 0
