@@ -9,14 +9,13 @@ source .venv/bin/activate
 pip install --only-binary=:all: -r requirements.txt
 ```
 
-## indicators;
+## indicators
 
-| Status | Nb vars | Nb indicators               | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
-|--------|---------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [x]    |    6204 | multiple indicators         | Countries   | [Our World In Data](https://ourworldindata.org/charts)                                                                                  |                                                                                                                     |
-| [x]    |      18 | geoloc & admin code         | Cities      | [geonames](https://download.geonames.org/export/dump/)                                                                                  |                                                                                                                     |
-| [x]    |       9 | street observation          | Streets     | [Vigilo](https://vigilo.city/fr/)                                                                                                       |                                                                                                                     |
-
+| Status | Nb vars | Nb indicators               | Scope       | Dataset                    | Description                                                                                                 |
+|--------|---------|-----------------------------|-------------|----------------------------|-------------------------------------------------------------------------------------------------------------|
+| [x]    |    6204 | multiple indicators         | Countries   |                            | [Our World In Data](https://ourworldindata.org/charts)                                                      |
+| [x]    |      18 | geoloc & admin code         | Cities      |                            | [geonames](https://download.geonames.org/export/dump/)                                                      |
+| [x]    |       9 | street observation          | Streets     | [dataset](dataset/vigilo/) | [Vigilo](https://vigilo.city/fr/)                                                                           |
 
 
 | Status | Category                    | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
