@@ -26,7 +26,7 @@ write_fwf(category,paste0(exportdir,"categories.txt"))
 instance <- dbGetQuery(con, "SELECT InstanceId as instanceid, scope, name as instancename, api_path, country, version FROM vigilo_instance")
 write_fwf(instance,paste0(exportdir,"instances.txt"))
 
-obs <- dbGetQuery(con, "SELECT scope, token, coordinates_lat, coordinates_lon, address, timestamp,cityname,CategoryId,approved  FROM vigilo_observation vo INNER JOIN vigilo_instance vi ON vo.InstanceID = vi.InstanceID")
+obs <- dbGetQuery(con, "SELECT scope, token, coordinates_lat, coordinates_lon, address, timestamp,cityname,CategoryId as catid,approved  FROM vigilo_observation vo INNER JOIN vigilo_instance vi ON vo.InstanceID = vi.InstanceID")
 
 obs <- obs %>%
   mutate(
