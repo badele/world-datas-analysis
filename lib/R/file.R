@@ -38,6 +38,11 @@ write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "N
   # Compute header
   header <- c()
   for (idx in seq(ncol(df))) {
+    # Check if column is a date
+    if (is.POSIXt(df[,idx])) {
+      stop("PLease convert date column to string")
+    }
+
     if (is.character(df[,idx])) {
       header <- append(header,paste0(colnames(df)[idx],strrep(" ",max(delta[idx],0))))
     } else {

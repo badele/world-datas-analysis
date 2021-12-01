@@ -1,0 +1,21 @@
+# colnames: instanceid,scope,instancename,api_path,country,version
+# cols: 13,23,35,44,10,10
+instanceid   scope                  instancename                       api_path                                    country   version   
+         1   13_aixmarseillemetro   Aix Marseille Provence Metropole   https://vigilo.velosenville.org             France    0.0.15 
+         2   80_amiens              Amiens                             https://velo.varas-genestier.net            France    0.0.16 
+         3   33_arcachon            Bassin Arcachon Sud                https://vigilo.velobassin.org               France    0.0.17 
+         4   60_beauvaisis          Beauvais                           https://vigilo.vellovaque.fr                France    0.0.16 
+         5   33_bordeaux            Bordeaux Métropole                 https://vigilo.cycles-manivelles.org/api    France    0.0.16 
+         6   29_brest               Brest                              https://vigilo.bapav.org                    France    0.0.15 
+         7   35_Chateaugiron        Châteaugiron (Pays de)             https://pouliquen.net/vigilo                France    0.0.17 
+         8   38_capi                Isère (APIE)                       https://vigilo.apie-asso.net                France    0.0.17 
+         9   34_montpellier         Montpellier                        https://api-vigilo.jesuisundesdeux.org      France    0.0.16 
+        10   44_nantesmetropole     Nantes Métropole                   https://vigilo.placeauvelo-nantes.fr/       France    0.0.16 
+        11   24_AggloPgx            Périgueux Agglo                    https://vigilo.velorution-perigourdine.fr   France    0.0.17 
+        12   38_SMVIC               Saint Marcellin Vercors Isère      https://vigilo.roulavelo.org                France    0.0.17 
+        13   22_SBAA                Saint-Brieuc Armor Agglomération   https://api-vigilo.velo-utile.fr            France    0.0.16 
+        14   67_strasbourg          Strasbourg                         https://www.strasbourgavelo.eu              France    0.0.17 
+        15   60_SudOise             Sud Oise                           https://vigilo.au5v.fr/                     France    0.0.15 
+        16   34_setethau            Sète Thau                          https://sete34.vigilo.city/                 France    0.0.15 
+        17   10_troyes              Troyes Agglomération               https://api.vigilo.troyesenselle.fr         France    0.0.13 
+        18   56_vannes              Vannes Agglo                       https://vigilo.kaz.bzh                      France    0.0.18 
