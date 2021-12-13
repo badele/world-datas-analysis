@@ -1,0 +1,40 @@
+# colnames: provider,real_provider,description,nb_coverage,nb_variables,nb_observations
+# cols: 13,44,74,14,15,18
+provider     real_provider                               description                                                               nb_coverage   nb_variables   nb_observations   
+owid         bbsc                                        Statistical Capacity [via World Bank]                                             154              2              4040
+owid         bpstatreview_2020                           BP Energy Review (2020)                                                           100             15             68479
+owid         clioinfra                                   ClioInfra                                                                         177              6             49258
+owid         edstats@2020                                World Bank EdStats 2020                                                           234            139            318055
+owid         faostat                                     UN - Food and Agriculture Organziation (FAO)                                      280             33            272097
+owid         faostat_2020                                UN - Food and Agriculture Organziation (FAO) (2020)                               270            230           1351879
+owid         findex                                      Financial Index [via World Bank]                                                  161              8              1282
+owid         gbd_cause                                   Global Burden of Disease - Deaths & DALYs                                         231            671           4333476
+owid         gbd_mental_health                           Global Burden of Disease - Mental Health                                          231            165           1063476
+owid         gbd_prevalence                              Global Burden of Disease - Prevalence & Incidence                                 231             92            595056
+owid         gbd_risk                                    Global Burden of Disease - Risk Factors                                           231            165           1022413
+owid         gcp_gcb@2020                                Global Carbon Budget - Global Carbon Project (2020)                               238             59           1428442
+owid         genderstats                                 Gender Stats [via World Bank]                                                     239             20             13528
+owid         hnpstats                                    World Bank - Health, Nutrition & Population                                       234              3              9833
+owid         ihme_sdg                                    IHME - Sustainable Development Goals                                              188             11             12408
+owid         ilostat                                     International Labour Organization (ILO)                                           272             21            125830
+owid         oecd_stat                                   OECD Statistics                                                                    45             12              9821
+owid         owid                                        Our World in Data [data uploaded by the OWID-team]                                836           3678          18358476
+owid         penn_world                                  Penn World Tables                                                                 182              3             28317
+owid         povcal                                      PovCal (2021)                                                                     183             16            103300
+owid         povstats                                    Poverty Stats [via World Bank]                                                    177             11             12422
+owid         qog                                         Quality of Government (QOG)                                                       207             16             51524
+owid         se4all                                      Sustainable Energy [via World Bank]                                               196              6             22438
+owid         un_ep                                       UN Environment Programme                                                          208              9             32760
+owid         un_sdg@2021-03                              United Nations Sustainable Development Goals - United Nations (2021-03)           292            280            245868
+owid         un_sdg_2019                                 UN - Sustainable Development Goals (2019)                                         225             11              8022
+owid         unaids                                      UN HIV/AIDS                                                                       224             44             46037
+owid         unwpp2019                                   UN Population - Full Dataset (2019)                                               246             47            861738
+owid         unwpp_interpolated_demographic_indicators   UN Population - Interpolated Demographics                                         241              1             15906
+owid         unwpp_interpolated_total_population         UN Population - Interpolated Population                                           241              1             15906
+owid         vdem@11.1                                   V-Dem Dataset Version 11.1 - V-Dem Institute                                      201              7            122002
+owid         wdi                                         World Development Indicators [via World Bank]                                     263             46            241941
+owid         who_cancer_mort                             WHO - Cancer Mortality                                                             87              3             11529
+owid         who_gho                                     WHO - Global Health Observatory                                                   195             39             59164
+owid         who_wash                                    WHO - Water & Sanitation                                                          230             36             83421
+owid         worldbank_wdi@2021.07.30                    World Development Indicators - World Bank (2021.07.30)                            265            266           1524612
+wda-vigilo   vigilo                                      Vigilo observations                                                               232              9             31302
