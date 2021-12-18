@@ -1,3 +1,7 @@
+[comment]: <> (===================================================++++++++++++=)
+[comment]: <> (This file is generated from `r gsub(".*\\.tpl/",".tpl/",knitr::current_input(dir=TRUE))`
+[comment]: <> (===================================================++++++++++++=)
+
  - [datasets](#owid-datasets)
  - [variables](#owid-variables)
 
@@ -5,7 +9,7 @@
 
 ``` {r echo=FALSE, message=FALSE,INCLUDE=TRUE}
 
-source("../lib/R/file.R")
+source("../../lib/R/file.R")
 
 suppressPackageStartupMessages({
   library(here)
@@ -16,7 +20,7 @@ suppressPackageStartupMessages({
 })
 
 
-dataset <- read_fwf("dataset.txt")
+dataset <- read_fwf("../../dataset/dataset.txt")
 
 dataset %>%
   filter(provider=='owid') %>%
@@ -27,7 +31,7 @@ dataset %>%
 
 ``` {r echo=FALSE, message=FALSE,INCLUDE=TRUE}
 
-variable <- read_fwf("variable.txt")
+variable <- read_fwf("../../dataset/variable.txt")
 
 variable %>%
   filter(provider=='owid') %>%

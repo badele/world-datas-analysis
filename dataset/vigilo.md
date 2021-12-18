@@ -1,3 +1,7 @@
+[comment]: <> (===================================================++++++++++++=)
+[comment]: <> (This file is generated from .tpl/dataset/vigilo.rmd
+[comment]: <> (===================================================++++++++++++=)
+
  - [datasets](#vigilo-datasets)
  - [variables](#vigilo-variables)
 

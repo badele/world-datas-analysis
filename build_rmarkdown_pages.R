@@ -15,14 +15,18 @@ dfprovider <- read_fwf("dataset/provider.txt")
 
 for (idx in 1:nrow(dfprovider)) {
     providername <- dfprovider[idx,1] 
-    system(paste0("PROVIDER=",providername," envsubst < dataset/dataset.rmd.tpl > dataset/",providername,".rmd"))
+    system(paste0("PROVIDER=",providername," envsubst < .tpl/dataset/dataset.rmd.tpl > .tpl/dataset/",providername,".rmd"))
 }
 
-files <- list.files(pattern="\\.rmd$",recursive=TRUE)
+rootdir <- ".tpl/"
+files <- list.files(path=rootdir, pattern="\\.rmd$",recursive=TRUE)
 for (filename in files) {
     fmarkdown <- gsub("\\.rmd$",".md",filename)
 
     cat(paste0("Build ",filename),sep="\n")
+
+
+    filename <- paste0(rootdir,filename)
 
     # Build markdown
     knit(filename, output=fmarkdown, quiet=TRUE)
