@@ -1,3 +1,11 @@
+[comment]: <> (===================================================++++++++++++=)
+[comment]: <> (This file is generated from .tpl/README.rmd
+[comment]: <> (===================================================++++++++++++=)
+
+
+
+
+
 # world-datas-analysis
 miscellaneous worlds data and analysis
 
@@ -31,10 +39,10 @@ renv::restore()
 ## Providers of dataset
 
 
-|Provider |Description                                     | Avg scope|Nb datasets                         |nb variables                         | Nb observations|
-|:--------|:-----------------------------------------------|---------:|:-----------------------------------|:------------------------------------|---------------:|
-|owid     |[Our World In Data](https://ourworldindata.org) |       126|[1473](dataset/owid#owid-datasets)  |[6206](dataset/owid#owid-variables)  |        32610560|
-|vigilo   |[Vigilo observations](https://vigilo.city)      |       232|[1](dataset/vigilo#vigilo-datasets) |[9](dataset/vigilo#vigilo-variables) |           31623|
+|Dataset                  |Description                                     | Avg scope|Nb datasets                         |nb variables                         | Nb observations|
+|:------------------------|:-----------------------------------------------|---------:|:-----------------------------------|:------------------------------------|---------------:|
+|[owid](dataset/owid)     |[Our World In Data](https://ourworldindata.org) |       126|[1473](dataset/owid#owid-datasets)  |[6206](dataset/owid#owid-variables)  |        32610560|
+|[vigilo](dataset/vigilo) |[Vigilo observations](https://vigilo.city)      |       232|[1](dataset/vigilo#vigilo-datasets) |[9](dataset/vigilo#vigilo-variables) |           31623|
 
 ## Todo
 
