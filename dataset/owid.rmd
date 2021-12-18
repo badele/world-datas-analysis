@@ -1,0 +1,35 @@
+ - [datasets](#owid-datasets)
+ - [variables](#owid-variables)
+
+# owid datasets
+
+``` {r echo=FALSE, message=FALSE,INCLUDE=TRUE}
+
+source("../lib/R/file.R")
+
+suppressPackageStartupMessages({
+  library(here)
+  library(RSQLite)
+  library(forcats)
+  library(tidyverse) 
+  library(kableExtra)
+})
+
+
+dataset <- read_fwf("dataset.txt")
+
+dataset %>%
+  filter(provider=='owid') %>%
+  kable(format="pipe", escape = FALSE)
+```
+
+# owid variables
+
+``` {r echo=FALSE, message=FALSE,INCLUDE=TRUE}
+
+variable <- read_fwf("variable.txt")
+
+variable %>%
+  filter(provider=='owid') %>%
+  kable(format="pipe", escape = FALSE)
+```

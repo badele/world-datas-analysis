@@ -14,7 +14,7 @@ suppressPackageStartupMessages({
 #' @examples write_fwf(mtcars, "carname", "/tmp/mtcars.fwf")
 #'
 #' # colnames: carname,mpg,cyl,disp,hp,drat,wt,qsec,vs,am,gear,carb
-#' # cols: 22,7,6,8,6,7,8,8,5,5,7,7
+#' # width: 22,7,6,8,6,7,8,8,5,5,7,7
 #' carname                mpg   cyl    disp    hp   drat      wt    qsec   vs   am   gear   carb
 #' Mazda RX4             21.0     6   160.0   110   3.90   2.620   16.46    0    1      4      4
 #' Mazda RX4 Wag         21.0     6   160.0   110   3.90   2.875   17.02    0    1      4      4
@@ -26,23 +26,20 @@ write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "N
     df <- tibble::rownames_to_column(df, rowname)
   }
 
-  # Replace NA
-  df[is.na(df)] <- replace_na
+  # Convert all columns to character
+  tmpdf = data.frame(df)
+  tmpdf[] <- lapply(df, as.character)
 
   # Compute column size
-  maxwidthname <- nchar(colnames(df))
-  maxwidthvalue <- sapply(df, function(x) max(nchar(x)))
-  maxcols <- pmax(maxwidthname,maxwidthvalue)
+  nasize=nchar(replace_na)
+  maxwidthname <- nchar(colnames(tmpdf))
+  maxwidthvalue <- sapply(tmpdf, function(x) max(nchar(x)))
+  maxcols <- pmax(maxwidthname,maxwidthvalue,nasize)
   delta <- maxwidthvalue - maxwidthname 
 
   # Compute header
   header <- c()
   for (idx in seq(ncol(df))) {
-    # Check if column is a date
-    if (is.POSIXt(df[,idx])) {
-      stop("PLease convert date column to string")
-    }
-
     if (is.character(df[,idx])) {
       header <- append(header,paste0(colnames(df)[idx],strrep(" ",max(delta[idx],0))))
     } else {
@@ -55,13 +52,22 @@ write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "N
   
   # Write header
   writeLines(paste("# colnames:", paste(colnames(df), collapse=',')),file)
-  writeLines(paste("# cols:", paste(unlist(maxcols+nbspaces), collapse=',')),file)
+  writeLines(paste("# width:", paste(unlist(maxcols+nbspaces), collapse=',')),file)
   writeLines(header,file, sep=strrep(" ",nbspaces))
   writeLines("", file, sep="\n")
   close(file)
   
   # Export data
-  write.fwf(df,file=filename,append=TRUE, width=maxcols,colnames=FALSE,na=replace_na, sep=strrep(" ",nbspaces))
+  write.fwf(
+    df,
+    file=filename,
+    append=TRUE, 
+    width=maxcols,
+    colnames=FALSE,
+    na=replace_na, 
+    sep=strrep(" ",nbspaces),
+    justify="left"
+  )
 }
 
 #' Read automatically .fwf file (fixed width file) in R
@@ -79,10 +85,10 @@ read_fwf <- function(filename,maxsearchlines=100) {
   colnames <- str_replace(lines[idxname], "# colnames: ", "")
   colnames <- unlist(str_split(colnames, ","))
 
-  idxcols <- str_which(lines,"# cols: ")
-  colwidths <- str_replace(lines[idxcols], "# cols: ", "")
+  idxrow <- str_which(lines,"# width: ")
+  colwidths <- str_replace(lines[idxrow], "# width: ", "")
   colwidths <- str_split(colwidths, ",")
   colwidths <- strtoi(unlist(colwidths))
 
-  return(read.fwf(file=filename, skip=idxcols+2, col.names = colnames, widths=colwidths,strip.white=TRUE))
+  return(read.fwf(file=filename, skip=idxrow+1, col.names = colnames, widths=colwidths,strip.white=TRUE))
 }

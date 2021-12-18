@@ -1,5 +1,5 @@
 # colnames: catid,catname,catname_en,catcolor,catdisable
-# cols: 8,44,39,16,13
+# width: 8,44,39,16,13
 catid   catname                                     catname_en                             catcolor        catdisable   
     2   Véhicule ou objet gênant                    Annoying vehicle or object             crimson                  0
     3   Aménagement mal conçu                       Bad designed way                       seagreen                 0

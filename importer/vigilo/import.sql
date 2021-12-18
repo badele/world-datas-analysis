@@ -66,18 +66,41 @@ CREATE TABLE "vigilo_observation" (
 -- view
 --------------------------------------
 
-DROP VIEW IF EXISTS v_vigilo_approved_observations;
-CREATE VIEW IF NOT EXISTS v_vigilo_approved_observations
+DROP VIEW IF EXISTS v_vigilo_observations;
+CREATE VIEW IF NOT EXISTS v_vigilo_observations
 AS
 SELECT vi.name,vi.country,vo.*,vc.catname FROM vigilo_observation vo
 INNER JOIN vigilo_instance vi ON vo.instanceid = vi.InstanceID
 INNER JOIN vigilo_category vc ON vo.CategoryID = vc.CategoryID
-WHERE vo.approved=1 AND vc.catname NOT lIKE 'COVID%'
 ORDER BY name,timestamp;
 COMMIT;
 
--- select * FROM vigilo_observation
--- LEFT JOIN geonames_allentries ON cityname=name
--- WHERE cityname <> ''
--- GROUP BY cityname
--- order by count() DESC
+--------------------------------------
+-- dataset summaries
+--------------------------------------
+-- Summarize dataset 
+INSERT OR REPLACE INTO wda_variable 
+SELECT "vigilo", "vigilo", "Urban observations", "Vigilo observations", "By city", "Vigilo website", count(distinct cityname),9, COUNT(*) FROM v_vigilo_observations vvo;
+
+INSERT OR REPLACE INTO wda_dataset
+SELECT provider,real_provider,dataset, sum(nb_variables), sum(nb_observations),round(avg(nb_scope),0) FROM wda_variable wv
+WHERE provider="vigilo"
+GROUP BY provider,real_provider,dataset;
+
+
+-- Summarize provider
+INSERT OR REPLACE INTO wda_provider 
+SELECT provider,  "Vigilo observations", "https://vigilo.city", 0, sum(nb_variables),sum(nb_observations),round(avg(nb_scope),0)
+FROM wda_variable wv
+WHERE provider="vigilo"
+GROUP BY provider;
+
+UPDATE wda_provider SET nb_datasets = (SELECT count() FROM wda_dataset WHERE provider='vigilo')
+WHERE provider='vigilo';
+
+-- UPDATE wda_dataset 
+-- SET nb_scopes=(SELECT COUNT(DISTINCT id) FROM owid_entities WHERE validated=1)
+-- WHERE provider='owid' and scope='country';
+
+-- UPDATE wda_dataset SET nb_variables=(SELECT count(DISTINCT variableId ) FROM owid_data_values)
+-- WHERE provider='owid' and scope='country';

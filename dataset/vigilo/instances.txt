@@ -1,5 +1,5 @@
 # colnames: instanceid,scope,instancename,api_path,country,version
-# cols: 13,23,35,46,10,10
+# width: 13,23,35,46,10,10
 instanceid   scope                  instancename                       api_path                                      country   version   
          1   13_aixmarseillemetro   Aix Marseille Provence Metropole   https://vigilo.velosenville.org               France    0.0.15 
          2   80_amiens              Amiens                             https://velo.varas-genestier.net              France    0.0.16 
