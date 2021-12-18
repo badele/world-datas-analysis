@@ -4,23 +4,44 @@ miscellaneous worlds data and analysis
 ## Init environment
 
 ```
+# Python
 python -m venv .venv
 source .venv/bin/activate
 pip install --only-binary=:all: -r requirements.txt
+
+# R
+renv::restore()
 ```
 
-## indicators
+## Import and export datas
 
-| Status | Nb vars | Nb indicators               | Scope       | Dataset                    | Description                                                                                                 |
-|--------|---------|-----------------------------|-------------|----------------------------|-------------------------------------------------------------------------------------------------------------|
-| [x]    |    6204 | multiple indicators         | Countries   |                            | [Our World In Data](https://ourworldindata.org/charts)                                                      |
-| [x]    |      18 | geoloc & admin code         | Cities      |                            | [geonames](https://download.geonames.org/export/dump/)                                                      |
-| [x]    |       9 | street observation          | Streets     | [dataset](dataset/vigilo/) | [Vigilo](https://vigilo.city/fr/)                                                                           |
+```
+# All in one
+./importer/<dataset>/import_and_export.sh
+# or step by step
+./importer/<dataset>/download.sh
+./importer/<dataset>/import.sh
+./importer/<dataset>/export.sh
+```
+## Update this Readme.md page
+```
+./build_rmarkdown_pages.sh
+```
 
+## Providers of dataset
+
+
+|Provider |Description                                     | Avg scope|Nb datasets                         |nb variables                         | Nb observations|
+|:--------|:-----------------------------------------------|---------:|:-----------------------------------|:------------------------------------|---------------:|
+|owid     |[Our World In Data](https://ourworldindata.org) |       126|[1473](dataset/owid#owid-datasets)  |[6206](dataset/owid#owid-variables)  |        32610560|
+|vigilo   |[Vigilo observations](https://vigilo.city)      |       232|[1](dataset/vigilo#vigilo-datasets) |[9](dataset/vigilo#vigilo-variables) |           31623|
+
+## Todo
 
 | Status | Category                    | Scope       | Description                                                                                                                             | Sample Report                                                                                                       |
 |--------|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [x]    | Covid                       | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                  | [International Covid-19](international/covid-19/README.md) / [French Covid-19](countries/french/covid-19/README.md) |
+| [_]    | Geonames                    | Cities      | [Geonames](https://download.geonames.org/export/dump/)                                                                  | [International Covid-19](international/covid-19/README.md) / [French Covid-19](countries/french/covid-19/README.md) |
+| [_]    | Covid                       | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                  | [International Covid-19](international/covid-19/README.md) / [French Covid-19](countries/french/covid-19/README.md) |
 | [_]    | Population                  | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                            |                                                                                                                     |
 | [_]    | Population                  | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                    |                                                                                                                     |
 | [_]    | Population                  | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                        |                                                                                                                     |
@@ -55,17 +76,4 @@ sqlite3 -bail world-datas-analysis.db < importer/200-worldbank/import.sql
 
 # Summary
 sqlite3 -bail world-datas-analysis.db < db_summary.sql
-```
-
-
-```
-SELECT * from datasets
-INNER JOIN namespaces ON datasets.namespace = namespaces.name
-WHERE namespaces.isArchived = 0
-
-SELECT * from variables
-INNER JOIN datasets ON variables.datasetId = datasets.id
-INNER JOIN namespaces ON datasets.namespace = namespaces.name
-WHERE namespaces.isArchived = 0
-
 ```
