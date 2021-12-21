@@ -35,8 +35,8 @@ provider %>%
   mutate(
     linkprovider = paste0("[",provider,"](dataset/",provider,")"),
     linkdescription = paste0("[",description,"](",website,")"),
-    linknbdatasets = paste0("[",nb_datasets,"](dataset/",provider,"#",tolower(provider),"-datasets)"),
-    linknbvariables = paste0("[",max_variables,"](dataset/",provider,"#",tolower(provider),"-variables)")
+    linknbdatasets = paste0("[",nb_datasets,"](dataset/dataset_",provider,".md#",tolower(provider),"-datasets)"),
+    linknbvariables = paste0("[",max_variables,"](dataset/dataset_",provider,".md#",tolower(provider),"-variables)")
   ) %>%
   select (
     "Dataset" = linkprovider,

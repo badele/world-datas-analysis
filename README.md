@@ -12,11 +12,11 @@ miscellaneous worlds data and analysis
 ## Providers of dataset
 
 
-|Dataset                      |Description                                                   | Avg scope|Nb datasets                             |Max variables                             | Nb observations|
-|:----------------------------|:-------------------------------------------------------------|---------:|:---------------------------------------|:-----------------------------------------|---------------:|
-|[geonames](dataset/geonames) |[Geonames entries](https://download.geonames.org/export/dump) |   4070489|[1](dataset/geonames#geonames-datasets) |[15](dataset/geonames#geonames-variables) |         4823955|
-|[owid](dataset/owid)         |[Our World In Data](https://ourworldindata.org)               |       836|[1472](dataset/owid#owid-datasets)      |[1](dataset/owid#owid-variables)          |        32609745|
-|[vigilo](dataset/vigilo)     |[Vigilo observations](https://vigilo.city)                    |       232|[1](dataset/vigilo#vigilo-datasets)     |[9](dataset/vigilo#vigilo-variables)      |           31623|
+|Dataset                      |Description                                                   | Avg scope|Nb datasets                                        |Max variables                                        | Nb observations|
+|:----------------------------|:-------------------------------------------------------------|---------:|:--------------------------------------------------|:----------------------------------------------------|---------------:|
+|[geonames](dataset/geonames) |[Geonames entries](https://download.geonames.org/export/dump) |   4070489|[1](dataset/dataset_geonames.md#geonames-datasets) |[15](dataset/dataset_geonames.md#geonames-variables) |         4823955|
+|[owid](dataset/owid)         |[Our World In Data](https://ourworldindata.org)               |       836|[1472](dataset/dataset_owid.md#owid-datasets)      |[1](dataset/dataset_owid.md#owid-variables)          |        32609745|
+|[vigilo](dataset/vigilo)     |[Vigilo observations](https://vigilo.city)                    |       232|[1](dataset/dataset_vigilo.md#vigilo-datasets)     |[9](dataset/dataset_vigilo.md#vigilo-variables)      |           31623|
 
 ## Todo
 

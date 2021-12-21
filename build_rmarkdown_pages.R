@@ -15,7 +15,7 @@ dfprovider <- read_fwf("dataset/provider.txt")
 
 for (idx in 1:nrow(dfprovider)) {
     providername <- dfprovider[idx,1] 
-    system(paste0("PROVIDER=",providername," envsubst < .tpl/dataset/dataset.rmd.tpl > .tpl/dataset/",providername,".rmd"))
+    system(paste0("PROVIDER=",providername," envsubst < .tpl/dataset/dataset.rmd.tpl > .tpl/dataset/dataset_",providername,".rmd"))
 }
 
 rootdir <- ".tpl/"
