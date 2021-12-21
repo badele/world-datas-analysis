@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS wda_provider(
     description     TEXT,
     website         INTEGER,
     nb_datasets     INTEGER,
-    nb_variables    INTEGER,
+    max_variables   INTEGER,
     nb_observations INTEGER,
-    avg_scope       INTEGER,
+    max_scope       INTEGER,
     PRIMARY KEY(provider)
 );
 
@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS wda_dataset(
     provider	    TEXT,
     real_provider	TEXT,
     dataset         TEXT,
-    nb_variables    INTEGER,
-    nb_observations INTEGER,
-    avg_scope       INTEGER,
+    max_variables    INTEGER,
+    nb_sobservations INTEGER,
+    max_scope       INTEGER,
     PRIMARY KEY(provider,real_provider,dataset)
 );
 

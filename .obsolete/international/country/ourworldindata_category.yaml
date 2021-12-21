@@ -1,0 +1,20 @@
+block:
+    css: 'div.offset-content section'
+    xpath: null
+    multiple: true
+    type: Text
+    children:
+        category:
+            css: h2
+            xpath: null
+            type: Text
+        indicator:
+            css: a
+            xpath: null
+            multiple: true
+            type: Text
+        link:
+            css: a
+            xpath: null
+            multiple: true
+            type: Link

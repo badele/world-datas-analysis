@@ -1,1 +1,0 @@
-set style fill pattern
