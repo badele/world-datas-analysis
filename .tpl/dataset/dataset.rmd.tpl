@@ -1,6 +1,7 @@
-[comment]: <> (===================================================++++++++++++=)
-[comment]: <> (This file is generated from `r gsub(".*\\.tpl/",".tpl/",knitr::current_input(dir=TRUE))`
-[comment]: <> (===================================================++++++++++++=)
+<!-- ===================================================================== -->
+<!-- This file is generated from `r gsub(".*\\.tpl/",".tpl/",knitr::current_input(dir=TRUE))` -->
+<!-- ===================================================================== -->
+
 
  - [datasets](#${PROVIDER}-datasets)
  - [variables](#${PROVIDER}-variables)

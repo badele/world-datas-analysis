@@ -1,5 +1,6 @@
-# colnames: provider,description,website,nb_datasets,nb_variables,nb_observations,avg_scope
-# width: 11,22,29,14,15,18,12
-provider   description           website                      nb_datasets   nb_variables   nb_observations   avg_scope   
-owid       Our World In Data     https://ourworldindata.org          1473           6206          32610560         126
-vigilo     Vigilo observations   https://vigilo.city                    1              9             31623         232
+# colnames: provider,description,website,nb_datasets,max_variables,nb_observations,max_scope
+# width: 11,22,44,14,16,18,12
+provider   description           website                                     nb_datasets   max_variables   nb_observations   max_scope   
+geonames   Geonames entries      https://download.geonames.org/export/dump             1              15           4823955     4070489
+owid       Our World In Data     https://ourworldindata.org                         1472               1          32609745         836
+vigilo     Vigilo observations   https://vigilo.city                                   1               9             31623         232

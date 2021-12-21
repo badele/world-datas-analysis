@@ -1,0 +1,21 @@
+block:
+    css: section.nav-item
+    xpath: null
+    multiple: true
+    type: Text
+    children:
+        category:
+            css: 'h3 a'
+            xpath: null
+            type: Text
+        indicator:
+            css: 'li a'
+            xpath: null
+            multiple: true
+            type: Text
+        link:
+            css: 'li a'
+            xpath: null
+            multiple: true
+            type: Attribute
+            attribute: href

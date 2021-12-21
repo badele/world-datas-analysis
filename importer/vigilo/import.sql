@@ -80,17 +80,17 @@ COMMIT;
 --------------------------------------
 -- Summarize dataset 
 INSERT OR REPLACE INTO wda_variable 
-SELECT "vigilo", "vigilo", "Urban observations", "Vigilo observations", "By city", "Vigilo website", count(distinct cityname),9, COUNT(*) FROM v_vigilo_observations vvo;
+SELECT "vigilo", "vigilo", "Urban observations", "Vigilo observations", "city", "Vigilo website", count(distinct cityname),9, COUNT(*) FROM v_vigilo_observations vvo;
 
 INSERT OR REPLACE INTO wda_dataset
-SELECT provider,real_provider,dataset, sum(nb_variables), sum(nb_observations),round(avg(nb_scope),0) FROM wda_variable wv
+SELECT provider,real_provider,dataset, max(nb_variables), sum(nb_observations),max(nb_scope) FROM wda_variable wv
 WHERE provider="vigilo"
 GROUP BY provider,real_provider,dataset;
 
 
 -- Summarize provider
 INSERT OR REPLACE INTO wda_provider 
-SELECT provider,  "Vigilo observations", "https://vigilo.city", 0, sum(nb_variables),sum(nb_observations),round(avg(nb_scope),0)
+SELECT provider,  "Vigilo observations", "https://vigilo.city", 0, max(nb_variables),sum(nb_observations),max(nb_scope)
 FROM wda_variable wv
 WHERE provider="vigilo"
 GROUP BY provider;

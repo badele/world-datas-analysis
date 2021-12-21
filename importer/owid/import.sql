@@ -319,15 +319,6 @@ ORDER BY cy.owid_name;
 -- dataset summaries
 --------------------------------------
 
--- SELECT DISTINCT os.name, od.name,ov.name FROM owid_variables ov
--- INNER JOIN owid_datasets od ON ov.datasetId = od.id
--- INNER JOIN owid_sources os ON od.id = os.datasetId
--- INNER JOIN owid_dataset_tags odt ON od.id =  odt.datasetId
--- INNER JOIN owid_tags ot ON odt.tagId = ot.id
-
--- od.name, ov.name,os.name, os.description
-
-
 -- Summarize dataset 
 INSERT OR REPLACE INTO wda_variable 
 SELECT "owid", od.namespace, od.name, ov.name, ov.coverage, os.name, count(distinct entityId),1,count(odv.variableId) FROM owid_data_values odv
@@ -337,13 +328,13 @@ INNER JOIN owid_datasets od ON ov.datasetId  = od.id
 GROUP BY odv.variableId;
 
 INSERT OR REPLACE INTO wda_dataset 
-SELECT provider,real_provider,dataset, sum(nb_variables), sum(nb_observations),round(avg(nb_scope),0) FROM wda_variable wv
+SELECT provider,real_provider,dataset, max(nb_variables), sum(nb_observations),max(nb_scope) FROM wda_variable wv
 WHERE provider="owid"
 GROUP BY provider,real_provider,dataset;
 
 -- Summarize provider
 INSERT OR REPLACE INTO wda_provider 
-SELECT provider, "Our World In Data", "https://ourworldindata.org", 0, sum(nb_variables),sum(nb_observations), round(avg(nb_scope),0)
+SELECT provider, "Our World In Data", "https://ourworldindata.org", 0, max(nb_variables),sum(nb_observations), max(nb_scope)
 FROM wda_variable wv
 WHERE provider="owid"
 GROUP BY provider;

@@ -10,6 +10,9 @@ suppressPackageStartupMessages({
 dlfolder <- "./downloaded/vigilo/"
 dbfolder <- "./db/"
 
+# Make export directory
+dir.create(dlfolder,recursive=TRUE, showWarnings = FALSE)
+
 ################################################################################
 # Function
 ################################################################################
