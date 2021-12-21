@@ -1,0 +1,40 @@
+<!-- ===================================================================== -->
+<!-- This file is generated from `r gsub(".*\\.tpl/",".tpl/",knitr::current_input(dir=TRUE))` -->
+<!-- ===================================================================== -->
+
+
+ - [datasets](#vigilo-datasets)
+ - [variables](#vigilo-variables)
+
+# vigilo datasets
+
+``` {r echo=FALSE, message=FALSE,INCLUDE=TRUE}
+
+source("../../lib/R/file.R")
+
+suppressPackageStartupMessages({
+  library(here)
+  library(RSQLite)
+  library(forcats)
+  library(tidyverse) 
+  library(kableExtra)
+})
+
+
+dataset <- read_fwf("../../dataset/dataset.txt")
+
+dataset %>%
+  filter(provider=='vigilo') %>%
+  kable(format="pipe", escape = FALSE)
+```
+
+# vigilo variables
+
+``` {r echo=FALSE, message=FALSE,INCLUDE=TRUE}
+
+variable <- read_fwf("../../dataset/variable.txt")
+
+variable %>%
+  filter(provider=='vigilo') %>%
+  kable(format="pipe", escape = FALSE)
+```
