@@ -39,7 +39,7 @@ download_featureclass <- function() {
 
 download_featurecode <- function() {
 
-  featurecode <- read.csv(file="https://download.geonames.org/export/dump/featureCodes_en.txt",sep="\t")
+  featurecode <- read.csv(file="https://download.geonames.org/export/dump/featureCodes_en.txt",sep="\t",comment.char="",header=FALSE, stringsAsFactors = FALSE, encoding = "UTF-8", quote="")
   colnames(featurecode) <- c('code','info1','info2')
 
   # # Export CSV
@@ -58,7 +58,7 @@ download_countryinfo <- function() {
   close(file)
 
   # Read countries content
-  countryinfo <- read.csv(file=url,sep="\t",skip=idxrow+1)
+  countryinfo <- read.csv(file=url,sep="\t",comment.char="",header=FALSE, stringsAsFactors = FALSE, encoding = "UTF-8", quote="", skip=idxrow+1)
   colnames(countryinfo) <- c('iso2', 'iso3', 'isonum', 'fips', 'country', 'capital','area', 'countrypopulation', 'continent', 'tld', 'currencycode','currencyname', 'phone', 'postalcodeformat','postalcoderegex','language', 'GEOID', 'neighbours', 'equivfipscode')
 
   # Remove countrypopulation and relocate GEOID column
@@ -79,7 +79,7 @@ download_allcountries <- function() {
   unziped <- unz(temp, "allCountries.txt")
 
   # Read uncompressed file
-  allcountries <- read.csv(unziped,sep="\t",comment.char="")
+  allcountries <- read.csv(unziped,sep="\t",comment.char="",header=FALSE, stringsAsFactors = FALSE, encoding = "UTF-8", quote="")
   colnames(allcountries) <- c('GEOID', 'name', 'asciiname', 'alternatenames', 'latitude', 'longitude','featureclass',  'featurecode', 'countrycode', 'cc2', 'adm1','adm2','adm3','adm4','population', 'elevation', 'dem','timezone','lastupdate')
   allcountries <- allcountries %>%
     select(-alternatenames, -population) %>%
@@ -87,7 +87,7 @@ download_allcountries <- function() {
       scope = NA
     ) %>%
     filter(featureclass == 'A' | featureclass == 'P' | featureclass =='L') 
-
+ 
   # Close temporary file
   unlink(temp)  
 
@@ -104,7 +104,7 @@ download_hierarchy <- function() {
   unziped <- unz(temp, "hierarchy.txt")
 
   # Read uncompressed file
-  hierarchy <- read.csv(unziped,sep="\t",comment.char="")
+  hierarchy <- read.csv(unziped,sep="\t",comment.char="",header=FALSE, stringsAsFactors = FALSE, encoding = "UTF-8", quote="")
   colnames(hierarchy) <- c('parent', 'child', 'type')
 
   # Close temporary file
