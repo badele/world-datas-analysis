@@ -118,20 +118,16 @@ UPDATE wda_provider SET nb_datasets = (SELECT count() FROM wda_dataset WHERE pro
 WHERE provider='geonames';
 
 
--- UPDATE wda_dataset 
--- SET nb_scopes=(
---   SELECT COUNT() FROM geonames_allentries ga
---   WHERE ga.scope = wda_dataset.scope  
--- )
--- WHERE provider='geonames';
+--------------------------------------
+-- geonames views
+--------------------------------------
 
--- select featurecode,COUNT() from geonames_allentries 
--- where featureclass='A' AND  featurecode like 'ADM%' and featurecode not like '%H' and featurecode not like '%D'
--- GROUP by featurecode
+DROP VIEW IF EXISTS v_geonames_country;
+CREATE VIEW IF NOT EXISTS v_geonames_country
+AS
+SELECT gc.GEOID, iso2, iso3, isonum, country, capital, area, currencycode, latitude, longitude FROM geonames_country gc
+LEFT JOIN geonames_allentries ga ON gc.GEOID = ga.GEOID;
 
-
--- UPDATE wda_dataset SET nb_variables=(SELECT count() FROM PRAGMA_TABLE_INFO('geonames_allentries'))
--- WHERE provider='geonames';
 
 COMMIT;
 
