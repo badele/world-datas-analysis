@@ -342,6 +342,35 @@ GROUP BY provider;
 UPDATE wda_provider SET nb_datasets = (SELECT count() FROM wda_dataset WHERE provider='owid')
 WHERE provider='owid';
 
+--------------------------------------
+-- geonames views
+--------------------------------------
+DROP VIEW IF EXISTS v_owid_entities;
+CREATE VIEW IF NOT EXISTS v_owid_entities
+AS
+SELECT id as entityId, iso3, GEOID, country FROM owid_entities oe
+LEFT JOIN v_geonames_country gc ON oe.code = gc.iso3
+WHERE iso3 IS NOT NULL;
+
+DROP VIEW IF EXISTS v_owid_data_values;
+CREATE VIEW IF NOT EXISTS v_owid_data_values
+AS
+SELECT variableID, GEOID, iso3, year, value  FROM owid_data_values odv
+INNER JOIN  v_owid_entities voe ON odv.entityId = voe.entityId;
+
+DROP VIEW IF EXISTS v_owid_variables;
+CREATE VIEW IF NOT EXISTS v_owid_variables
+AS
+SELECT variableId, min(year) as minyear, max(year) as maxyear, ov.name as variable, os.name as source  FROM owid_data_values odv
+INNER JOIN owid_variables ov ON odv.variableId = ov.id
+INNER JOIN owid_sources os ON ov.sourceId = os.id 
+GROUP BY variableId, ov.name; 
+
+-- SELECT variableId, odv.entityId, iso3, GEOID,min(year) as minyear, max(year) as maxyear, ov.name as variable, os.name as source  FROM owid_data_values odv
+-- INNER JOIN  v_owid_entities voe ON odv.entityId = voe.entityId
+-- INNER JOIN owid_variables ov ON odv.variableId = ov.id
+-- INNER JOIN owid_sources os ON ov.sourceId = os.id 
+-- GROUP BY variableId, odv.entityId,iso3, GEOID,ov.name; 
 
 -- Summarize provider
 -- INSERT OR REPLACE INTO wda_provider
