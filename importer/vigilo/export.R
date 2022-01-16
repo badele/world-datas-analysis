@@ -23,12 +23,13 @@ category <- dbGetQuery(con, "SELECT CategoryId as catid, catname, catname_en, ca
 write_fwf(category,paste0(exportdir,"categories.txt"))
 
 # Instance
-instance <- dbGetQuery(con, "SELECT InstanceId as instanceid, scope, name as instancename, api_path, country, version FROM vigilo_instance")
+instance <- dbGetQuery(con, "SELECT InstanceId as instanceid, scope, name as instancename, api_path, country, lat_min, lat_max,lon_min, lon_max, version FROM vigilo_instance")
 write_fwf(instance,paste0(exportdir,"instances.txt"))
 
 obs <- dbGetQuery(con, "SELECT scope, token, coordinates_lat, coordinates_lon, address, timestamp,cityname,CategoryId as catid,approved  FROM vigilo_observation vo INNER JOIN vigilo_instance vi ON vo.InstanceID = vi.InstanceID")
 
 obs <- obs %>%
+  filter(approved==1) %>%
   mutate(
     datetime = as.character(as_datetime(timestamp,origin="1970-01-01"))
   ) %>%
