@@ -33,6 +33,10 @@ CREATE TABLE "vigilo_instance" (
   "country" TEXT,
   "scope" TEXT,
   "version" TEXT,
+  "lat_min" REAL,
+  "lat_max" REAL,
+  "lon_min" REAL,
+  "lon_max" REAL,
   PRIMARY KEY (InstanceID)
 );
 
