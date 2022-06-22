@@ -1,5 +1,5 @@
 # Datas manipulation
-numpy==1.19.5
+numpy==1.22.0
 pandas==1.2.1
 tabulate==0.8.7
 geopandas==0.7.0
