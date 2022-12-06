@@ -14,4 +14,4 @@ requests==2.23.0
 xlrd==1.2.0
 
 # Unzip 7z (used by Admin Express)
-py7zr==0.6
+py7zr==0.20.2
