@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-Rscript importer/vigilo/export.R
+sqlite3 -bail db/world-datas-analysis.db <importer/vigilo/export.sql

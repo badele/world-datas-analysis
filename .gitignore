@@ -1,3 +1,8 @@
+.direnv
+
+# Grafana
+grafana
+
 # Database
 db
 exported

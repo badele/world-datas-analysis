@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    restart: unless-stopped
+    user: '472'
+    ports:
+      - '3000:3000'
+    volumes:
+      - '$PWD/grafana:/var/lib/grafana'
+      - '$PWD/db:/db'
+    environment:
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource 3.5.0
