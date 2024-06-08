@@ -45,11 +45,15 @@ precommit-install:
 
 # Start grafana
 @start: user-perm restore grafana-perm
-    docker compose start
+    docker compose up -d
 
 # Stop grafana
 @stop:
     docker compose stop
+
+# Show grafana logs
+@logs:
+    docker compose logs
 
 # Backup grafana configuration
 # @backup: stop user-perm
@@ -73,7 +77,9 @@ restore: stop user-perm
 
 # Update datas
 @update:
-    ./importer/vigilo/download.sh
+    # ./importer/vigilo/download.sh
+    # ./importer/opendata3m//eco_compteur/download.sh
+    # ./importer/opendata3m/eco_compteur/import.sh
     ./importer/vigilo/import.sh
 
 # Browse world datas

@@ -30,6 +30,8 @@
               git
               unzip
 
+              # Database
+              duckdb
               jq
               sqlite
               sqlitebrowser
