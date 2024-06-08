@@ -15,10 +15,10 @@ miscellaneous worlds data and analysis
 
 ## Datasets
 
-| provider   | real_provider | dataset                                | scope | description                  | source                  | nb_variables | nb_observations | nb_scopes |
-| ---------- | ------------- | -------------------------------------- | ----- | ---------------------------- | ----------------------- | -----------: | --------------: | --------: |
-| opendata3m | opendata3m    | v_opendata3m_ecocompteurs_observations | city  | opendata3m bike ecocompteurs | https://opendata3m.city |           10 |           30180 |        11 |
-| vigilo     | vigilo        | v_vigilo_observations                  | city  | Vigilo bike observations     | https://vigilo.city     |           16 |           25625 |       264 |
+| provider   | real_provider | dataset                                | scope | description                  | source                                                                                     | nb_variables | nb_observations | nb_scopes |
+| ---------- | ------------- | -------------------------------------- | ----- | ---------------------------- | ------------------------------------------------------------------------------------------ | -----------: | --------------: | --------: |
+| opendata3m | opendata3m    | v_opendata3m_ecocompteurs_observations | city  | opendata3m bike ecocompteurs | https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-compteurs-de-velo |           10 |           30180 |        11 |
+| vigilo     | vigilo        | v_vigilo_observations                  | city  | Vigilo bike observations     | https://vigilo.city                                                                        |           16 |           25625 |       264 |
 
 ## Scopes
 

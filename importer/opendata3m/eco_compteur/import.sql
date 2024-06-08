@@ -59,7 +59,7 @@ FROM v_opendata3m_ecocompteurs_observations vo
 GROUP BY 'opendata3m', 'v_opendata3m_ecocompteurs',city;
 --
 INSERT OR REPLACE INTO wda_datasets
-SELECT 'opendata3m','opendata3m','v_opendata3m_ecocompteurs_observations', 'city', 'opendata3m bike ecocompteurs', 'https://opendata3m.city', (SELECT column_count FROM duckdb_views WHERE view_name='v_opendata3m_ecocompteurs_observations'), COUNT(*), COUNT(DISTINCT city)
+  SELECT 'opendata3m','opendata3m','v_opendata3m_ecocompteurs_observations', 'city', 'opendata3m bike ecocompteurs', 'https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-compteurs-de-velo', (SELECT column_count FROM duckdb_views WHERE view_name='v_opendata3m_ecocompteurs_observations'), COUNT(*), COUNT(DISTINCT city)
 FROM v_opendata3m_ecocompteurs_observations;
 --
 INSERT OR REPLACE INTO wda_providers
