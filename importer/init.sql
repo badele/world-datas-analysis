@@ -1,6 +1,8 @@
 -- .head on
 -- .nullvalue NULL
 
+ATTACH 'db/world-datas-analysis.db' AS sqlite_db (TYPE SQLITE);
+
 --------------------------------------
 -- Dataset
 --------------------------------------
@@ -42,10 +44,15 @@ CREATE TABLE IF NOT EXISTS wda_scopes(
 -- view
 --------------------------------------
 DROP VIEW IF EXISTS v_wda_scopes;
-CREATE VIEW IF NOT EXISTS v_wda_scopes
+CREATE VIEW v_wda_scopes
 AS
 SELECT vs.provider,vs.dataset,scope,scopevalue,vs.nb_observations FROM wda_scopes vs
 INNER JOIN wda_datasets vd ON vs.provider = vd.provider and vs.dataset = vd.dataset;
+
+--------------------------------------
+-- macro
+--------------------------------------
+CREATE OR REPLACE MACRO ip_to_int(ip) AS CAST(split_part(ip,'.',1) AS BIGINT)*16777216+CAST(split_part(ip,'.',2) AS BIGINT)*65536+CAST(split_part(ip,'.',3) AS BIGINT)*256+CAST(split_part(ip,'.',4) AS BIGINT);
 
 -- CREATE TABLE IF NOT EXISTS wda_dataset(
 --     provider	    TEXT,

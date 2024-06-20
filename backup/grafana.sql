@@ -678,7 +678,7 @@ CREATE TABLE `user` (
 , `created` DATETIME NOT NULL
 , `updated` DATETIME NOT NULL
 , `help_flags1` INTEGER NOT NULL DEFAULT 0, `last_seen_at` DATETIME NULL, `is_disabled` INTEGER NOT NULL DEFAULT 0, is_service_account BOOLEAN DEFAULT 0, `uid` TEXT NULL);
-INSERT INTO user VALUES(1,0,'admin','admin@localhost','','2c4d74900c10f0117a53696ad477de69ab037908760478b9255f8d68ee22db5d98ed954d570bd504330743f1cbf9f17cb6c3','b9lWaRJ0xi','8h4cB11Z9p','',1,1,0,'','2024-05-31 21:31:20','2024-05-31 21:31:20',0,'2024-06-02 09:23:27',0,0,'');
+INSERT INTO user VALUES(1,0,'admin','admin@localhost','','2c4d74900c10f0117a53696ad477de69ab037908760478b9255f8d68ee22db5d98ed954d570bd504330743f1cbf9f17cb6c3','b9lWaRJ0xi','8h4cB11Z9p','',1,1,0,'','2024-05-31 21:31:20','2024-05-31 21:31:20',0,'2024-06-14 20:42:21',0,0,'');
 CREATE TABLE `temp_user` (
 `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
 , `org_id` INTEGER NOT NULL
@@ -1010,7 +1010,7 @@ CREATE TABLE `server_lock` (
 , `version` INTEGER NOT NULL
 , `last_execution` INTEGER NOT NULL
 );
-INSERT INTO server_lock VALUES(1,'cleanup expired auth tokens',2,1717310208);
+INSERT INTO server_lock VALUES(1,'cleanup expired auth tokens',3,1718397719);
 INSERT INTO server_lock VALUES(3,'metaanalytics-daily-rollup',3,1717310208);
 INSERT INTO server_lock VALUES(8,'delete old login attempts',14,1717320096);
 CREATE TABLE `user_auth_token` (
@@ -1026,7 +1026,7 @@ CREATE TABLE `user_auth_token` (
 , `created_at` INTEGER NOT NULL
 , `updated_at` INTEGER NOT NULL
 , `revoked_at` INTEGER NULL);
-INSERT INTO user_auth_token VALUES(1,1,'f46e433d8175a8da9a82c9d729189d2380577b0feab7e404b9d75a2a6e43c55e','70993c84af5a2b740e428109c76cb16fbe8bd46f662101e30a04fcc974616e75','Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0','172.26.0.1',1,1717320207,1717320186,1717191121,1717191121,0);
+INSERT INTO user_auth_token VALUES(2,1,'a28677c67e316ff95968ceb1bc6bf7837304fac0266b94277d64df817dc15eec','a28677c67e316ff95968ceb1bc6bf7837304fac0266b94277d64df817dc15eec','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36','172.26.0.1',1,1718397741,1718397736,1718397736,1718397736,0);
 CREATE TABLE `cache_data` (
 `cache_key` TEXT PRIMARY KEY NOT NULL
 , `data` BLOB NOT NULL
@@ -1121,7 +1121,7 @@ CREATE TABLE `alert_configuration_history` (
 , `created_at` INTEGER NOT NULL
 , `default` INTEGER NOT NULL DEFAULT 0
 , `last_applied` INTEGER NOT NULL DEFAULT 0);
-INSERT INTO alert_configuration_history VALUES(1,1,replace('{\n	"alertmanager_config": {\n		"route": {\n			"receiver": "grafana-default-email",\n			"group_by": ["grafana_folder", "alertname"]\n		},\n		"receivers": [{\n			"name": "grafana-default-email",\n			"grafana_managed_receiver_configs": [{\n				"uid": "",\n				"name": "email receiver",\n				"type": "email",\n				"isDefault": true,\n				"settings": {\n					"addresses": "<example@email.com>"\n				}\n			}]\n		}]\n	}\n}\n','\n',char(10)),'e0528a75784033ae7b15c40851d89484','v1',1717191081,1,1717318896);
+INSERT INTO alert_configuration_history VALUES(1,1,replace('{\n	"alertmanager_config": {\n		"route": {\n			"receiver": "grafana-default-email",\n			"group_by": ["grafana_folder", "alertname"]\n		},\n		"receivers": [{\n			"name": "grafana-default-email",\n			"grafana_managed_receiver_configs": [{\n				"uid": "",\n				"name": "email receiver",\n				"type": "email",\n				"isDefault": true,\n				"settings": {\n					"addresses": "<example@email.com>"\n				}\n			}]\n		}]\n	}\n}\n','\n',char(10)),'e0528a75784033ae7b15c40851d89484','v1',1717191081,1,1718397719);
 CREATE TABLE `library_element` (
 `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
 , `org_id` INTEGER NOT NULL
@@ -1177,11 +1177,11 @@ CREATE TABLE `kv_store` (
 );
 INSERT INTO kv_store VALUES(1,0,'ngalert.migration','currentAlertingType','Legacy','2024-05-31 21:31:19','2024-05-31 21:31:20');
 INSERT INTO kv_store VALUES(2,0,'datasource','secretMigrationStatus','compatible','2024-05-31 21:31:21','2024-05-31 21:31:21');
-INSERT INTO kv_store VALUES(3,0,'plugin.angularpatterns','angular_patterns','[{"Name":"PanelCtrl","Pattern":"PanelCtrl","Type":"contains"},{"Name":"ConfigCtrl","Pattern":"ConfigCtrl","Type":"contains"},{"Name":"app/plugins/sdk","Pattern":"app/plugins/sdk","Type":"contains"},{"Name":"Angular Specific Function","Pattern":"angular.isNumber(","Type":"contains"},{"Name":"editor.html","Pattern":"editor.html","Type":"contains"},{"Name":"ctrl.annotation","Pattern":"ctrl.annotation","Type":"contains"},{"Name":"QueryCtrl","Pattern":"[\"'']QueryCtrl[\"'']","Type":"regex"}]','2024-05-31 21:31:21','2024-05-31 21:31:21');
-INSERT INTO kv_store VALUES(4,0,'plugin.angularpatterns','last_updated','2024-06-02T06:36:48Z','2024-05-31 21:31:21','2024-06-02 06:36:48.850356021+00:00');
-INSERT INTO kv_store VALUES(5,0,'plugin.angularpatterns','etag','"1e9-5o/v/3XYTstcw2247zo9siBJnIQ"','2024-05-31 21:31:21','2024-05-31 21:31:21');
+INSERT INTO kv_store VALUES(3,0,'plugin.angularpatterns','angular_patterns','[{"Name":"PanelCtrl","Pattern":"PanelCtrl","Type":"contains"},{"Name":"ConfigCtrl","Pattern":"ConfigCtrl","Type":"contains"},{"Name":"app/plugins/sdk","Pattern":"app/plugins/sdk","Type":"contains"},{"Name":"Angular Specific Function","Pattern":"angular.isNumber(","Type":"contains"},{"Name":"ctrl.annotation","Pattern":"ctrl.annotation","Type":"contains"},{"Name":"QueryCtrl","Pattern":"[\"'']QueryCtrl[\"'']","Type":"regex"}]','2024-05-31 21:31:21','2024-06-14 20:41:59.91011342+00:00');
+INSERT INTO kv_store VALUES(4,0,'plugin.angularpatterns','last_updated','2024-06-14T20:41:59Z','2024-05-31 21:31:21','2024-06-14 20:41:59.913196378+00:00');
+INSERT INTO kv_store VALUES(5,0,'plugin.angularpatterns','etag','"1a8-1yOry0c74BKAzc7BUbZdNV0sYic"','2024-05-31 21:31:21','2024-06-14 20:41:59.916061362+00:00');
 INSERT INTO kv_store VALUES(6,0,'plugin.publickeys','key-7e4d0c6a708866e7',replace(replace('-----BEGIN PGP PUBLIC KEY BLOCK-----\r\nVersion: OpenPGP.js v4.10.1\r\nComment: https://openpgpjs.org\r\n\r\nxpMEXpTXXxMFK4EEACMEIwQBiOUQhvGbDLvndE0fEXaR0908wXzPGFpf0P0Z\r\nHJ06tsq+0higIYHp7WTNJVEZtcwoYLcPRGaa9OQqbUU63BEyZdgAkPTz3RFd\r\n5+TkDWZizDcaVFhzbDd500yTwexrpIrdInwC/jrgs7Zy/15h8KA59XXUkdmT\r\nYB6TR+OA9RKME+dCJozNGUdyYWZhbmEgPGVuZ0BncmFmYW5hLmNvbT7CvAQQ\r\nEwoAIAUCXpTXXwYLCQcIAwIEFQgKAgQWAgEAAhkBAhsDAh4BAAoJEH5NDGpw\r\niGbnaWoCCQGQ3SQnCkRWrG6XrMkXOKfDTX2ow9fuoErN46BeKmLM4f1EkDZQ\r\nTpq3SE8+My8B5BIH3SOcBeKzi3S57JHGBdFA+wIJAYWMrJNIvw8GeXne+oUo\r\nNzzACdvfqXAZEp/HFMQhCKfEoWGJE8d2YmwY2+3GufVRTI5lQnZOHLE8L/Vc\r\n1S5MXESjzpcEXpTXXxIFK4EEACMEIwQBtHX/SD5Qm3v4V92qpaIZQgtTX0sT\r\ncFPjYWAHqsQ1iENrYN/vg1wU3ADlYATvydOQYvkTyT/tbDvx2Fse8PL84MQA\r\nYKKQ6AJ3gLVvmeouZdU03YoV4MYaT8KbnJUkZQZkqdz2riOlySNI9CG3oYmv\r\nomjUAtzgAgnCcurfGLZkkMxlmY8DAQoJwqQEGBMKAAkFAl6U118CGwwACgkQ\r\nfk0ManCIZuc0jAIJAVw2xdLr4ZQqPUhubrUyFcqlWoW8dQoQagwO8s8ubmby\r\nKuLA9FWJkfuuRQr+O9gHkDVCez3aism7zmJBqIOi38aNAgjJ3bo6leSS2jR/\r\nx5NqiKVi83tiXDPncDQYPymOnMhW0l7CVA7wj75HrFvvlRI/4MArlbsZ2tBn\r\nN1c5v9v/4h6qeA==\r\n=DNbR\r\n-----END PGP PUBLIC KEY BLOCK-----\r\n','\r',char(13)),'\n',char(10)),'2024-05-31 21:31:21','2024-05-31 21:31:21');
-INSERT INTO kv_store VALUES(7,0,'plugin.publickeys','last_updated','2024-05-31T21:31:21Z','2024-05-31 21:31:21','2024-05-31 21:31:21');
+INSERT INTO kv_store VALUES(7,0,'plugin.publickeys','last_updated','2024-06-14T20:41:59Z','2024-05-31 21:31:21','2024-06-14 20:41:59.920760131+00:00');
 INSERT INTO kv_store VALUES(8,1,'alertmanager','notifications','','2024-05-31 21:32:41','2024-05-31 21:32:41');
 INSERT INTO kv_store VALUES(9,1,'alertmanager','silences','','2024-05-31 21:32:41','2024-05-31 21:32:41');
 CREATE TABLE `permission` (
@@ -1596,7 +1596,7 @@ INSERT INTO sqlite_sequence VALUES('dashboard_version',38);
 INSERT INTO sqlite_sequence VALUES('dashboard_acl',2);
 INSERT INTO sqlite_sequence VALUES('login_attempt',0);
 INSERT INTO sqlite_sequence VALUES('seed_assignment',0);
-INSERT INTO sqlite_sequence VALUES('folder',7);
+INSERT INTO sqlite_sequence VALUES('folder',8);
 INSERT INTO sqlite_sequence VALUES('kv_store',9);
 INSERT INTO sqlite_sequence VALUES('report_dashboards',0);
 INSERT INTO sqlite_sequence VALUES('role',7);
@@ -1605,8 +1605,8 @@ INSERT INTO sqlite_sequence VALUES('org',1);
 INSERT INTO sqlite_sequence VALUES('org_user',1);
 INSERT INTO sqlite_sequence VALUES('alert_configuration',1);
 INSERT INTO sqlite_sequence VALUES('alert_configuration_history',1);
-INSERT INTO sqlite_sequence VALUES('server_lock',12);
-INSERT INTO sqlite_sequence VALUES('user_auth_token',1);
+INSERT INTO sqlite_sequence VALUES('server_lock',13);
+INSERT INTO sqlite_sequence VALUES('user_auth_token',2);
 INSERT INTO sqlite_sequence VALUES('user_stats',1);
 INSERT INTO sqlite_sequence VALUES('data_source',1);
 INSERT INTO sqlite_sequence VALUES('secrets',1);

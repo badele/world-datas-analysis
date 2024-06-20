@@ -46,6 +46,7 @@ precommit-install:
 # Start grafana
 @start: user-perm restore grafana-perm
     docker compose up -d
+    echo "go to http://localhost:3000"
 
 # Stop grafana
 @stop:
@@ -77,10 +78,12 @@ restore: stop user-perm
 
 # Update datas
 @update:
-    # ./importer/vigilo/download.sh
-    # ./importer/opendata3m//eco_compteur/download.sh
-    # ./importer/opendata3m/eco_compteur/import.sh
-    ./importer/vigilo/import.sh
+    # docker run -it --rm -v $(pwd):/wda -w /wda ubuntu:24.04 bash -c "./importer/import.sh"
+    docker run -it --rm -v $(pwd):/wda -w /wda ubuntu:24.04
+
+# Import datas
+@import:
+    ./importer/import.sh
 
 # Browse world datas
 @browse:

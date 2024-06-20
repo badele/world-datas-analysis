@@ -6,6 +6,25 @@
 
 miscellaneous worlds data and analysis
 
+## Init environment
+
+If you have a `nix` environment, the `world-datas-analysis` environment is
+installed automaticaly when you enter on this project folder (`direnv`) or type
+`nix develop`.
+
+[Here the documentation](https://devops.jesuislibre.org/onboarding/nix-direnv-just/)
+for installation note for the `direnv & nix` tool.
+
+## Usage
+
+```
+just update # Update datas
+just start  # Start grafana goto http://localhost:3000
+just browse # Browse world-datas-analysis datas for helping create a grafana query
+```
+
+Go to http://localhost:3000 (`admin:admin`)
+
 ## Providers
 
 | provider   | description                      | website                        | nb_datasets | nb_observations |
@@ -316,24 +335,6 @@ miscellaneous worlds data and analysis
 | [_]    | universitetetioslo | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                               |                                                                                                                     |
 | [_]    | NASA               | Countries   | [Anormal température](https://data.giss.nasa.gov/gistemp/)                                                                              |                                                                                                                     |
 
-## Init environment
-
-If you have a `nix` environment, the `world-datas-analysis` environment is
-installed automaticaly when you enter on this project folder (`direnv`) or type
-`nix develop`.
-
-[Here the documentation](https://devops.jesuislibre.org/onboarding/nix-direnv-just/)
-for installation note for the `direnv & nix` tool.
-
-## Usage
-
-```
-just update # Update datas
-just start  # Start grafana
-```
-
-Go to http://localhost:3000 (`admin:admin`)
-
 ## Project commands
 
 <!-- COMMANDS -->
@@ -352,6 +353,7 @@ justfile commands:
     dump                    # Dump grafana database
     restore                 # Restore grafana database
     update                  # Update datas
+    import                  # Import datas
     browse                  # Browse world datas
     packages                # Show installed packages
 ```
