@@ -87,7 +87,7 @@ restore: stop user-perm
 
 # Browse world datas
 @browse:
-    sqlitebrowser db/world-datas-analysis.db
+    sqlitebrowser db/wda.sqlite
 
 # Show installed packages
 @packages:

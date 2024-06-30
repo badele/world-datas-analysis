@@ -57,10 +57,25 @@ def loadHash(provider):
         return f.read()
 
 
+def writeContentToFile(filename, content):
+    with open(filename, "w") as f:
+        f.write(content)
+
+
 def writeHash(provider, hash):
-    # Save the hash file
-    with open(f"dataset/{provider}/hash.txt", "w") as f:
-        f.write(hash)
+    writeContentToFile(f"dataset/{provider}/hash.txt", hash)
+
+
+# Write a content list to a file
+def writeList(filename, contentlist):
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write("\n".join(contentlist))
+
+
+# read a content list from a file
+def readList(filename):
+    with open(filename, "r") as f:
+        return f.read().split("\n")
 
 
 ###############################################################################
@@ -85,16 +100,17 @@ def pull(provider, repo_url):
 ###############################################################################
 # Export tables to CSV (./dataset/*)
 ###############################################################################
-def export(provider, tables):
-    lasthash = loadHash(provider)
-    computedhash = computeProviderHashes(provider, tables)
+def export2CSV(provider, tables=None):
+    if tables is not None:
+        lasthash = loadHash(provider)
+        computedhash = computeProviderHashes(provider, tables)
 
-    if lasthash == computedhash:
-        return
+        if lasthash == computedhash:
+            return
 
-    print(f"  Exporting {provider}")
+    print(f"  Exporting {provider} to CSV")
 
-    command = f"duckdb db/duckdb.db < ./importer/{provider}/_export2csv.sql"
+    command = f"duckdb db/wda.duckdb < ./importer/{provider}/_export2csv.sql"
     process = subprocess.run(command, shell=True, check=True)
     if process.returncode != 0:
         print(
@@ -106,4 +122,5 @@ def export(provider, tables):
         )
         print("stderr:", process.stderr)
 
-    writeHash(provider, computedhash)
+    if tables is not None:
+        writeHash(provider, computedhash)

@@ -3,3 +3,6 @@ duckdb==1.0.0
 
 # git
 GitPython==3.1.43
+
+# requests
+requests==2.32.3

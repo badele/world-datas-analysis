@@ -1,20 +1,16 @@
-ATTACH 'db/world-datas-analysis.db' AS sqlite (TYPE SQLITE);
+ATTACH 'db/wda.sqlite' AS sqlite (TYPE SQLITE);
 USE sqlite;
 
-.mode table
-SELECT 'sapics' AS 'Exporting to sqlite';
+DROP TABLE IF EXISTS sapics_asn_ipv4;
+CREATE TABLE sapics_asn_ipv4 AS
+    SELECT * FROM wda.sapics_asn_ipv4;
 
-DROP TABLE IF EXISTS wda_sapics_asn_ipv4;
-CREATE TABLE wda_sapics_asn_ipv4 AS
-    SELECT * FROM duckdb.wda_sapics_asn_ipv4;
+DROP TABLE IF EXISTS sapics_cities_ipv4;
+CREATE TABLE sapics_cities_ipv4 AS
+    SELECT * FROM wda.sapics_cities_ipv4;
 
-DROP TABLE IF EXISTS wda_sapics_cities_ipv4;
-CREATE TABLE wda_sapics_cities_ipv4 AS
-    SELECT * FROM duckdb.wda_sapics_cities_ipv4;
-
-DROP TABLE IF EXISTS wda_sapics_countries_ipv4;
-CREATE TABLE wda_sapics_countries_ipv4 AS
-    SELECT * FROM duckdb.wda_sapics_regions;
-
+DROP TABLE IF EXISTS sapics_countries_ipv4;
+CREATE TABLE sapics_countries_ipv4 AS
+    SELECT * FROM wda.sapics_countries_ipv4;
 
 .read './importer/sapics/_commons.sql'

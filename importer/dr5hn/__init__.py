@@ -15,4 +15,4 @@ tables = {
 
 def update():
     wdalib.pull(provider, repo_url)
-    wdalib.export(provider, tables)
+    wdalib.export2CSV(provider, tables)
