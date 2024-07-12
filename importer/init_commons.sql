@@ -28,11 +28,12 @@ CREATE TABLE IF NOT EXISTS wda_datasets(
 
 -- DROP TABLE IF EXISTS wda_scopes;
 CREATE TABLE IF NOT EXISTS wda_scopes(
-    provider	    TEXT,
+    provider        TEXT,
     dataset         TEXT,
+    scope           TEXT,
     scopevalue      TEXT,
     nb_observations INTEGER,
-    PRIMARY KEY(provider,dataset,scopevalue)
+    PRIMARY KEY(provider,dataset,scope,scopevalue)
 );
 
 CREATE TABLE IF NOT EXISTS wda_blacklist_ips(

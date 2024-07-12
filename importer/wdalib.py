@@ -7,7 +7,26 @@ import glob
 import hashlib
 import json
 import os
+import shutil
 import subprocess
+import requests
+
+from tqdm import tqdm
+
+
+def init_download_provider(provider):
+    shutil.rmtree(f"./downloaded/{provider}", ignore_errors=True)
+    os.makedirs(f"./downloaded/{provider}", exist_ok=True)
+
+
+def init_dataset_provider(provider):
+    os.makedirs(f"./dataset/{provider}", exist_ok=True)
+
+
+def show_title(title):
+    print("###################################################################")
+    print(f"# {title}")
+    print("###################################################################")
 
 
 def computeProviderHashes(provider, tables):
@@ -67,7 +86,7 @@ def writeHash(provider, hash):
 
 
 # Write a content list to a file
-def writeList(filename, contentlist):
+def writeListToFile(filename, contentlist):
     with open(filename, "w", encoding="utf-8") as f:
         f.write("\n".join(contentlist))
 
@@ -124,3 +143,44 @@ def export2CSV(provider, tables=None):
 
     if tables is not None:
         writeHash(provider, computedhash)
+
+
+###############################################################################
+# Download file
+###############################################################################
+
+
+def download(url, desc="", save_path=""):
+    # Init stream downloader
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    stream = []
+    file_size = int(response.headers.get("Content-Length", 0))
+    with open(save_path, "wb") as file:
+        with tqdm(
+            total=file_size,
+            unit="B",
+            unit_scale=True,
+            unit_divisor=1024,
+            desc=url.split("/")[-1] if desc == "" else desc,
+            ncols=100,
+            bar_format="{desc:<50}{bar:20}{r_bar}{bar:-20b}",
+        ) as pbar:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    if save_path:
+                        file.write(chunk)
+                    else:
+                        stream.append(chunk)
+                    pbar.update(len(chunk))
+
+    return stream
+
+
+def downloadFile(url, desc, save_path):
+    download(url, desc, save_path)
+
+
+def downloadStream(url, desc):
+    return download(url, desc)
