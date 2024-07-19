@@ -12,38 +12,9 @@ CREATE UNIQUE INDEX vigilo_observations_idx ON vigilo_observations (scopeid,toke
 -- Views
 --------------------------------------
 
--- Categories
--- DROP VIEW IF EXISTS wda_vigilo_categories;
--- CREATE VIEW wda_vigilo_categories AS
---     SELECT
---         id,
---         name,
---         color
---         FROM vigilo_categories;
---
--- -- Scopes
--- DROP VIEW IF EXISTS wda_vigilo_scopes;
--- CREATE VIEW wda_vigilo_scopes AS
---     SELECT
---         id,
---         display_name AS name,
---         department,
---         country,
---         FROM vigilo_scopes;
---
--- -- Instances
--- DROP VIEW IF EXISTS wda_vigilo_instances;
--- CREATE VIEW wda_vigilo_instances AS
---     SELECT
---         scopeid,
---         id,
---         name,
---         postcode,
---         website
---     FROM vigilo_instances;
-
 -- Observations
-CREATE OR REPLACE VIEW wda_vigilo_observations AS SELECT
+CREATE OR REPLACE VIEW wda_vigilo_observations AS
+    SELECT
         token,
         ts,
         coordinates_lat,
@@ -53,8 +24,12 @@ CREATE OR REPLACE VIEW wda_vigilo_observations AS SELECT
         explanation,
         catid,
         approved,
-        cityname
-    FROM vigilo_observations;
+        cityname,
+        dc.*
+    FROM vigilo_observations vo
+    LEFT JOIN vigilo_scopes vs ON vo.scopeid=vs.id
+    LEFT JOIN wda_dr5hn_cities dc ON vs.country = dc.country AND vo.cityname = dc.city;
+
 
 
 -------------------------------------------------------------------------------

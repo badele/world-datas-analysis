@@ -7,7 +7,6 @@ import json
 import wdalib
 
 provider = "vigilo"
-repo_url = "https://vigilo.city"
 
 
 def update_categories():

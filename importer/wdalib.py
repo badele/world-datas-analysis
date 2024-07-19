@@ -10,6 +10,7 @@ import os
 import shutil
 import subprocess
 import requests
+import zipfile
 
 from tqdm import tqdm
 
@@ -184,3 +185,12 @@ def downloadFile(url, desc, save_path):
 
 def downloadStream(url, desc):
     return download(url, desc)
+
+
+###############################################################################
+# Unzip file
+###############################################################################
+def unzipFile(filename, destination):
+    with zipfile.ZipFile(filename, "r") as zip_ref:
+        zip_ref.extractall(destination)
+        os.remove(filename)

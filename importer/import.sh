@@ -3,7 +3,9 @@
 # Install requirements if not exists
 ./importer/requirements.sh
 
-datasets="dr5hn sapics duggytuxy wda"
+# TODO automate this
+datasets="dr5hn sapics duggytuxy vigilo wda"
+datasets="vigilo opendata3m wda"
 
 ###############################################################################
 # duckdb
@@ -15,7 +17,9 @@ duckdb db/wda.duckdb <./importer/init_duckdb.sql
 
 for dataset in $datasets; do
 	if [ -f "./importer/$dataset/_import2db.sql" ]; then
+		echo "===================================================================="
 		echo "Importing $dataset datasets to duckdb"
+		echo "===================================================================="
 		duckdb db/wda.duckdb <"./importer/$dataset/_import2db.sql"
 	fi
 done
@@ -31,7 +35,9 @@ rm -f db/wda.sqlite
 duckdb db/wda.duckdb <./importer/init_sqlite.sql
 for dataset in $datasets; do
 	if [ -f "./importer/$dataset/_export2sqlite.sql" ]; then
+		echo "===================================================================="
 		echo "Export $dataset datasets to sqlite"
+		echo "===================================================================="
 		duckdb db/wda.duckdb <./importer/$dataset/_export2sqlite.sql
 	fi
 done

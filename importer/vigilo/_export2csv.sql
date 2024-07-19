@@ -101,8 +101,11 @@ INSERT INTO vigilo_observations
         approved,
         cityname
     FROM read_json('./downloaded/vigilo/observations_*.json',filename = true)
-    WHERE approved = 1;
+    WHERE approved = 1
 ;
+
+-- clean
+DELETE FROM vigilo_observations WHERE cityname = 'undefined';
 
 -------------------------------------------------------------------------------
 -- Fix
