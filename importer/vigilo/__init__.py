@@ -40,7 +40,7 @@ def update_scopes():
             # Get scope informations
             scoperesp = requests.get(f"{api_path}/get_scope.php?scope={scope}")
             if scoperesp.status_code != 200:
-                return ""
+                continue
 
             # Merge with scope informations
             scoperesult = scoperesp.json()

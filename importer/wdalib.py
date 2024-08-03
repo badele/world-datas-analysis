@@ -128,7 +128,7 @@ def export2CSV(provider, tables=None):
         if lasthash == computedhash:
             return
 
-    print(f"  Exporting {provider} to CSV")
+    show_title(f"Exporting {provider} to CSV")
 
     command = f"duckdb db/wda.duckdb < ./importer/{provider}/_export2csv.sql"
     process = subprocess.run(command, shell=True, check=True)

@@ -1,3 +1,5 @@
+INSTALL sqlite; LOAD sqlite;
+
 .read './importer/init_commons.sql'
 
 --------------------------------------

@@ -1,4 +1,4 @@
-
+BEGIN TRANSACTION;
 --------------------------------------
 -- Index
 --------------------------------------
@@ -29,7 +29,7 @@ CREATE OR REPLACE VIEW wda_geonames_countries AS
           ga.latitude,
           ga.timezone,
           ga.modification
-  FROM geoname_countries gc
+  FROM geonames_countries gc
   LEFT JOIN geonames_allentries ga ON geonameid = ga.id;
 
 --------------------------------------
@@ -150,3 +150,21 @@ CREATE OR REPLACE VIEW wda_geonames_cities AS
   LEFT JOIN geonames_allentries ga3 ON ga.country_code = ga3.country_code AND ga.admin3_code = ga3.admin3_code AND ga3.feature_code = 'ADM3'
   LEFT JOIN geonames_allentries ga4 ON ga.country_code = ga4.country_code AND ga.admin4_code = ga4.admin4_code AND ga4.feature_code = 'ADM4'
 ;
+
+DELETE FROM wda_scopes_reference WHERE provider='geonames' AND dataset='wda_geonames_cities';
+DELETE FROM wda_scopes_reference WHERE provider='geonames' AND dataset='wda_geonames_countries';
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+
+INSERT INTO wda_scopes_reference
+    SELECT 'geonames','wda_geonames_cities', 'city', (SELECT column_count FROM duckdb_views WHERE view_name='wda_geonames_cities') as nb_vars, (select count(*) from wda_geonames_cities) as nb_entries
+;
+
+INSERT INTO wda_scopes_reference
+    SELECT 'geonames','wda_geonames_countries', 'country', (SELECT column_count FROM duckdb_views WHERE view_name='wda_geonames_countries') as nb_vars, (select count(*) from wda_geonames_countries) as nb_entries
+;
+
+COMMIT;

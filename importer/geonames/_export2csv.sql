@@ -25,7 +25,7 @@ INSERT INTO geonames_admin2codes
     FROM read_csv('./downloaded/geonames/admin2Codes.txt');
 
 -- Countries
-CREATE OR REPLACE TABLE geoname_countries (
+CREATE OR REPLACE TABLE geonames_countries (
   iso TEXT,
   iso3 TEXT,
   iso_numeric INTEGER,
@@ -45,7 +45,7 @@ CREATE OR REPLACE TABLE geoname_countries (
   equivalent_fips_code TEXT
 );
 
-INSERT INTO geoname_countries
+INSERT INTO geonames_countries
     SELECT  column00,
             column01,
             column02,
@@ -91,7 +91,13 @@ CREATE OR REPLACE TABLE geonames_allentries (
 INSERT INTO geonames_allentries
     SELECT *
     FROM read_csv('./downloaded/geonames/allCountries.txt')
-    WHERE column06 = 'A' OR column06 = 'P';
+    WHERE column06 = 'A';
 ;
+    --WHERE column06 = 'A' OR column06 = 'P';
+
+
 
 COMMIT;
+
+
+.read './importer/geonames/_commons.sql'
