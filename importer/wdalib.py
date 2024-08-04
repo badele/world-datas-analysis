@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-import sys
-
+import datetime
+import shutil
 import git
 import glob
 import hashlib
-import json
 import os
-import shutil
 import subprocess
 import requests
 import zipfile
@@ -15,12 +13,11 @@ import zipfile
 from tqdm import tqdm
 
 
-def init_download_provider(provider):
+def init_provider(provider):
     shutil.rmtree(f"./downloaded/{provider}", ignore_errors=True)
     os.makedirs(f"./downloaded/{provider}", exist_ok=True)
 
-
-def init_dataset_provider(provider):
+    shutil.rmtree(f"./dataset/{provider}", ignore_errors=True)
     os.makedirs(f"./dataset/{provider}", exist_ok=True)
 
 
@@ -96,6 +93,19 @@ def writeListToFile(filename, contentlist):
 def readList(filename):
     with open(filename, "r") as f:
         return f.read().split("\n")
+
+
+def isFolderOutdated(folder, hours):
+    if not os.path.exists(folder):
+        return True
+
+    current_time = datetime.datetime.now()
+    creation_timestamp = os.path.getctime(folder)
+    creation_time = datetime.datetime.fromtimestamp(creation_timestamp)
+    time_difference = current_time - creation_time
+    hours_difference = time_difference.total_seconds() / 3600
+
+    return hours_difference > hours
 
 
 ###############################################################################

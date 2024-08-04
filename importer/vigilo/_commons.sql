@@ -51,9 +51,8 @@ INSERT INTO wda_scopes
 ;
 
 INSERT INTO wda_datasets
-    SELECT 'vigilo','vigilo','wda_vigilo_observations', 'city', 'wda_geonames_cities', 'vigilo citizen observations', 'https://vigilo.city', (SELECT column_count FROM duckdb_tables WHERE table_name='vigilo_observations') as nb_vars, COUNT(*), COUNT(DISTINCT cityname)
-    FROM vigilo_observations
-    WHERE wda_id IS NOT NULL
+    SELECT 'vigilo','vigilo','wda_vigilo_observations', 'city', 'wda_geonames_cities', 'vigilo citizen observations', 'https://vigilo.city', (SELECT column_count FROM duckdb_views WHERE view_name='wda_vigilo_observations') as nb_vars, COUNT(*), COUNT(DISTINCT cityname)
+    FROM wda_vigilo_observations
 ;
 
 INSERT INTO wda_providers

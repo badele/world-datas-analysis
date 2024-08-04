@@ -99,5 +99,7 @@ INSERT INTO geonames_allentries
 
 COMMIT;
 
+COPY geonames_countries TO './dataset/geonames/countries.csv' (DELIMITER '|', HEADER);
+COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 
 .read './importer/geonames/_commons.sql'

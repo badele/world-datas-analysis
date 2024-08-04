@@ -10,12 +10,13 @@ provider = "vigilo"
 
 
 def update_categories():
-    resp = requests.get("https://vigilo-bf7f2.firebaseio.com/categorieslist.json")
+    filename = f"./downloaded/{provider}/categories.json"
 
+    resp = requests.get("https://vigilo-bf7f2.firebaseio.com/categorieslist.json")
     if resp.status_code != 200:
         return ""
 
-    wdalib.writeContentToFile(f"./downloaded/{provider}/categories.json", resp.text)
+    wdalib.writeContentToFile(filename, resp.text)
 
 
 def update_scopes():
@@ -27,6 +28,11 @@ def update_scopes():
 
     scopes = []
     instances = []
+
+    scopefilename = f"./downloaded/{provider}/scopes.json"
+    instancesfilename = f"./downloaded/{provider}/instances.json"
+
+    # Download
     for name, value in citiesresult.items():
         try:
             if not value["prod"]:
@@ -65,26 +71,25 @@ def update_scopes():
         except requests.exceptions.HTTPError:
             print(f"!!! HTTP error for {name} ({scope}) !!!")
 
-    wdalib.writeContentToFile(
-        f"./downloaded/{provider}/scopes.json", json.dumps(scopes)
-    )
-
-    wdalib.writeContentToFile(
-        f"./downloaded/{provider}/instances.json", json.dumps(instances)
-    )
+    wdalib.writeContentToFile(scopefilename, json.dumps(scopes))
+    wdalib.writeContentToFile(instancesfilename, json.dumps(instances))
 
 
 def update_observations(scope, name, api_path):
+    filename = f"./downloaded/{provider}/observations_{scope}.json"
+
     wdalib.downloadFile(
         f"{api_path}/get_issues.php?scope={scope}&format=json",
         name,
-        f"./downloaded/{provider}/observations_{scope}.json",
+        filename,
     )
 
 
 def update():
-    wdalib.init_download_provider(provider)
-    wdalib.init_dataset_provider(provider)
+    if not wdalib.isFolderOutdated(f"./dataset/{provider}", 7 * 24):
+        return
+
+    wdalib.init_provider(provider)
     wdalib.show_title(f"Update {provider}")
 
     update_categories()

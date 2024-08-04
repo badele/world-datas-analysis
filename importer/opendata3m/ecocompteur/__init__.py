@@ -87,8 +87,10 @@ def overpass_request(lat, long, level):
 
 
 def update():
-    wdalib.init_download_provider(provider)
-    wdalib.init_dataset_provider(provider)
+    if not wdalib.isFolderOutdated(f"./dataset/{provider}", 7 * 24):
+        return
+
+    wdalib.init_provider(provider)
     wdalib.show_title(f"Update {provider}")
 
     dstcounters = update_ecocompteur_list()

@@ -19,8 +19,8 @@ def update():
     #
     # duggytuxy.update()
     # ipsum.update()
-    # opendata3m.ecocompteur.update()
-    # vigilo.update()
+    opendata3m.ecocompteur.update()
+    vigilo.update()
     # wda.update()
 
 
