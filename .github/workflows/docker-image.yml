@@ -1,0 +1,31 @@
+name: Build and Push Docker Image to Docker Hub
+
+on:
+  push:
+    paths:
+      - 'Dockerfile'
+      - 'requirements.txt'
+env:
+  JUST_VERSION: "1.23.0"
+
+jobs:
+  push_to_registry:
+    name: push docker image to hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: check repository
+        uses: actions/checkout@v4
+
+      - name: Setup `just`
+        uses: extractions/setup-just@v1
+        with:
+          just-version: ${{ env.JUST_VERSION }}
+
+      - name: login to docker registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+
+      - name: build and push docker image to registry
+        run: just docker-build docker-push

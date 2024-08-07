@@ -3,6 +3,7 @@
 set positional-arguments
 
 envname:=`basename $(pwd)`
+dockerimage:='badele/world-datas-analysis:latest'
 
 # This help
 @help:
@@ -24,6 +25,24 @@ precommit-install:
 # precommit check
 @precommit-check:
     pre-commit run --all-files
+
+###############################################################################
+# Docker
+###############################################################################
+
+# Build the wda docker image
+@docker-build:
+    docker build -t {{ dockerimage }} .
+
+# Push the wda docker image to docker hub
+@docker-push:
+    docker push {{ dockerimage }}
+
+# RUn the wda docker image
+@docker-run:
+    docker run -it --rm -v $(pwd):/wda -w /wda {{ dockerimage }}
+
+
 
 # Lint the project
 @lint:
@@ -75,11 +94,6 @@ restore: stop user-perm
         rm -f grafana/grafana.db
         sqlite3 grafana/grafana.db <  backup/grafana.sql
     fi
-
-# Update datas
-@update:
-    # docker run -it --rm -v $(pwd):/wda -w /wda ubuntu:24.04 bash -c "./importer/import.sh"
-    docker run -it --rm -v $(pwd):/wda -w /wda ubuntu:24.04
 
 # Import datas
 @import:
