@@ -38,10 +38,9 @@ precommit-install:
 @docker-push:
     docker push {{ dockerimage }}
 
-# RUn the wda docker image
-@docker-run:
-    docker run -it --rm -v $(pwd):/wda -w /wda {{ dockerimage }}
-
+# Run the wda docker image
+@docker-run CMD="":
+    docker run -it --rm -v $(pwd):/wda -w /wda {{ dockerimage }} {{ CMD }}
 
 
 # Lint the project
