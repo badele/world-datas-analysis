@@ -3,7 +3,7 @@
 repos:
 # Commons
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v4.6.0
   hooks:
   -   id: trailing-whitespace
   -   id: end-of-file-fixer
@@ -17,13 +17,13 @@ repos:
       entry: nixpkgs-fmt
       files: \.nix$
       stages: [commit]
-    - id: "docupdate"
-      name: "docupdate"
-      description: Update documentation.
-      language: system
-      entry: just doc-update
-      stages: [commit]
-      files: ^README\.md$
+    # - id: "docupdate"
+    #   name: "docupdate"
+    #   description: Update documentation.
+    #   language: system
+    #   entry: just doc-update
+    #   stages: [commit]
+    #   files: ^README\.md$
     # - id: "markdownlint"
     #   name: "markdownlint"
     #   description: Format markdown code with markdownlint.
