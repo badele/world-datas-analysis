@@ -3,10 +3,10 @@
 import wdalib
 
 provider = "wda"
-tables = {
-    "wda": "./db/wda.duckdb",
-}
 
 
 def update():
-    wdalib.export2CSV(provider, tables)
+    wdalib.init_provider(provider)
+    wdalib.show_title(f"Update {provider}")
+
+    wdalib.export2CSV(provider)

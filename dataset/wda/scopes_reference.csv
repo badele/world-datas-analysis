@@ -1,0 +1,3 @@
+provider|dataset|wda_scope|source|nb_variables|nb_entries
+geonames|wda_geonames_cities|city|https://geonames.org|79|3003154
+geonames|wda_geonames_countries|country|https://geonames.org|20|252

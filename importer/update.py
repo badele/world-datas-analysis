@@ -13,7 +13,9 @@ import wda  # computed tables from previous datas
 
 
 def update():
+    # references
     geonames.update()
+
     # dr5hn.update()
     # sapics.update()
     #
@@ -21,7 +23,9 @@ def update():
     # ipsum.update()
     opendata3m.ecocompteur.update()
     vigilo.update()
-    # wda.update()
+
+    # World Datas Analysis
+    wda.update()
 
 
 if __name__ == "__main__":

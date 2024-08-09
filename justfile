@@ -7,7 +7,7 @@ dockerimage:='badele/world-datas-analysis:latest'
 
 # This help
 @help:
-    just -lu --list-heading=$'{{ file_name(justfile()) }} commands:\n'
+    just -l --list-heading=$'{{ file_name(justfile()) }} commands:\n'
 
 ###############################################################################
 # pre-commit
@@ -42,6 +42,13 @@ precommit-install:
 @docker-run CMD="":
     docker run -it --rm -v $(pwd):/wda -w /wda {{ dockerimage }} {{ CMD }}
 
+###############################################################################
+# Docker
+###############################################################################
+
+# Update datasets
+@datasets-update:
+    just docker-run ./importer/update.sh
 
 # Lint the project
 @lint:

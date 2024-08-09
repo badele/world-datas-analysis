@@ -1,0 +1,5 @@
+provider|real_provider|dataset|wda_scope|wda_scope_ref|description|source|nb_variables|nb_observations|nb_scopes
+geonames|geonames|wda_geonames_cities|city|wda_geonames_cities|Cities informations|https://www.geonames.org|79|3003154|434309
+geonames|geonames|wda_geonames_countries|city|wda_geonames_countries|Countries informations|https://www.geonames.org|20|252|252
+opendata3m|opendata3m|wda_opendata3m_ecocompteur_observations|city|wda_geonames_cities|ecocompteur observations|https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66|88|51596|11
+vigilo|vigilo|wda_vigilo_observations|city|wda_geonames_cities|vigilo citizen observations|https://vigilo.city|89|26132|261

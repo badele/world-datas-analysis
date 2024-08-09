@@ -160,11 +160,11 @@ BEGIN TRANSACTION;
 
 
 INSERT INTO wda_scopes_reference
-    SELECT 'geonames','wda_geonames_cities', 'city', (SELECT column_count FROM duckdb_views WHERE view_name='wda_geonames_cities') as nb_vars, (select count(*) from wda_geonames_cities) as nb_entries
+  SELECT 'geonames','wda_geonames_cities', 'city', 'https://geonames.org', (SELECT column_count FROM duckdb_views WHERE view_name='wda_geonames_cities') as nb_vars, (select count(*) from wda_geonames_cities) as nb_entries
 ;
 
 INSERT INTO wda_scopes_reference
-    SELECT 'geonames','wda_geonames_countries', 'country', (SELECT column_count FROM duckdb_views WHERE view_name='wda_geonames_countries') as nb_vars, (select count(*) from wda_geonames_countries) as nb_entries
+  SELECT 'geonames','wda_geonames_countries', 'country', 'https://geonames.org', (SELECT column_count FROM duckdb_views WHERE view_name='wda_geonames_countries') as nb_vars, (select count(*) from wda_geonames_countries) as nb_entries
 ;
 
 COMMIT;

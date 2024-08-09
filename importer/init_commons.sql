@@ -2,7 +2,7 @@
 -- Dataset
 --------------------------------------
 
-DROP TABLE IF EXISTS wda_providers;
+-- DROP TABLE IF EXISTS wda_providers;
 CREATE TABLE IF NOT EXISTS wda_providers(
     provider	    TEXT,
     description     TEXT,

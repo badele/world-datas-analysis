@@ -39,7 +39,7 @@ def update_countries():
 
 
 def update_allentries():
-    filename = f"./downloaded/{provider}/allCountries.txt"
+    filename = f"./downloaded/{provider}/allCountries.zip"
 
     wdalib.downloadFile(
         f"{repo_url}/dump/allCountries.zip",
@@ -49,7 +49,7 @@ def update_allentries():
 
     print("=== Uncompressing allCountries.zip ===")
     wdalib.unzipFile(
-        f"./downloaded/{provider}/allCountries.zip",
+        filename,
         f"./downloaded/{provider}",
     )
 
