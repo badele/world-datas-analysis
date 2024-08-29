@@ -99,6 +99,8 @@ INSERT INTO geonames_allentries
 
 COMMIT;
 
+COPY geonames_admin1codes TO './dataset/geonames/admin1CodesASCII.csv' (DELIMITER '|', HEADER);
+COPY geonames_admin2codes TO './dataset/geonames/admin2Codes.csv' (DELIMITER '|', HEADER);
 COPY geonames_countries TO './dataset/geonames/countries.csv' (DELIMITER '|', HEADER);
 COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 

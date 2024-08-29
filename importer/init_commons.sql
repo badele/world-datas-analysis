@@ -40,19 +40,20 @@ CREATE TABLE IF NOT EXISTS wda_scopes(
 
 -- DROP TABLE IF EXISTS wda_scopes_reference;
 CREATE TABLE IF NOT EXISTS wda_scopes_reference(
-    provider        TEXT,
-    dataset         TEXT,
-    wda_scope	    TEXT,
-    nb_variables   INTEGER,
+    provider TEXT,
+    dataset TEXT,
+    wda_scope TEXT,
+    source TEXT,
+    nb_variables INTEGER,
     nb_entries INTEGER,
     PRIMARY KEY(provider,dataset,wda_scope)
 );
 
 
-CREATE TABLE IF NOT EXISTS wda_blacklist_ips(
-  ip_number BIGINT,
-  ip TEXT,
-  duggytuxy INTEGER,
-  ipsum INTEGER
-);
-CREATE INDEX IF NOT EXISTS wda_blacklist_ips_idx ON wda_blacklist_ips(ip_number);
+-- CREATE TABLE IF NOT EXISTS wda_blacklist_ips(
+--   ip_number BIGINT,
+--   ip TEXT,
+--   duggytuxy INTEGER,
+--   ipsum INTEGER
+-- );
+-- CREATE INDEX IF NOT EXISTS wda_blacklist_ips_idx ON wda_blacklist_ips(ip_number);

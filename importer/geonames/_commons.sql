@@ -8,7 +8,8 @@ CREATE UNIQUE INDEX geonames_allentries_idx ON geonames_allentries (id);
 --------------------------------------
 -- Country
 --------------------------------------
-CREATE OR REPLACE VIEW wda_geonames_countries AS
+DROP TABLE IF EXISTS wda_geonames_countries;
+CREATE VIEW wda_geonames_countries AS
   SELECT  ga.id AS countryid,
           ga.feature_class,
           ga.feature_code,
@@ -30,33 +31,37 @@ CREATE OR REPLACE VIEW wda_geonames_countries AS
           ga.timezone,
           ga.modification
   FROM geonames_countries gc
-  LEFT JOIN geonames_allentries ga ON geonameid = ga.id;
+  LEFT JOIN geonames_allentries ga ON geonameid = ga.id
+;
 
 --------------------------------------
 -- Admin1
 --------------------------------------
-CREATE OR REPLACE VIEW wda_geonames_admin1codes AS
+DROP TABLE IF EXISTS wda_geonames_admin1codes;
+CREATE VIEW wda_geonames_admin1codes AS
   SELECT code,
   ga.*
   FROM geonames_admin1codes
   LEFT JOIN geonames_allentries ga ON ga.id = geonames_admin1codes.geonameid
-  WHERE code like 'FR.%';
+;
 
 --------------------------------------
 -- Admin2
 --------------------------------------
-CREATE OR REPLACE VIEW wda_geonames_admin2codes AS
+DROP TABLE IF EXISTS wda_geonames_admin2codes;
+CREATE VIEW wda_geonames_admin2codes AS
   SELECT code,
   ga.*
   FROM geonames_admin1codes
   LEFT JOIN geonames_allentries ga ON ga.id = geonames_admin1codes.geonameid
-  WHERE code like 'FR.%';
+;
 
 
 --------------------------------------
 -- Cities
 --------------------------------------
-CREATE OR REPLACE VIEW wda_geonames_cities AS
+DROP TABLE IF EXISTS wda_geonames_cities;
+CREATE VIEW wda_geonames_cities AS
   SELECT
           -- City
           ga.id AS cityid,

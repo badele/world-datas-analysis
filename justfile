@@ -38,17 +38,32 @@ precommit-install:
 @docker-push:
     docker push {{ dockerimage }}
 
+# Run duckdb cli on docker
+@docker-duckdb:
+    just docker-run "duckdb db/wda.duckdb"
+
 # Run the wda docker image
 @docker-run CMD="":
     docker run -it --rm -v $(pwd):/wda -w /wda {{ dockerimage }} {{ CMD }}
 
 ###############################################################################
-# Docker
+# DB
+###############################################################################
+
+# Reset duckdb database
+@db-reset:
+    just docker-run "rm -f db/wda.duckdb"
+
+###############################################################################
+# dataset
 ###############################################################################
 
 # Update datasets
-@datasets-update:
+@dataset-update:
     just docker-run ./importer/update.sh
+
+@dataset-import:
+    just docker-run ./importer/import.sh
 
 # Lint the project
 @lint:

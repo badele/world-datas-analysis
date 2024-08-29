@@ -1,26 +1,24 @@
 #!/usr/bin/env bash
 
-# Install requirements if not exists
-./importer/requirements.sh
-
 # TODO automate this
 datasets="dr5hn sapics duggytuxy vigilo wda"
-datasets="vigilo opendata3m wda"
+datasets="geonames vigilo opendata3m wda"
+datasets="geonames"
 
 ###############################################################################
 # duckdb
 ###############################################################################
 
 # Init database
-rm -f db/wda.duckdb
-duckdb db/wda.duckdb <./importer/init_duckdb.sql
+rm -f db/wda_imported.duckdb
+duckdb db/wda_imported.duckdb <./importer/init_duckdb.sql
 
 for dataset in $datasets; do
 	if [ -f "./importer/$dataset/_import2db.sql" ]; then
 		echo "===================================================================="
 		echo "Importing $dataset datasets to duckdb"
 		echo "===================================================================="
-		duckdb db/wda.duckdb <"./importer/$dataset/_import2db.sql"
+		duckdb db/wda_imported.duckdb <"./importer/$dataset/_import2db.sql"
 	fi
 done
 # duckdb db/wda.duckdb <./importer/dr5hn/_import2db.sql  # cities, countries, regions, states, subregions
@@ -32,13 +30,13 @@ done
 # Convert to sqlite
 ###############################################################################
 rm -f db/wda.sqlite
-duckdb db/wda.duckdb <./importer/init_sqlite.sql
+duckdb db/wda_imported.duckdb <./importer/init_sqlite.sql
 for dataset in $datasets; do
 	if [ -f "./importer/$dataset/_export2sqlite.sql" ]; then
 		echo "===================================================================="
 		echo "Export $dataset datasets to sqlite"
 		echo "===================================================================="
-		duckdb db/wda.duckdb <./importer/$dataset/_export2sqlite.sql
+		duckdb db/wda_imported.duckdb <./importer/$dataset/_export2sqlite.sql
 	fi
 done
 # duckdb db/wda.duckdb <./importer/dr5hn/_export2sqlite.sql

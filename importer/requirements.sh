@@ -11,7 +11,7 @@ fi
 if ! command -v duckdb &>/dev/null; then
 	curl -sL https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-linux-amd64.zip -o /usr/local/bin/duckdb.zip
 	unzip /usr/local/bin/duckdb.zip -d /usr/local/bin
-	rm -f /usr/local/bin/duckdb.zipA
+	rm -f /usr/local/bin/duckdb.zip
 fi
 
 # Init env
