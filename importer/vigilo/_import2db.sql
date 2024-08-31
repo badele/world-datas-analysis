@@ -12,6 +12,6 @@ CREATE OR REPLACE TABLE vigilo_instances AS
 CREATE OR REPLACE TABLE vigilo_observations AS
     SELECT * FROM read_csv('./dataset/vigilo/observations.csv');
 
-.read './importer/vigilo/_commons.sql'
-
 COMMIT;
+
+.read './importer/vigilo/_commons.sql'

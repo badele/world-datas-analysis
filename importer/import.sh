@@ -3,7 +3,7 @@
 # TODO automate this
 datasets="dr5hn sapics duggytuxy vigilo wda"
 datasets="geonames vigilo opendata3m wda"
-datasets="geonames"
+datasets="geonames vigilo"
 
 ###############################################################################
 # duckdb

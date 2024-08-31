@@ -105,6 +105,9 @@ def isFolderOutdated(folder, hours):
     time_difference = current_time - creation_time
     hours_difference = time_difference.total_seconds() / 3600
 
+    if hours_difference < hours:
+        print(f"{folder} is up to date")
+
     return hours_difference > hours
 
 

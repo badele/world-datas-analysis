@@ -3,17 +3,21 @@ BEGIN TRANSACTION;
 -- Index
 --------------------------------------
 
-CREATE UNIQUE INDEX vigilo_categories_idx ON vigilo_categories (id);
-CREATE UNIQUE INDEX vigilo_scopes_idx ON vigilo_scopes (id);
-CREATE UNIQUE INDEX vigilo_instances_idx ON vigilo_instances (scopeid,id);
-CREATE UNIQUE INDEX vigilo_observations_idx ON vigilo_observations (scopeid,token);
+CREATE UNIQUE INDEX idx_vigilo_categories_id ON vigilo_categories (id);
+CREATE UNIQUE INDEX idx_vigilo_scopes_id ON vigilo_scopes (id);
+CREATE UNIQUE INDEX idx_vigilo_instances_scopeid_id ON vigilo_instances (scopeid,id);
+CREATE UNIQUE INDEX idx_vigilo_observations_scopeid_token ON vigilo_observations (scopeid,token);
+CREATE UNIQUE INDEX idx_vigilo_observations_token ON vigilo_observations (token);
+
+CREATE INDEX idx_vigilo_observations_wdaid ON vigilo_observations (wda_id);
 
 --------------------------------------
 -- Views
 --------------------------------------
 
 -- Observations
-CREATE OR REPLACE VIEW wda_vigilo_observations AS
+DROP VIEW IF EXISTS wda_vigilo_observations;
+CREATE VIEW wda_vigilo_observations AS
     SELECT
         token,
         ts,
@@ -25,12 +29,15 @@ CREATE OR REPLACE VIEW wda_vigilo_observations AS
         catid,
         approved,
         cityname,
+        scopeid,
         gc.*
     FROM vigilo_observations vo
-    LEFT JOIN vigilo_scopes vs ON vo.scopeid=vs.id
     LEFT JOIN wda_geonames_cities gc ON vo.wda_id=gc.cityid
-    ;
-
+    WHERE admin1id IS NOT NULL
+        AND admin2id IS NOT NULL
+        AND admin3id IS NOT NULL
+        AND admin4id IS NOT NULL
+;
 -------------------------------------------------------------------------------
 -- Summary
 -------------------------------------------------------------------------------

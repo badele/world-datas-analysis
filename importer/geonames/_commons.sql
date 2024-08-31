@@ -3,12 +3,20 @@ BEGIN TRANSACTION;
 -- Index
 --------------------------------------
 
-CREATE UNIQUE INDEX geonames_allentries_idx ON geonames_allentries (id);
+CREATE INDEX idx_geonames_allentries_admin1 ON geonames_allentries (country_code, admin1_code);
+CREATE INDEX idx_geonames_allentries_admin2 ON geonames_allentries (country_code, admin2_code);
+CREATE INDEX idx_geonames_allentries_admin3 ON geonames_allentries (country_code, admin3_code);
+CREATE INDEX idx_geonames_allentries_admin4 ON geonames_allentries (country_code, admin4_code);
+
+CREATE UNIQUE INDEX idx_geonames_country_iso ON geonames_countries (iso);
+CREATE UNIQUE INDEX idx_geonames_allentries_id ON geonames_allentries (id);
+
+-- CREATE INDEX idx_geonames_allentries_idx1 ON geonames_allentries (feature_code,admin1_code,country_code);
 
 --------------------------------------
 -- Country
 --------------------------------------
-DROP TABLE IF EXISTS wda_geonames_countries;
+DROP VIEW IF EXISTS wda_geonames_countries;
 CREATE VIEW wda_geonames_countries AS
   SELECT  ga.id AS countryid,
           ga.feature_class,
@@ -31,13 +39,13 @@ CREATE VIEW wda_geonames_countries AS
           ga.timezone,
           ga.modification
   FROM geonames_countries gc
-  LEFT JOIN geonames_allentries ga ON geonameid = ga.id
+  LEFT JOIN geonames_allentries ga ON gc.geonameid = ga.id
 ;
 
 --------------------------------------
 -- Admin1
 --------------------------------------
-DROP TABLE IF EXISTS wda_geonames_admin1codes;
+DROP VIEW IF EXISTS wda_geonames_admin1codes;
 CREATE VIEW wda_geonames_admin1codes AS
   SELECT code,
   ga.*
@@ -48,7 +56,7 @@ CREATE VIEW wda_geonames_admin1codes AS
 --------------------------------------
 -- Admin2
 --------------------------------------
-DROP TABLE IF EXISTS wda_geonames_admin2codes;
+DROP VIEW IF EXISTS wda_geonames_admin2codes;
 CREATE VIEW wda_geonames_admin2codes AS
   SELECT code,
   ga.*
@@ -60,8 +68,28 @@ CREATE VIEW wda_geonames_admin2codes AS
 --------------------------------------
 -- Cities
 --------------------------------------
-DROP TABLE IF EXISTS wda_geonames_cities;
+DROP VIEW IF EXISTS wda_geonames_cities;
 CREATE VIEW wda_geonames_cities AS
+  WITH admin1 AS (
+      SELECT *
+      FROM geonames_allentries
+      WHERE feature_code = 'ADM1'
+  ),
+  admin2 AS (
+      SELECT *
+      FROM geonames_allentries
+      WHERE feature_code = 'ADM2'
+  ),
+  admin3 AS (
+      SELECT *
+      FROM geonames_allentries
+      WHERE feature_code = 'ADM3'
+  ),
+  admin4 AS (
+      SELECT *
+      FROM geonames_allentries
+      WHERE feature_code = 'ADM4'
+  )
   SELECT
           -- City
           ga.id AS cityid,
@@ -150,10 +178,10 @@ CREATE VIEW wda_geonames_cities AS
           gc.modification AS country_modification,
   FROM geonames_allentries ga
   LEFT JOIN wda_geonames_countries gc ON ga.country_code = gc.iso
-  LEFT JOIN geonames_allentries ga1 ON ga.country_code = ga1.country_code AND ga.admin1_code = ga1.admin1_code AND ga1.feature_code = 'ADM1'
-  LEFT JOIN geonames_allentries ga2 ON ga.country_code = ga2.country_code AND ga.admin2_code = ga2.admin2_code AND ga2.feature_code = 'ADM2'
-  LEFT JOIN geonames_allentries ga3 ON ga.country_code = ga3.country_code AND ga.admin3_code = ga3.admin3_code AND ga3.feature_code = 'ADM3'
-  LEFT JOIN geonames_allentries ga4 ON ga.country_code = ga4.country_code AND ga.admin4_code = ga4.admin4_code AND ga4.feature_code = 'ADM4'
+  LEFT JOIN admin1 ga1 ON ga.country_code = ga1.country_code AND ga.admin1_code = ga1.admin1_code
+  LEFT JOIN admin2 ga2 ON ga.country_code = ga2.country_code AND ga.admin2_code = ga2.admin2_code
+  LEFT JOIN admin3 ga3 ON ga.country_code = ga3.country_code AND ga.admin3_code = ga3.admin3_code
+  LEFT JOIN admin4 ga4 ON ga.country_code = ga4.country_code AND ga.admin4_code = ga4.admin4_code
 ;
 
 DELETE FROM wda_scopes_reference WHERE provider='geonames' AND dataset='wda_geonames_cities';
