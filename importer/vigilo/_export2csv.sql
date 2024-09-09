@@ -38,7 +38,8 @@ CREATE OR REPLACE TABLE vigilo_scopes (
     tweet_content TEXT,
     twitter TEXT,
     backend_version TEXT,
-    wda_id INTEGER
+    geonames_admin_filter TEXT,
+    geonames_countryid INTEGER
 )
 ;
 
@@ -61,6 +62,7 @@ INSERT INTO vigilo_scopes
     tweet_content,
     twitter,
     backend_version,
+    NULL,
     NULL
     FROM read_json('./downloaded/vigilo/scopes.json')
 ;
@@ -72,7 +74,7 @@ CREATE OR REPLACE TABLE vigilo_instances (
     name TEXT,
     postcode INTEGER,
     website TEXT,
-    wda_id INTEGER
+    geonames_city_id INTEGER
 )
 ;
 
@@ -94,7 +96,7 @@ CREATE OR REPLACE TABLE vigilo_observations (
     catid INTEGER,
     approved INTEGER,
     cityname TEXT,
-    wda_id INTEGER
+    geonames_city_id INTEGER
 )
 ;
 
@@ -118,6 +120,28 @@ INSERT INTO vigilo_observations
 -------------------------------------------------------------------------------
 -- Fix
 -------------------------------------------------------------------------------
+-- Find geoname ISO code
+UPDATE vigilo_scopes vs
+    SET iso = (
+        SELECT iso
+        FROM geonames_countries gc
+        WHERE vs.country = gc.country
+    )
+;
+UPDATE vigilo_scopes vs
+    SET geonames_countryid = (
+        SELECT geonameid
+        FROM geonames_countries gc
+        WHERE vs.iso = gc.iso
+    )
+;
+-- Define filter for getting a city values (used in SQL query)
+UPDATE vigilo_scopes SET geonames_admin_filter = 'ADM4' WHERE iso = 'FR';
+-- CHECK NOT FOUND
+SELECT 'vigilo_scopes';
+SELECT * FROM vigilo_scopes WHERE geonames_countryid IS NULL;
+
+
 -- clean²
 UPDATE vigilo_observations set cityname=ltrim(cityname);
 DELETE FROM vigilo_observations WHERE cityname = 'undefined';
@@ -167,50 +191,36 @@ UPDATE vigilo_instances SET name = 'Île-d''Arz' WHERE name = 'L Île d Arz';
 UPDATE vigilo_instances SET name = 'Île-aux-Moines' WHERE name = 'L''Île-aux-Moines';
 UPDATE vigilo_instances SET name = 'Lattes' WHERE name = 'Boirargues';
 
--- Find geoname country
-UPDATE vigilo_scopes vs
-    SET iso = (
-        SELECT iso
-        FROM geonames_countries gc
-        WHERE vs.country = gc.country
-    )
-;
 
-UPDATE vigilo_scopes vs
-    SET wda_id = (
-        SELECT geonameid
-        FROM geonames_countries gc
-        WHERE vs.country = gc.country
-    )
-;
 
 
 -- find geoname city
 UPDATE vigilo_instances vi
-    SET wda_id =  (
-        SELECT cityid
+    SET geonames_city_id =  (
+        SELECT gc.id as cityid
         FROM vigilo_instances vi1 LEFT JOIN vigilo_scopes vs ON vi1.scopeid = vs.id
-        LEFT JOIN wda_geonames_cities gc ON gc.feature_class='A' AND gc.feature_code='ADM4' AND vs.country = gc.country_country AND vi1.name = gc.name
+        LEFT JOIN geonames_allentries gc ON vs.iso = gc.country_code AND gc.feature_class='A' AND gc.feature_code=vs.geonames_admin_filter AND vi1.name = gc.name
         WHERE vi1.scopeid = vi.scopeid AND vi1.id = vi.id
     )
-    WHERE vi.wda_id IS NULL
 ;
+-- CHECK NOT FOUND
+SELECT 'geonames_instances';
+SELECT * FROM vigilo_instances WHERE geonames_city_id IS NULL;
+
 
 -- find geoname city
 UPDATE vigilo_observations vo
-    SET wda_id =  (
-        SELECT cityid
+    SET geonames_city_id =  (
+        SELECT gc.id
         FROM vigilo_observations vo1 LEFT JOIN vigilo_scopes vs ON vo1.scopeid = vs.id
-        LEFT JOIN wda_geonames_cities gc ON gc.feature_class='A' AND gc.feature_code='ADM4' AND vs.country = gc.country_country AND vo1.cityname = gc.name
+        LEFT JOIN geonames_allentries gc ON vs.iso = gc.country_code AND gc.feature_class='A' AND gc.feature_code=vs.geonames_admin_filter AND vo1.cityname = gc.name
         WHERE vo1.token = vo.token
     )
-    WHERE vo.wda_id IS NULL
 ;
+-- CHECK NOT FOUND
+SELECT 'vigilo_observations';
+SELECT cityname,count(*) AS nb FROM vigilo_observations WHERE geonames_city_id IS NULL GROUP BY cityname ORDER BY nb DESC;
 
-
--- select '''' || cityname || '''', count(*) from vigilo_observations where geonameid IS NULL GROUP BY cityname ORDER by count(*) DESC;
--- select cityname, count(*) from wda_vigilo_observations where feature_class is null GROUP by cityname ORDER by count(*) DESC;
--- select token,cityname,vo.latitude,vo.longitude, 0.02 AS delta, gc.name, ST_Distance(ST_Point(vo.latitude,vo.longitude),ST_Point(gc.latitude,gc.longitude)) AS dist FROM vigilo_observations vo LEFT JOIN wda_geonames_cities gc ON  vo.latitude >= gc.latitude-0.02 AND vo.latitude <= gc.latitude+0.02 AND vo.longitude >= gc.longitude-0.02 AND  vo.longitude <= gc.longitude+0.02
 
 -------------------------------------------------------------------------------
 -- export to ./dataset

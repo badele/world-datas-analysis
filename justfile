@@ -74,22 +74,24 @@ precommit-install:
     ./updatedoc.ts
 
 [private]
-@grafana-perm:
-    mkdir -p grafana
+@perm-grafana:
+    mkdir -p grafana-storage
     sudo chown -R 472 grafana
+    sudo chown -R 472 grafana-storage
 
 [private]
-@user-perm:
-    mkdir -p grafana
+@perm-user:
+    mkdir -p grafana-storage
     sudo chown -R $(id -u) grafana
+    sudo chown -R $(id -u) grafana-storage
 
 # Start grafana
-@start: user-perm restore grafana-perm
+@start: perm-grafana
     docker compose up -d
     echo "go to http://localhost:3000"
 
 # Stop grafana
-@stop:
+@stop: perm-user
     docker compose stop
 
 # Show grafana logs
@@ -97,18 +99,18 @@ precommit-install:
     docker compose logs
 
 # Backup grafana configuration
-# @backup: stop user-perm
+# @backup: stop perm-user
 #     mkdir -p backup
 #     tar -czvf backup/grafana-$(date +%Y%m%d).tar.gz --exclude grafana/plugins grafana
 #     sqlite3 grafana/grafana.db .dump > backup/grafana.sql
 
 # Dump grafana database
-@dump: stop user-perm
+@dump: stop
     mkdir -p backup
     sqlite3 grafana/grafana.db .dump > backup/grafana.sql
 
 # Restore grafana database
-restore: stop user-perm
+restore: stop
     #!/usr/bin/env bash
     if [ -f backup/grafana.sql ]; then
         echo "Restore Grafana configuration"

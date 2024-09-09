@@ -18,51 +18,81 @@ CREATE UNIQUE INDEX idx_geonames_allentries_id ON geonames_allentries (id);
 --------------------------------------
 DROP VIEW IF EXISTS wda_geonames_countries;
 CREATE VIEW wda_geonames_countries AS
-  SELECT  ga.id AS countryid,
-          ga.feature_class,
-          ga.feature_code,
-          gc.iso,
-          gc.iso3,
-          gc.country,
-          ga.name,
-          gc.capital,
-          ga.population,
-          ga.elevation,
-          ga.dem,
-          gc.currency_name,
-          gc.phone_prefix,
-          gc.languages,
-          gc.tld,
-          gc.neighbours,
-          ga.longitude,
-          ga.latitude,
-          ga.timezone,
-          ga.modification
+  SELECT  gc.geonameid AS geonames_country_id,
+          ga.feature_class AS geonames_country_feature_class,
+          ga.feature_code AS geonames_country_feature_code,
+          gc.iso AS geonames_country_iso,
+          gc.iso3 AS geonames_country_iso3,
+          gc.country AS geonames_country_country,
+          ga.name AS geonames_country_name,
+          gc.capital AS geonames_country_capital,
+          ga.population AS geonames_country_population,
+          ga.elevation AS geonames_country_elevation,
+          ga.dem AS geomames_dem,
+          gc.currency_name AS geomames_currency_name,
+          gc.phone_prefix AS geonames_country_phone_prefix,
+          gc.languages AS geonames_country_languages,
+          gc.tld AS geonames_country_tld,
+          gc.neighbours AS geonames_country_neighbours,
+          ga.longitude AS geonames_country_longitude,
+          ga.latitude AS geonames_country_latitude,
+          ga.timezone AS geonames_country_timezone,
+          ga.modification AS geonames_country_modification
   FROM geonames_countries gc
   LEFT JOIN geonames_allentries ga ON gc.geonameid = ga.id
 ;
+-- CHECK COUNT CONTENT
+SELECT 'Check geonames wda_geonames_countries';
+SELECT COUNT(*) FROM geonames_countries;
+SELECT COUNT(*) FROM wda_geonames_countries;
 
 --------------------------------------
 -- Admin1
 --------------------------------------
-DROP VIEW IF EXISTS wda_geonames_admin1codes;
-CREATE VIEW wda_geonames_admin1codes AS
-  SELECT code,
-  ga.*
-  FROM geonames_admin1codes
-  LEFT JOIN geonames_allentries ga ON ga.id = geonames_admin1codes.geonameid
-;
+-- DROP VIEW IF EXISTS wda_geonames_admin1codes;
+-- CREATE VIEW wda_geonames_admin1codes AS
+--   SELECT code AS admin1_code,
+--         ga.id AS admin1_id,
+--         ga.name AS admin1_name,
+--         ga.latitude AS admin1_latitude,
+--         ga.longitude AS admin1_longitude,
+--         ga.feature_class AS admin1_feature_class,
+--         ga.feature_code AS admin1_feature_code,
+--         ga.country_code AS admin1_country_code,
+--         ga.cc2 AS admin1_cc2,
+--         ga. admin1_code AS admin1_admin1_code,
+--         ga.population AS admin1_population,
+--         ga.elevation AS admin1_elevation,
+--         ga.dem AS admin1_dem,
+--         ga.timezone AS admin1_timezone,
+--         ga.modification AS admin1_modification
+--   FROM geonames_admin1codes
+--   LEFT JOIN geonames_allentries ga ON ga.id = geonames_admin1codes.geonameid
+-- ;
 
 --------------------------------------
 -- Admin2
 --------------------------------------
-DROP VIEW IF EXISTS wda_geonames_admin2codes;
-CREATE VIEW wda_geonames_admin2codes AS
-  SELECT code,
-  ga.*
-  FROM geonames_admin1codes
-  LEFT JOIN geonames_allentries ga ON ga.id = geonames_admin1codes.geonameid
-;
+-- DROP VIEW IF EXISTS wda_geonames_admin2codes;
+-- CREATE VIEW wda_geonames_admin2codes AS
+--   SELECT code AS admin2_code,
+--         ga.id AS admin2_id,
+--         ga.name AS admin2_name,
+--         ga.latitude AS admin2_latitude,
+--         ga.longitude AS admin2_longitude,
+--         ga.feature_class AS admin2_feature_class,
+--         ga.feature_code AS admin2_feature_code,
+--         ga.country_code AS admin2_country_code,
+--         ga.cc2 AS admin2_cc2,
+--         ga. admin2_code AS admin2_admin2_code,
+--         ga.population AS admin2_population,
+--         ga.elevation AS admin2_elevation,
+--         ga.dem AS admin2_dem,
+--         ga.timezone AS admin2_timezone,
+--         ga.modification AS admin2_modification
+--   FROM geonames_admin2codes
+--   LEFT JOIN geonames_allentries ga ON ga.id = geonames_admin2codes.geonameid
+-- ;
 
 
 --------------------------------------
@@ -71,118 +101,128 @@ CREATE VIEW wda_geonames_admin2codes AS
 DROP VIEW IF EXISTS wda_geonames_cities;
 CREATE VIEW wda_geonames_cities AS
   WITH admin1 AS (
-      SELECT *
+      SELECT
+        id AS admin1_id,
+        name AS admin1_name,
+        latitude AS admin1_latitude,
+        longitude AS admin1_longitude,
+        feature_class AS admin1_feature_class,
+        feature_code AS admin1_feature_code,
+        country_code AS admin1_country_code,
+        cc2 AS admin1_cc2,
+        admin1_code AS admin1_code,
+        population AS admin1_population,
+        elevation AS admin1_elevation,
+        dem AS admin1_dem,
+        timezone AS admin1_timezone,
+        modification AS admin1_modification
       FROM geonames_allentries
-      WHERE feature_code = 'ADM1'
+      WHERE feature_class='A' AND feature_code = 'ADM1'
   ),
   admin2 AS (
-      SELECT *
+      SELECT
+        id AS admin2_id,
+        name AS admin2_name,
+        latitude AS admin2_latitude,
+        longitude AS admin2_longitude,
+        feature_class AS admin2_feature_class,
+        feature_code AS admin2_feature_code,
+        country_code AS admin2_country_code,
+        cc2 AS admin2_cc2,
+        admin1_code AS admin1_code,
+        admin2_code AS admin2_code,
+        population AS admin2_population,
+        elevation AS admin2_elevation,
+        dem AS admin2_dem,
+        timezone AS admin2_timezone,
+        modification AS admin2_modification
       FROM geonames_allentries
-      WHERE feature_code = 'ADM2'
+      WHERE feature_class='A' AND feature_code = 'ADM2'
   ),
   admin3 AS (
-      SELECT *
+      SELECT
+        id AS admin3_id,
+        name AS admin3_name,
+        latitude AS admin3_latitude,
+        longitude AS admin3_longitude,
+        feature_class AS admin3_feature_class,
+        feature_code AS admin3_feature_code,
+        country_code AS admin3_country_code,
+        cc2 AS admin3_cc2,
+        admin1_code AS admin1_code,
+        admin2_code AS admin2_code,
+        admin3_code AS admin3_code,
+        population AS admin3_population,
+        elevation AS admin3_elevation,
+        dem AS admin3_dem,
+        timezone AS admin3_timezone,
+        modification AS admin3_modification
       FROM geonames_allentries
-      WHERE feature_code = 'ADM3'
+      WHERE feature_class='A' AND feature_code = 'ADM3'
   ),
   admin4 AS (
-      SELECT *
+      SELECT
+        id AS admin4_id,
+        name AS admin4_name,
+        latitude AS admin4_latitude,
+        longitude AS admin4_longitude,
+        feature_class AS admin4_feature_class,
+        feature_code AS admin4_feature_code,
+        country_code AS admin4_country_code,
+        cc2 AS admin4_cc2,
+        admin1_code AS admin1_code,
+        admin2_code AS admin2_code,
+        admin3_code AS admin3_code,
+        admin4_code AS admin4_code,
+        population AS admin4_population,
+        elevation AS admin4_elevation,
+        dem AS admin4_dem,
+        timezone AS admin4_timezone,
+        modification AS admin4_modification
       FROM geonames_allentries
-      WHERE feature_code = 'ADM4'
+      WHERE feature_class='A' AND feature_code = 'ADM4'
   )
   SELECT
           -- City
-          ga.id AS cityid,
-          ga.feature_class,
-          ga.feature_code,
-          ga.admin1_code,
-          ga.admin2_code,
-          ga.admin3_code,
-          ga.admin4_code,
-          ga.name,
-          ga.population,
-          ga.longitude,
-          ga.latitude,
-          ga.elevation,
-          ga.dem,
-          ga.timezone,
-          ga.modification,
-          -- admin1
-          ga1.id AS admin1id,
-          ga1.feature_class AS admin1_feature_class,
-          ga1.feature_code AS admin1_feature_code,
-          ga1.name AS admin1_name,
-          ga1.population AS admin1_population,
-          ga1.longitude AS admin1_longitude,
-          ga1.latitude AS admin1_latitude,
-          ga1.elevation AS admin1_elevation,
-          ga1.dem AS admin1_dem,
-          ga1.timezone AS admin1_timezone,
-          ga1.modification AS admin1_modification,
-          -- admin2
-          ga2.id AS admin2id,
-          ga2.feature_class AS admin2_feature_class,
-          ga2.feature_code AS admin2_feature_code,
-          ga2.name AS admin2_name,
-          ga2.population AS admin2_population,
-          ga2.longitude AS admin2_longitude,
-          ga2.latitude AS admin2_latitude,
-          ga2.elevation AS admin2_elevation,
-          ga2.dem AS admin2_dem,
-          ga2.timezone AS admin2_timezone,
-          ga2.modification AS admin2_modification,
-          -- admin3
-          ga3.id AS admin3id,
-          ga3.feature_class AS admin3_feature_class,
-          ga3.feature_code AS admin3_feature_code,
-          ga3.name AS admin3_name,
-          ga3.population AS admin3_population,
-          ga3.longitude AS admin3_longitude,
-          ga3.latitude AS admin3_latitude,
-          ga3.elevation AS admin3_elevation,
-          ga3.dem AS admin3_dem,
-          ga3.timezone AS admin3_timezone,
-          ga3.modification AS admin3_modification,
-          -- admin4
-          ga4.id AS admin4id,
-          ga4.feature_class AS admin4_feature_class,
-          ga4.feature_code AS admin4_feature_code,
-          ga4.name AS admin4_name,
-          ga4.population AS admin4_population,
-          ga4.longitude AS admin4_longitude,
-          ga4.latitude AS admin4_latitude,
-          ga4.elevation AS admin4_elevation,
-          ga4.dem AS admin4_dem,
-          ga4.timezone AS admin4_timezone,
-          ga4.modification AS admin4_modification,
+          ga.id AS geonames_city_id,
+          ga.name AS geonames_city_name,
+          ga.country_code AS geonames_city_country_code,
+          ga.feature_class AS geonames_city_feature_class,
+          ga.feature_code AS geonames_city_feature_code,
+          ga.admin1_code AS geonames_city_admin1_code,
+          ga.admin2_code AS geonames_city_admin2_code,
+          ga.admin3_code AS geonames_city_admin3_code,
+          ga.admin4_code AS geonames_city_admin4_code,
+          ga.population AS geonames_city_population,
+          ga.longitude AS geonames_city_longitude,
+          ga.latitude AS geonames_city_latitude,
+          ga.elevation AS geonames_city_elevation,
+          ga.dem AS geonames_city_dem,
+          ga.timezone AS geonames_city_timezone,
+          ga.modification AS geonames_city_modification,
+          -- admin
+          ga1.*,
+          ga2.*,
+          ga3.*,
+          ga4.*,
           -- Country
-          gc.countryid,
-          gc.feature_class AS country_feature_class,
-          gc.feature_code AS country_feature_code,
-          gc.iso AS country_iso,
-          gc.iso3 AS country_iso3,
-          gc.country AS country_country,
-          gc.name AS country_name,
-          gc.capital AS country_capital,
-          gc.population AS country_population,
-          gc.currency_name AS country_currency_name,
-          gc.phone_prefix AS country_phone_prefix,
-          gc.languages AS country_languages,
-          gc.tld AS country_tld,
-          gc.neighbours AS country_neighbours,
-          gc.longitude AS country_longitude,
-          gc.latitude AS country_latitude,
-          gc.elevation AS country_elevation,
-          gc.dem AS country_dem,
-          gc.timezone AS country_timezone,
-          gc.modification AS country_modification,
+          gc.*
   FROM geonames_allentries ga
-  LEFT JOIN wda_geonames_countries gc ON ga.country_code = gc.iso
-  LEFT JOIN admin1 ga1 ON ga.country_code = ga1.country_code AND ga.admin1_code = ga1.admin1_code
-  LEFT JOIN admin2 ga2 ON ga.country_code = ga2.country_code AND ga.admin2_code = ga2.admin2_code
-  LEFT JOIN admin3 ga3 ON ga.country_code = ga3.country_code AND ga.admin3_code = ga3.admin3_code
-  LEFT JOIN admin4 ga4 ON ga.country_code = ga4.country_code AND ga.admin4_code = ga4.admin4_code
+  LEFT JOIN wda_geonames_countries gc ON ga.country_code = gc.geonames_country_iso
+  -- LEFT JOIN admin1 ga1 ON ga.country_code = ga1.admin1_country_code AND ga.admin1_code = ga1.admin1_code
+  -- LEFT JOIN admin2 ga2 ON ga.country_code = ga2.admin2_country_code AND ga1.admin1_code = ga2.admin1_code AND ga.admin2_code = ga2.admin2_code
+  -- LEFT JOIN admin3 ga3 ON ga.country_code = ga3.admin3_country_code AND ga.admin3_code = ga3.admin3_code
+  -- LEFT JOIN admin4 ga4 ON ga.country_code = ga4.admin4_country_code AND ga.admin4_code = ga4.admin4_code
+  LEFT JOIN admin1 ga1 ON ga.country_code = ga1.admin1_country_code AND ga.admin1_code = ga1.admin1_code
+  LEFT JOIN admin2 ga2 ON ga.country_code = ga2.admin2_country_code AND ga1.admin1_code = ga2.admin1_code AND ga.admin2_code = ga2.admin2_code
+  LEFT JOIN admin3 ga3 ON ga.country_code = ga3.admin3_country_code AND ga1.admin1_code = ga3.admin1_code AND ga2.admin2_code = ga3.admin2_code AND ga.admin3_code = ga3.admin3_code
+  LEFT JOIN admin4 ga4 ON ga.country_code = ga4.admin4_country_code AND ga1.admin1_code = ga4.admin1_code AND ga2.admin2_code = ga4.admin2_code AND ga3.admin3_code = ga4.admin3_code AND ga.admin4_code = ga4.admin4_code
 ;
+
+-- CHECK COUNT CONTENT
+SELECT 'Check geonames wda_geonames_cities';
+SELECT COUNT() FROM geonames_allentries WHERE feature_class='A' AND feature_code IN ('ADM1','ADM2','ADM3','ADM4');
+SELECT COUNT() FROM wda_geonames_cities;
 
 DELETE FROM wda_scopes_reference WHERE provider='geonames' AND dataset='wda_geonames_cities';
 DELETE FROM wda_scopes_reference WHERE provider='geonames' AND dataset='wda_geonames_countries';

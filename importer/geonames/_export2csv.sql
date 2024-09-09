@@ -1,28 +1,28 @@
 BEGIN TRANSACTION;
 
 -- Admin1 code
-CREATE OR REPLACE TABLE geonames_admin1codes (
-  code TEXT,
-  name TEXT,
-  name_ascii TEXT,
-  geonameid INTEGER
-);
-
-INSERT INTO geonames_admin1codes
-    SELECT *
-    FROM read_csv('./downloaded/geonames/admin1CodesASCII.txt');
-
--- Admin2 code
-CREATE OR REPLACE TABLE geonames_admin2codes (
-  code TEXT,
-  name TEXT,
-  name_ascii TEXT,
-  geonameid INTEGER
-);
-
-INSERT INTO geonames_admin2codes
-    SELECT *
-    FROM read_csv('./downloaded/geonames/admin2Codes.txt');
+-- CREATE OR REPLACE TABLE geonames_admin1codes (
+--   code TEXT,
+--   name TEXT,
+--   name_ascii TEXT,
+--   geonameid INTEGER
+-- );
+--
+-- INSERT INTO geonames_admin1codes
+--     SELECT *
+--     FROM read_csv('./downloaded/geonames/admin1CodesASCII.txt');
+--
+-- -- Admin2 code
+-- CREATE OR REPLACE TABLE geonames_admin2codes (
+--   code TEXT,
+--   name TEXT,
+--   name_ascii TEXT,
+--   geonameid INTEGER
+-- );
+--
+-- INSERT INTO geonames_admin2codes
+--     SELECT *
+--     FROM read_csv('./downloaded/geonames/admin2Codes.txt');
 
 -- Countries
 CREATE OR REPLACE TABLE geonames_countries (
@@ -99,8 +99,8 @@ INSERT INTO geonames_allentries
 
 COMMIT;
 
-COPY geonames_admin1codes TO './dataset/geonames/admin1CodesASCII.csv' (DELIMITER '|', HEADER);
-COPY geonames_admin2codes TO './dataset/geonames/admin2Codes.csv' (DELIMITER '|', HEADER);
+-- COPY geonames_admin1codes TO './dataset/geonames/admin1CodesASCII.csv' (DELIMITER '|', HEADER);
+-- COPY geonames_admin2codes TO './dataset/geonames/admin2Codes.csv' (DELIMITER '|', HEADER);
 COPY geonames_countries TO './dataset/geonames/countries.csv' (DELIMITER '|', HEADER);
 COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 

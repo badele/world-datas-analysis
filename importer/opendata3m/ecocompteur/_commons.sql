@@ -21,7 +21,7 @@ CREATE OR REPLACE VIEW wda_opendata3m_ecocompteur_observations AS
     gc.*
     FROM opendata3m_ecocompteur_observations eo
     LEFT JOIN opendata3m_ecocompteur_list el ON eo.serie=el.serie
-    LEFT JOIN wda_geonames_cities gc ON el.city=gc.name
+    LEFT JOIN wda_geonames_cities gc ON el.city=gc.geonames_city_name
 ;
 
 -------------------------------------------------------------------------------
