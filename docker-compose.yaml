@@ -8,7 +8,9 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - '$PWD/grafana:/var/lib/grafana'
-      - '$PWD/db:/db'
+      - $PWD/grafana:/var/lib/grafana
+      - $PWD/db:/db
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
     environment:
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource 3.5.0

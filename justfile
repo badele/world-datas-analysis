@@ -82,6 +82,7 @@ precommit-install:
 [private]
 @perm-user:
     mkdir -p grafana-storage
+    sudo chown -R $(id -u) db
     sudo chown -R $(id -u) grafana
     sudo chown -R $(id -u) grafana-storage
 
@@ -93,6 +94,10 @@ precommit-install:
 # Stop grafana
 @stop: perm-user
     docker compose stop
+
+# Reset grafana storage
+@reset:
+    rm -rf grafana-storage
 
 # Show grafana logs
 @logs:

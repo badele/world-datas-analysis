@@ -5,7 +5,7 @@ BEGIN TRANSACTION;
 --   code TEXT,
 --   name TEXT,
 --   name_ascii TEXT,
---   geonameid INTEGER
+--   geonameid BIGINT
 -- );
 --
 -- INSERT INTO geonames_admin1codes
@@ -17,7 +17,7 @@ BEGIN TRANSACTION;
 --   code TEXT,
 --   name TEXT,
 --   name_ascii TEXT,
---   geonameid INTEGER
+--   geonameid BIGINT
 -- );
 --
 -- INSERT INTO geonames_admin2codes
@@ -28,19 +28,19 @@ BEGIN TRANSACTION;
 CREATE OR REPLACE TABLE geonames_countries (
   iso TEXT,
   iso3 TEXT,
-  iso_numeric INTEGER,
+  iso_numeric BIGINT,
   fips TEXT,
   country TEXT,
   capital TEXT,
   area_km2 DOUBLE,
-  population INTEGER,
+  population BIGINT,
   continent TEXT,
   tld TEXT,
   currency_code TEXT,
   currency_name TEXT,
   phone_prefix TEXT,
   languages TEXT,
-  geonameid INTEGER,
+  geonameid BIGINT,
   neighbours TEXT,
   equivalent_fips_code TEXT
 );
@@ -67,7 +67,7 @@ INSERT INTO geonames_countries
 
 -- entries
 CREATE OR REPLACE TABLE geonames_allentries (
-  id INTEGER,
+  id BIGINT,
   name TEXT,
   asciiname TEXT,
   alternatenames TEXT,
@@ -82,10 +82,10 @@ CREATE OR REPLACE TABLE geonames_allentries (
   admin3_code TEXT,
   admin4_code TEXT,
   population BIGINT,
-  elevation INTEGER,
-  dem INTEGER,
+  elevation BIGINT,
+  dem BIGINT,
   timezone TEXT,
-  modification DATE
+  modification TEXT
 );
 
 INSERT INTO geonames_allentries

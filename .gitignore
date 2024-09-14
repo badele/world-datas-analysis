@@ -1,7 +1,12 @@
 .direnv
 
 # Grafana
-grafana
+grafana-store
+grafana/csv
+grafana/pdf
+grafana/png
+grafana/plugins
+grafana/grafana.db
 
 # Database
 db

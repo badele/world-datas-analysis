@@ -1,0 +1,9 @@
+apiVersion: 1
+
+datasources:
+  - name: world-datas-analysis
+    type: frser-sqlite-datasource
+    access: proxy
+    isDefault: true
+    jsonData:
+      path: /db/wda.sqlite

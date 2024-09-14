@@ -1,0 +1,1406 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "SELECT admin1_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin1_name IN (${region:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin1_name\nORDER BY nb DESC",
+          "queryType": "table",
+          "rawQueryText": "SELECT admin1_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin1_name IN (${region:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin1_name\nORDER BY nb DESC",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Régions",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "SELECT admin2_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin2_name IN (${departement:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin2_name\nORDER BY nb DESC",
+          "queryType": "table",
+          "rawQueryText": "SELECT admin2_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin2_name IN (${departement:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin2_name\nORDER BY nb DESC",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Départements",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "SELECT admin3_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin3_name IN (${arrondissement:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin3_name\nORDER BY nb DESC",
+          "queryType": "table",
+          "rawQueryText": "SELECT admin3_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin3_name IN (${arrondissement:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin3_name\nORDER BY nb DESC",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Arrondissement",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "SELECT admin4_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin4_name\nORDER BY nb DESC",
+          "queryType": "table",
+          "rawQueryText": "SELECT admin4_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY admin4_name\nORDER BY nb DESC",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Ville",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocalNoDateIfToday"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 9
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ts$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "P84CB9249031329A2"
+          },
+          "queryText": "SELECT max(obs_ts) AS ts\nFROM wda_vigilo_observations \nWHERE admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})",
+          "queryType": "table",
+          "rawQueryText": "SELECT max(obs_ts) AS ts\nFROM wda_vigilo_observations \nWHERE admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Last update",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "description": "Basé sur le filtre des villes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 18,
+        "x": 6,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "-- 24h => 86400\n-- week =>604800\n-- 30 days => 2592000\nSELECT  cast((obs_ts / ($__interval_ms / 1000) ) as int) * ($__interval_ms / 1000)  AS ts,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY ts",
+          "queryType": "table",
+          "rawQueryText": "-- 24h => 86400\n-- week =>604800\n-- 30 days => 2592000\nSELECT  cast((obs_ts / ($__interval_ms / 1000) ) as int) * ($__interval_ms / 1000)  AS ts,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY ts",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "observations",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "obs"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 11
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "P84CB9249031329A2"
+          },
+          "queryText": "SELECT count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})",
+          "queryType": "table",
+          "rawQueryText": "SELECT count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "nb observations",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "SELECT cat_name as category,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY category\nORDER BY nb DESC",
+          "queryType": "table",
+          "rawQueryText": "SELECT cat_name as category,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY category\nORDER BY nb DESC",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Categories",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "P84CB9249031329A2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 18,
+        "x": 6,
+        "y": 13
+      },
+      "id": 3,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "coordinates_lat",
+              "longitude": "coordinates_lon",
+              "mode": "coords"
+            },
+            "name": "Infos",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "blur": 15,
+              "radius": 3,
+              "weight": {
+                "field": "approved",
+                "fixed": 1,
+                "max": 1,
+                "min": 0
+              }
+            },
+            "location": {
+              "latitude": "obs_latitude",
+              "longitude": "obs_longitude",
+              "mode": "coords"
+            },
+            "name": "Layer 1",
+            "tooltip": false,
+            "type": "heatmap"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 45.908052,
+          "lon": -3.424189,
+          "shared": false,
+          "zoom": 5.2
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ednfwksm2sttsf"
+          },
+          "queryText": "SELECT admin1_name AS region, admin2_name AS departement,admin3_name AS arrondissement, admin4_name AS ville,obs_token,obs_latitude,obs_longitude,obs_address,cat_name AS category,obs_approved\n‣ FROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT admin1_name AS region, admin2_name AS departement,admin3_name AS arrondissement, admin4_name AS ville,obs_token,obs_latitude,obs_longitude,obs_address,cat_name AS category,obs_approved\n‣ FROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Panel Title",
+      "type": "geomap"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Bretagne",
+            "Nouvelle-Aquitaine",
+            "Occitanie",
+            "Auvergne-Rhône-Alpes",
+            "Pays de la Loire",
+            "Grand Est",
+            "Île-de-France",
+            "Provence-Alpes-Côte d'Azur",
+            "Hauts-de-France",
+            "Bourgogne-Franche-Comté"
+          ],
+          "value": [
+            "Bretagne",
+            "Nouvelle-Aquitaine",
+            "Occitanie",
+            "Auvergne-Rhône-Alpes",
+            "Pays de la Loire",
+            "Grand Est",
+            "Île-de-France",
+            "Provence-Alpes-Côte d'Azur",
+            "Hauts-de-France",
+            "Bourgogne-Franche-Comté"
+          ]
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "P84CB9249031329A2"
+        },
+        "definition": "SELECT DISTINCT admin1_name FROM wda_vigilo_observations",
+        "description": "",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "region",
+        "options": [],
+        "query": "SELECT DISTINCT admin1_name FROM wda_vigilo_observations",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Morbihan",
+            "Côtes-d'Armor",
+            "Charente-Maritime",
+            "Dordogne",
+            "Hérault",
+            "Ille-et-Vilaine",
+            "Isère",
+            "Gironde",
+            "Lot",
+            "Loire-Atlantique",
+            "Bas-Rhin",
+            "Essonne",
+            "Bouches-du-Rhône",
+            "Finistère",
+            "Oise",
+            "Hauts-de-Seine",
+            "Haute-Saône",
+            "Saône-et-Loire",
+            "Yonne",
+            "Pas-de-Calais"
+          ],
+          "value": [
+            "Morbihan",
+            "Côtes-d'Armor",
+            "Charente-Maritime",
+            "Dordogne",
+            "Hérault",
+            "Ille-et-Vilaine",
+            "Isère",
+            "Gironde",
+            "Lot",
+            "Loire-Atlantique",
+            "Bas-Rhin",
+            "Essonne",
+            "Bouches-du-Rhône",
+            "Finistère",
+            "Oise",
+            "Hauts-de-Seine",
+            "Haute-Saône",
+            "Saône-et-Loire",
+            "Yonne",
+            "Pas-de-Calais"
+          ]
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "P84CB9249031329A2"
+        },
+        "definition": "SELECT DISTINCT admin2_name FROM wda_vigilo_observations WHERE admin1_name IN (${region:sqlstring})",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "departement",
+        "options": [],
+        "query": "SELECT DISTINCT admin2_name FROM wda_vigilo_observations WHERE admin1_name IN (${region:sqlstring})",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Arrondissement de Vannes",
+            "Arrondissement de Saint-Brieuc",
+            "Arrondissement de La Rochelle",
+            "Arrondissement de Périgueux",
+            "Arrondissement of Montpellier",
+            "Arrondissement de Lodève",
+            "Arrondissement de Rennes",
+            "Arrondissement de La Tour-du-Pin",
+            "Arrondissement de Bordeaux",
+            "Arrondissement d'Arcachon",
+            "Arrondissement de Gourdon",
+            "Arrondissement de Nantes",
+            "Arrondissement de Strasbourg",
+            "Arrondissement de Palaiseau",
+            "Arrondissement de Marseille",
+            "Arrondissement de Brest",
+            "Arrondissement d'Aix-en-Provence",
+            "Arrondissement de Grenoble",
+            "Arrondissement de Beauvais",
+            "Arrondissement d'Antony",
+            "Arrondissement de Senlis",
+            "Arrondissement of Châteaubriant-Ancenis",
+            "Arrondissement de Vesoul",
+            "Arrondissement de Jonzac",
+            "Arrondissement de Mâcon",
+            "Arrondissement d'Avallon",
+            "Arrondissement de Montreuil",
+            "Arrondissement de Lesparre-Médoc"
+          ],
+          "value": [
+            "Arrondissement de Vannes",
+            "Arrondissement de Saint-Brieuc",
+            "Arrondissement de La Rochelle",
+            "Arrondissement de Périgueux",
+            "Arrondissement of Montpellier",
+            "Arrondissement de Lodève",
+            "Arrondissement de Rennes",
+            "Arrondissement de La Tour-du-Pin",
+            "Arrondissement de Bordeaux",
+            "Arrondissement d'Arcachon",
+            "Arrondissement de Gourdon",
+            "Arrondissement de Nantes",
+            "Arrondissement de Strasbourg",
+            "Arrondissement de Palaiseau",
+            "Arrondissement de Marseille",
+            "Arrondissement de Brest",
+            "Arrondissement d'Aix-en-Provence",
+            "Arrondissement de Grenoble",
+            "Arrondissement de Beauvais",
+            "Arrondissement d'Antony",
+            "Arrondissement de Senlis",
+            "Arrondissement of Châteaubriant-Ancenis",
+            "Arrondissement de Vesoul",
+            "Arrondissement de Jonzac",
+            "Arrondissement de Mâcon",
+            "Arrondissement d'Avallon",
+            "Arrondissement de Montreuil",
+            "Arrondissement de Lesparre-Médoc"
+          ]
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "P84CB9249031329A2"
+        },
+        "definition": "SELECT DISTINCT admin3_name FROM wda_vigilo_observations WHERE admin1_name IN (${region:sqlstring}) AND admin2_name IN (${departement:sqlstring}) ",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "arrondissement",
+        "options": [],
+        "query": "SELECT DISTINCT admin3_name FROM wda_vigilo_observations WHERE admin1_name IN (${region:sqlstring}) AND admin2_name IN (${departement:sqlstring}) ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Séné",
+            "Ploufragan",
+            "Trémuson",
+            "Clavette",
+            "Dompierre-sur-Mer",
+            "Lagord",
+            "Nieul-sur-Mer",
+            "Puilboreau",
+            "Saint-Rogatien",
+            "Coulounieix-Chamiers",
+            "Périgueux",
+            "Trélissac",
+            "Grabels",
+            "Jacou",
+            "Juvignac",
+            "Lattes",
+            "Lavérune",
+            "Mauguio",
+            "Montferrier-sur-Lez",
+            "Palavas-les-Flots",
+            "Pérols",
+            "Prades-le-Lez",
+            "Saint-Aunès",
+            "Saint-Gély-du-Fesc",
+            "Saint-Georges-d'Orques",
+            "Saint-Jean-de-Védas",
+            "Teyran",
+            "Noyal-sur-Vilaine",
+            "Servon-sur-Vilaine",
+            "Nivolas-Vermelle",
+            "Saint-Quentin-Fallavier",
+            "Vaulx-Milieu",
+            "Frontignan",
+            "Pignan",
+            "Vendargues",
+            "Domarin",
+            "Villefontaine",
+            "Eysines",
+            "Gradignan",
+            "Gujan-Mestras",
+            "Lormont",
+            "Martignas-sur-Jalle",
+            "Talence",
+            "Floirac",
+            "Nantes",
+            "Orvault",
+            "Saint-Herblain",
+            "Sainte-Luce-sur-Loire",
+            "Saint-Sébastien-sur-Loire",
+            "Sautron",
+            "Vertou",
+            "Ploeren",
+            "Saint-Avé",
+            "Saint-Nolff",
+            "Sarzeau",
+            "Theix-Noyalo",
+            "Vannes",
+            "Langueux",
+            "Pordic",
+            "Parempuyre",
+            "Saint-Médard-en-Jalles",
+            "Villenave-d'Ornon",
+            "Saint-Aubin-de-Médoc",
+            "Holtzheim",
+            "Illkirch-Graffenstaden",
+            "Lingolsheim",
+            "Mittelhausbergen",
+            "Mundolsheim",
+            "Oberhausbergen",
+            "Ostwald",
+            "Strasbourg",
+            "Wolfisheim",
+            "Bures-sur-Yvette",
+            "Champlan",
+            "Gif-sur-Yvette",
+            "Gometz-le-Châtel",
+            "Igny",
+            "Linas",
+            "Longjumeau",
+            "Longpont-sur-Orge",
+            "Marcoussis",
+            "Montlhéry",
+            "Morangis",
+            "Saulx-les-Chartreux",
+            "Vauhallan",
+            "Verrières-le-Buisson",
+            "Villebon-sur-Yvette",
+            "Wissous",
+            "Chilly-Mazarin",
+            "Palaiseau",
+            "Saclay",
+            "Villiers-le-Bâcle",
+            "Marseille",
+            "Brest",
+            "Gouesnou",
+            "Guipavas",
+            "Guilers",
+            "Bouc-Bel-Air",
+            "Gardanne",
+            "Bassillac et Auberoche",
+            "Champcevinel",
+            "Artigues-près-Bordeaux",
+            "Bègles",
+            "Clapiers",
+            "Fabrègues",
+            "Bonnefamille",
+            "Chatte",
+            "Beauvais",
+            "Castelnau-le-Lez",
+            "Châteaugiron",
+            "Couëron",
+            "Ballainvilliers",
+            "Bièvres",
+            "Arradon",
+            "Aubagne",
+            "Antony",
+            "Plouzané",
+            "Montpellier",
+            "Saint-Marcellin",
+            "Senlis",
+            "Massy",
+            "Orsay",
+            "Castries",
+            "Baden",
+            "Nozay",
+            "Les Ulis",
+            "Saint-Brieuc",
+            "Périgny",
+            "Pessac",
+            "Bordeaux",
+            "La Jarne",
+            "Le Relecq-Kerhuon",
+            "La Verpillière",
+            "La Ville-du-Bois",
+            "Le Crès",
+            "La Rochelle",
+            "Le Haillan",
+            "Le Teich",
+            "La Teste-de-Buch",
+            "Le Bouscat",
+            "Bourgoin-Jallieu",
+            "L'Isle-d'Abeau",
+            "Châtenay-Malabry",
+            "Bruges",
+            "L'Houmeau",
+            "Carnoux-en-Provence",
+            "Domloup",
+            "Saint-Clément-de-Rivière",
+            "Villeneuve-lès-Maguelone",
+            "Le Bono",
+            "Hœnheim",
+            "Trégueux",
+            "Angoulins",
+            "Mérignac",
+            "Boulazac Isle Manoire",
+            "Saint-Vérand",
+            "Fresnes",
+            "Saint-Aubin",
+            "Schiltigheim",
+            "Souffelweyersheim",
+            "Villejust",
+            "Aytré",
+            "Bischheim",
+            "Carquefou",
+            "Aix-en-Provence",
+            "Achenheim",
+            "Rezé",
+            "Plérin",
+            "Quintin",
+            "Les Sorinières",
+            "La Chapelle-sur-Erdre",
+            "Saint-Sauveur",
+            "Simiane-Collongue"
+          ],
+          "value": [
+            "Séné",
+            "Ploufragan",
+            "Trémuson",
+            "Clavette",
+            "Dompierre-sur-Mer",
+            "Lagord",
+            "Nieul-sur-Mer",
+            "Puilboreau",
+            "Saint-Rogatien",
+            "Coulounieix-Chamiers",
+            "Périgueux",
+            "Trélissac",
+            "Grabels",
+            "Jacou",
+            "Juvignac",
+            "Lattes",
+            "Lavérune",
+            "Mauguio",
+            "Montferrier-sur-Lez",
+            "Palavas-les-Flots",
+            "Pérols",
+            "Prades-le-Lez",
+            "Saint-Aunès",
+            "Saint-Gély-du-Fesc",
+            "Saint-Georges-d'Orques",
+            "Saint-Jean-de-Védas",
+            "Teyran",
+            "Noyal-sur-Vilaine",
+            "Servon-sur-Vilaine",
+            "Nivolas-Vermelle",
+            "Saint-Quentin-Fallavier",
+            "Vaulx-Milieu",
+            "Frontignan",
+            "Pignan",
+            "Vendargues",
+            "Domarin",
+            "Villefontaine",
+            "Eysines",
+            "Gradignan",
+            "Gujan-Mestras",
+            "Lormont",
+            "Martignas-sur-Jalle",
+            "Talence",
+            "Floirac",
+            "Nantes",
+            "Orvault",
+            "Saint-Herblain",
+            "Sainte-Luce-sur-Loire",
+            "Saint-Sébastien-sur-Loire",
+            "Sautron",
+            "Vertou",
+            "Ploeren",
+            "Saint-Avé",
+            "Saint-Nolff",
+            "Sarzeau",
+            "Theix-Noyalo",
+            "Vannes",
+            "Langueux",
+            "Pordic",
+            "Parempuyre",
+            "Saint-Médard-en-Jalles",
+            "Villenave-d'Ornon",
+            "Saint-Aubin-de-Médoc",
+            "Holtzheim",
+            "Illkirch-Graffenstaden",
+            "Lingolsheim",
+            "Mittelhausbergen",
+            "Mundolsheim",
+            "Oberhausbergen",
+            "Ostwald",
+            "Strasbourg",
+            "Wolfisheim",
+            "Bures-sur-Yvette",
+            "Champlan",
+            "Gif-sur-Yvette",
+            "Gometz-le-Châtel",
+            "Igny",
+            "Linas",
+            "Longjumeau",
+            "Longpont-sur-Orge",
+            "Marcoussis",
+            "Montlhéry",
+            "Morangis",
+            "Saulx-les-Chartreux",
+            "Vauhallan",
+            "Verrières-le-Buisson",
+            "Villebon-sur-Yvette",
+            "Wissous",
+            "Chilly-Mazarin",
+            "Palaiseau",
+            "Saclay",
+            "Villiers-le-Bâcle",
+            "Marseille",
+            "Brest",
+            "Gouesnou",
+            "Guipavas",
+            "Guilers",
+            "Bouc-Bel-Air",
+            "Gardanne",
+            "Bassillac et Auberoche",
+            "Champcevinel",
+            "Artigues-près-Bordeaux",
+            "Bègles",
+            "Clapiers",
+            "Fabrègues",
+            "Bonnefamille",
+            "Chatte",
+            "Beauvais",
+            "Castelnau-le-Lez",
+            "Châteaugiron",
+            "Couëron",
+            "Ballainvilliers",
+            "Bièvres",
+            "Arradon",
+            "Aubagne",
+            "Antony",
+            "Plouzané",
+            "Montpellier",
+            "Saint-Marcellin",
+            "Senlis",
+            "Massy",
+            "Orsay",
+            "Castries",
+            "Baden",
+            "Nozay",
+            "Les Ulis",
+            "Saint-Brieuc",
+            "Périgny",
+            "Pessac",
+            "Bordeaux",
+            "La Jarne",
+            "Le Relecq-Kerhuon",
+            "La Verpillière",
+            "La Ville-du-Bois",
+            "Le Crès",
+            "La Rochelle",
+            "Le Haillan",
+            "Le Teich",
+            "La Teste-de-Buch",
+            "Le Bouscat",
+            "Bourgoin-Jallieu",
+            "L'Isle-d'Abeau",
+            "Châtenay-Malabry",
+            "Bruges",
+            "L'Houmeau",
+            "Carnoux-en-Provence",
+            "Domloup",
+            "Saint-Clément-de-Rivière",
+            "Villeneuve-lès-Maguelone",
+            "Le Bono",
+            "Hœnheim",
+            "Trégueux",
+            "Angoulins",
+            "Mérignac",
+            "Boulazac Isle Manoire",
+            "Saint-Vérand",
+            "Fresnes",
+            "Saint-Aubin",
+            "Schiltigheim",
+            "Souffelweyersheim",
+            "Villejust",
+            "Aytré",
+            "Bischheim",
+            "Carquefou",
+            "Aix-en-Provence",
+            "Achenheim",
+            "Rezé",
+            "Plérin",
+            "Quintin",
+            "Les Sorinières",
+            "La Chapelle-sur-Erdre",
+            "Saint-Sauveur",
+            "Simiane-Collongue"
+          ]
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "P84CB9249031329A2"
+        },
+        "definition": "SELECT DISTINCT admin4_name FROM wda_vigilo_observations WHERE admin1_name IN (${region:sqlstring}) AND admin2_name IN (${departement:sqlstring})  AND admin3_name IN (${arrondissement:sqlstring}) ",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "ville",
+        "options": [],
+        "query": "SELECT DISTINCT admin4_name FROM wda_vigilo_observations WHERE admin1_name IN (${region:sqlstring}) AND admin2_name IN (${departement:sqlstring})  AND admin3_name IN (${arrondissement:sqlstring}) ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Absence d'arceaux de stationnement",
+            "Aménagement mal conçu",
+            "Signalisation, marquage",
+            "Incivilité récurrente sur la route",
+            "Absence d'aménagement",
+            "Défaut d'entretien",
+            "Véhicule ou objet gênant",
+            "Accident, chute, incident",
+            "Autre",
+            "Éclairage public insuffisant",
+            "Vol ou dégradation de vélo",
+            "COVID - Voirie en période de confinement",
+            "COVID - Distanciation physique impossible",
+            "COVID - Aménagement fermé"
+          ],
+          "value": [
+            "Absence d'arceaux de stationnement",
+            "Aménagement mal conçu",
+            "Signalisation, marquage",
+            "Incivilité récurrente sur la route",
+            "Absence d'aménagement",
+            "Défaut d'entretien",
+            "Véhicule ou objet gênant",
+            "Accident, chute, incident",
+            "Autre",
+            "Éclairage public insuffisant",
+            "Vol ou dégradation de vélo",
+            "COVID - Voirie en période de confinement",
+            "COVID - Distanciation physique impossible",
+            "COVID - Aménagement fermé"
+          ]
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "P84CB9249031329A2"
+        },
+        "definition": "SELECT DISTINCT cat_name from wda_vigilo_observations",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "category",
+        "options": [],
+        "query": "SELECT DISTINCT cat_name from wda_vigilo_observations",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5y",
+    "to": "now"
+  },
+  "timeRangeUpdatedDuringEditOrView": false,
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Heatmap",
+  "version": 6,
+  "weekStart": ""
+}
