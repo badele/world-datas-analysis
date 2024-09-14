@@ -59,10 +59,11 @@ precommit-install:
 ###############################################################################
 
 # Update datasets
-@dataset-update:
+@update:
     just docker-run ./importer/update.sh
 
-@dataset-import:
+# Import datasets to sqlite
+@import:
     just docker-run ./importer/import.sh
 
 # Lint the project
@@ -71,18 +72,19 @@ precommit-install:
 
 # Update documentation
 @doc-update FAKEFILENAME:
-    ./updatedoc.ts
-
+    just docker-run 'python3 ./updatedoc.py'
 [private]
 @perm-grafana:
     mkdir -p grafana-storage
     sudo chown -R 472 grafana
+    sudo chown -R 472 dataset
     sudo chown -R 472 grafana-storage
 
 [private]
 @perm-user:
     mkdir -p grafana-storage
     sudo chown -R $(id -u) db
+    sudo chown -R $(id -u) dataset
     sudo chown -R $(id -u) grafana
     sudo chown -R $(id -u) grafana-storage
 
@@ -99,33 +101,9 @@ precommit-install:
 @reset:
     rm -rf grafana-storage
 
-# Show grafana logs
-@logs:
-    docker compose logs
-
-# Backup grafana configuration
-# @backup: stop perm-user
-#     mkdir -p backup
-#     tar -czvf backup/grafana-$(date +%Y%m%d).tar.gz --exclude grafana/plugins grafana
-#     sqlite3 grafana/grafana.db .dump > backup/grafana.sql
-
-# Dump grafana database
-@dump: stop
-    mkdir -p backup
-    sqlite3 grafana/grafana.db .dump > backup/grafana.sql
-
-# Restore grafana database
-restore: stop
-    #!/usr/bin/env bash
-    if [ -f backup/grafana.sql ]; then
-        echo "Restore Grafana configuration"
-        rm -f grafana/grafana.db
-        sqlite3 grafana/grafana.db <  backup/grafana.sql
-    fi
-
-# Import datas
-@import:
-    ./importer/import.sh
+# Open browser to grafana page
+@chart: start
+    command -v xdg-open > /dev/null && xdg-open http://localhost:3000 || echo "goto to http://localhost:3000"
 
 # Browse world datas
 @browse:

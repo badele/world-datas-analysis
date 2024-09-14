@@ -8,22 +8,25 @@ miscellaneous worlds data and analysis
 
 ## Init environment
 
-If you have a `nix` environment, the `world-datas-analysis` environment is
-installed automaticaly when you enter on this project folder (`direnv`) or type
-`nix develop`.
+If you have a
+[**nix**](https://devops.jesuislibre.org/onboarding/nix-direnv-just) tools, the
+`world-datas-analysis` environment is installed automaticaly when you enter on
+this project folder (with `direnv`) or type manualy `nix develop`.
 
-[Here the documentation](https://devops.jesuislibre.org/onboarding/nix-direnv-just/)
-for installation note for the `direnv & nix` tool.
+If you don't have nix, install the following tools:
+
+- [just](https://github.com/casey/just)
+- [docker compose](https://docs.docker.com/compose/)
+- [sqlitebrowser](https://sqlitebrowser.org/)
 
 ## Usage
 
 ```
-just update # Update datas
-just start  # Start grafana goto http://localhost:3000
-just browse # Browse world-datas-analysis datas for helping create a grafana query
+just import # Import data to sqlite (used by grafana)
+just chart  # open the grafana (admin/admin)
+just stop   # stop the grafana server
+just browse # Browse world-datas-analysis with sqlitebrowser
 ```
-
-Go to http://localhost:3000 (`admin:admin`)
 
 ## Scopes reference
 
@@ -35,10 +38,10 @@ them with geonames city elements
 
 <!-- BEGIN SCOPEREFERENCE -->
 
-| provider | dataset                | wda_scope | source                   | nb_variables | nb_entries |
-| -------- | ---------------------- | --------- | ------------------------ | -----------: | ---------: |
-| geonames | wda_geonames_cities    | city      | https://www.geonames.org |           79 |    3003154 |
-| geonames | wda_geonames_countries | country   | https://www.geonames.org |           20 |        252 |
+| provider | dataset                | wda_scope | source               | nb_variables | nb_entries |
+| -------- | ---------------------- | --------- | -------------------- | -----------: | ---------: |
+| geonames | wda_geonames_cities    | city      | https://geonames.org |           98 |     534217 |
+| geonames | wda_geonames_countries | country   | https://geonames.org |           20 |        252 |
 
 <!-- END SCOPEREFERENCE -->
 
@@ -48,9 +51,8 @@ them with geonames city elements
 
 | provider   | description                                           | website                        | nb_datasets | nb_observations |
 | ---------- | ----------------------------------------------------- | ------------------------------ | ----------: | --------------: |
-| geonames   | Countries and cities informations                     | https://www.geonames.org       |           2 |         3003406 |
-| opendata3m | OpenData Montpellier Méditerranée Métropole           | https://data.montpellier3m.fr/ |           1 |           51590 |
-| vigilo     | Observations of the collaborative citizen application | https://vigilo.city            |           1 |           26132 |
+| opendata3m | OpenData Montpellier Méditerranée Métropole           | https://data.montpellier3m.fr/ |           1 |           54149 |
+| vigilo     | Observations of the collaborative citizen application | https://vigilo.city            |           1 |           25548 |
 
 <!-- END PROVIDER -->
 
@@ -58,12 +60,10 @@ them with geonames city elements
 
 <!-- BEGIN DATASET -->
 
-| provider   | real_provider | dataset                                 | wda_scope | wda_scope_ref          | description                 | source                                                                                                                  | nb_variables | nb_observations | nb_scopes |
-| ---------- | ------------- | --------------------------------------- | --------- | ---------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -----------: | --------------: | --------: |
-| geonames   | geonames      | wda_geonames_cities                     | city      | wda_geonames_cities    | Cities informations         | https://www.geonames.org                                                                                                |           79 |         3003154 |    434309 |
-| geonames   | geonames      | wda_geonames_countries                  | city      | wda_geonames_countries | Countries informations      | https://www.geonames.org                                                                                                |           20 |             252 |       252 |
-| opendata3m | opendata3m    | wda_opendata3m_ecocompteur_observations | city      | wda_geonames_cities    | ecocompteur observations    | https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66 |           88 |           51590 |        11 |
-| vigilo     | vigilo        | wda_vigilo_observations                 | city      | wda_geonames_cities    | vigilo citizen observations | https://vigilo.city                                                                                                     |           89 |           26132 |       261 |
+| provider   | real_provider | dataset                                 | wda_scope | wda_scope_ref       | description                 | source                                                                                                                  | nb_variables | nb_observations | nb_scopes |
+| ---------- | ------------- | --------------------------------------- | --------- | ------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -----------: | --------------: | --------: |
+| opendata3m | opendata3m    | wda_opendata3m_ecocompteur_observations | city      | wda_geonames_cities | ecocompteur observations    | https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66 |          107 |           54149 |        11 |
+| vigilo     | vigilo        | wda_vigilo_observations                 | city      | wda_geonames_cities | vigilo citizen observations | https://vigilo.city                                                                                                     |          111 |           25548 |       173 |
 
 <!-- END DATASET -->
 
@@ -90,23 +90,25 @@ them with geonames city elements
 
 ```text
 justfile commands:
-    help                    # This help
-    precommit-install       # Setup pre-commit
-    precommit-update        # Update pre-commit
-    precommit-check         # precommit check
+    browse                  # Browse world datas
+    chart                   # Open browser to grafana page
+    db-reset                # Reset duckdb database
+    doc-update FAKEFILENAME # Update documentation
     docker-build            # Build the wda docker image
+    docker-duckdb           # Run duckdb cli on docker
     docker-push             # Push the wda docker image to docker hub
     docker-run CMD=""       # Run the wda docker image
+    help                    # This help
+    import                  # Import datasets to sqlite
     lint                    # Lint the project
-    doc-update FAKEFILENAME # Update documentation
+    packages                # Show installed packages
+    precommit-check         # precommit check
+    precommit-install       # Setup pre-commit
+    precommit-update        # Update pre-commit
+    reset                   # Reset grafana storage
     start                   # Start grafana
     stop                    # Stop grafana
-    logs                    # Show grafana logs
-    dump                    # Dump grafana database
-    restore                 # Restore grafana database
-    import                  # Import datas
-    browse                  # Browse world datas
-    packages                # Show installed packages
+    update                  # Update datasets
 ```
 
 <!-- /COMMANDS -->

@@ -1400,7 +1400,7 @@
   "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "browser",
-  "title": "Heatmap",
+  "title": "Vigilo observations",
   "version": 6,
   "weekStart": ""
 }
