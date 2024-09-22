@@ -31,13 +31,17 @@ CREATE VIEW wda_geonames_countries AS
           ga.dem AS geomames_dem,
           gc.currency_name AS geomames_currency_name,
           gc.phone_prefix AS geonames_country_phone_prefix,
+          gc.postal_code_format AS geonames_country_postal_code_format,
+          gc.postal_code_regex AS geonames_country_postal_code_regex,
           gc.languages AS geonames_country_languages,
           gc.tld AS geonames_country_tld,
           gc.neighbours AS geonames_country_neighbours,
           ga.longitude AS geonames_country_longitude,
           ga.latitude AS geonames_country_latitude,
           ga.timezone AS geonames_country_timezone,
-          ga.modification AS geonames_country_modification
+          ga.modification AS geonames_country_modification,
+          gc.city_admin_level AS geonames_country_city_admin_level
+
   FROM geonames_countries gc
   LEFT JOIN geonames_allentries ga ON gc.geonameid = ga.id
 ;
@@ -102,8 +106,8 @@ DROP VIEW IF EXISTS wda_geonames_cities;
 CREATE VIEW wda_geonames_cities AS
   WITH admin1 AS (
       SELECT
-        id AS admin1_id,
-        name AS admin1_name,
+        admin1_id,
+        admin1_name,
         latitude AS admin1_latitude,
         longitude AS admin1_longitude,
         feature_class AS admin1_feature_class,
@@ -121,8 +125,8 @@ CREATE VIEW wda_geonames_cities AS
   ),
   admin2 AS (
       SELECT
-        id AS admin2_id,
-        name AS admin2_name,
+        admin2_id,
+        admin2_name,
         latitude AS admin2_latitude,
         longitude AS admin2_longitude,
         feature_class AS admin2_feature_class,
@@ -141,8 +145,8 @@ CREATE VIEW wda_geonames_cities AS
   ),
   admin3 AS (
       SELECT
-        id AS admin3_id,
-        name AS admin3_name,
+        admin3_id,
+        admin3_name,
         latitude AS admin3_latitude,
         longitude AS admin3_longitude,
         feature_class AS admin3_feature_class,
@@ -162,8 +166,8 @@ CREATE VIEW wda_geonames_cities AS
   ),
   admin4 AS (
       SELECT
-        id AS admin4_id,
-        name AS admin4_name,
+        admin4_id,
+        admin4_name,
         latitude AS admin4_latitude,
         longitude AS admin4_longitude,
         feature_class AS admin4_feature_class,
@@ -184,6 +188,7 @@ CREATE VIEW wda_geonames_cities AS
   )
   SELECT
           -- City
+          ga.geonames_fullcode AS geonames_geonames_fullcode,
           ga.id AS geonames_city_id,
           ga.name AS geonames_city_name,
           ga.country_code AS geonames_city_country_code,
@@ -200,6 +205,7 @@ CREATE VIEW wda_geonames_cities AS
           ga.dem AS geonames_city_dem,
           ga.timezone AS geonames_city_timezone,
           ga.modification AS geonames_city_modification,
+          ga.city_admin_level AS geonames_city_city_admin_level,
           -- admin
           ga1.*,
           ga2.*,
@@ -209,14 +215,11 @@ CREATE VIEW wda_geonames_cities AS
           gc.*
   FROM geonames_allentries ga
   LEFT JOIN wda_geonames_countries gc ON ga.country_code = gc.geonames_country_iso
-  -- LEFT JOIN admin1 ga1 ON ga.country_code = ga1.admin1_country_code AND ga.admin1_code = ga1.admin1_code
-  -- LEFT JOIN admin2 ga2 ON ga.country_code = ga2.admin2_country_code AND ga1.admin1_code = ga2.admin1_code AND ga.admin2_code = ga2.admin2_code
-  -- LEFT JOIN admin3 ga3 ON ga.country_code = ga3.admin3_country_code AND ga.admin3_code = ga3.admin3_code
-  -- LEFT JOIN admin4 ga4 ON ga.country_code = ga4.admin4_country_code AND ga.admin4_code = ga4.admin4_code
-  LEFT JOIN admin1 ga1 ON ga.country_code = ga1.admin1_country_code AND ga.admin1_code = ga1.admin1_code
-  LEFT JOIN admin2 ga2 ON ga.country_code = ga2.admin2_country_code AND ga1.admin1_code = ga2.admin1_code AND ga.admin2_code = ga2.admin2_code
-  LEFT JOIN admin3 ga3 ON ga.country_code = ga3.admin3_country_code AND ga1.admin1_code = ga3.admin1_code AND ga2.admin2_code = ga3.admin2_code AND ga.admin3_code = ga3.admin3_code
-  LEFT JOIN admin4 ga4 ON ga.country_code = ga4.admin4_country_code AND ga1.admin1_code = ga4.admin1_code AND ga2.admin2_code = ga4.admin2_code AND ga3.admin3_code = ga4.admin3_code AND ga.admin4_code = ga4.admin4_code
+  LEFT JOIN admin1 ga1 ON ga1.admin1_id = ga.id
+  LEFT JOIN admin2 ga2 ON ga2.admin2_id = ga.id
+  LEFT JOIN admin3 ga3 ON ga3.admin3_id = ga.id
+  LEFT JOIN admin4 ga4 ON ga4.admin4_id = ga.id
+  WHERE ga.feature_code IN ('ADM1','ADM2','ADM3','ADM4')
 ;
 
 -- CHECK COUNT CONTENT
