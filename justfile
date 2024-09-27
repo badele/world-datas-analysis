@@ -39,12 +39,16 @@ precommit-install:
     docker push {{ dockerimage }}
 
 # Run duckdb cli on docker
-@docker-duckdb:
-    just docker-run "duckdb db/wda.duckdb"
+@duckdb:
+    duckdb db/wda.duckdb
+
+# Run psql cli on dockers
+@psql:
+    PGPASSWORD=wda psql -h 127.0.0.1 -U wda -d wda
 
 # Run the wda docker image
-@docker-run CMD="":
-    docker run -it --rm -v $(pwd):/wda -w /wda {{ dockerimage }} {{ CMD }}
+@docker-run CMD="": start
+    docker run --net host -it --rm -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
 
 ###############################################################################
 # DB
@@ -104,6 +108,7 @@ precommit-install:
 # Open browser to grafana page
 @chart: start
     command -v xdg-open > /dev/null && xdg-open http://localhost:3000 || echo "goto to http://localhost:3000"
+
 
 # Browse world datas
 @browse:

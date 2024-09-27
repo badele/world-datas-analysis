@@ -133,7 +133,7 @@ def pull(provider, repo_url):
 ###############################################################################
 # Export tables to CSV (./dataset/*)
 ###############################################################################
-def export2CSV(provider, tables=None):
+def data2duckdb(provider, tables=None):
     if tables is not None:
         lasthash = loadHash(provider)
         computedhash = computeProviderHashes(provider, tables)
@@ -141,9 +141,9 @@ def export2CSV(provider, tables=None):
         if lasthash == computedhash:
             return
 
-    show_title(f"Exporting {provider} to CSV")
+    show_title(f"Exporting {provider} to DuckDB")
 
-    command = f"duckdb db/wda.duckdb < ./importer/{provider}/_export2csv.sql"
+    command = f"duckdb db/wda.duckdb < ./importer/{provider}/_data2duckdb.sql"
     process = subprocess.run(command, shell=True, check=True)
     if process.returncode != 0:
         print(

@@ -1,4 +1,5 @@
-INSTALL sqlite; LOAD sqlite;
+-- INSTALL sqlite; LOAD sqlite;
+-- INSTALL postgres; LOAD postgres;
 
 .read './importer/init_commons.sql'
 

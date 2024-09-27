@@ -1,17 +1,17 @@
-BEGIN TRANSACTION;
-
--- CREATE OR REPLACE TABLE geonames_admin1codes AS
---     SELECT * FROM read_csv('./dataset/geonames/admin1CodesASCII.csv');
+-- BEGIN TRANSACTION;
 --
--- CREATE OR REPLACE TABLE geonames_admin2codes AS
---     SELECT * FROM read_csv('./dataset/geonames/admin2Codes.csv');
-
-CREATE OR REPLACE TABLE geonames_countries AS
-    SELECT * FROM read_csv('./dataset/geonames/countries.csv');
-
-CREATE OR REPLACE TABLE geonames_allentries AS
-    SELECT * FROM read_parquet('./dataset/geonames/allentries.parquet');
-
-COMMIT;
-
-.read './importer/geonames/_commons.sql'
+-- -- CREATE OR REPLACE TABLE geonames_admin1codes AS
+-- --     SELECT * FROM read_csv('./dataset/geonames/admin1CodesASCII.csv');
+-- --
+-- -- CREATE OR REPLACE TABLE geonames_admin2codes AS
+-- --     SELECT * FROM read_csv('./dataset/geonames/admin2Codes.csv');
+--
+-- CREATE OR REPLACE TABLE geonames_countries AS
+--     SELECT * FROM read_csv('./dataset/geonames/countries.csv');
+--
+-- CREATE OR REPLACE TABLE geonames_allentries AS
+--     SELECT * FROM read_parquet('./dataset/geonames/allentries.parquet');
+--
+-- COMMIT;
+--
+-- .read './importer/geonames/_commons.sql'

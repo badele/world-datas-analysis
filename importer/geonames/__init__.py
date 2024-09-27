@@ -61,9 +61,7 @@ def update():
     wdalib.init_provider(provider)
     wdalib.show_title(f"Update {provider}")
 
-    update_admin1codes()
-    update_admin2codes()
     update_countries()
     update_allentries()
 
-    wdalib.export2CSV(provider)
+    wdalib.data2duckdb(provider)

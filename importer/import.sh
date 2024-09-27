@@ -4,6 +4,21 @@
 datasets="dr5hn sapics duggytuxy vigilo wda"
 datasets="geonames vigilo opendata3m wda"
 datasets="geonames vigilo"
+datasets="geonames"
+
+###############################################################################
+# Import to postgresql
+###############################################################################
+for dataset in $datasets; do
+	PGPASSWORD=wda psql -h 127.0.0.1 -U wda -d wda -f "./importer/init_commons.sql"
+	if [ -f "./importer/$dataset/_export2psql.sql" ]; then
+		echo "===================================================================="
+		echo "Export $dataset datasets to postgresql database"
+		echo "===================================================================="
+		PGPASSWORD=wda psql -h 127.0.0.1 -U wda -d wda -f "./importer/$dataset/_export2psql.sql"
+	fi
+done
+exit 0
 
 ###############################################################################
 # duckdb
@@ -30,13 +45,13 @@ done
 # Convert to sqlite
 ###############################################################################
 rm -f db/wda.sqlite
-duckdb db/wda_imported.duckdb <./importer/init_sqlite.sql
+duckdb db/wda_imported.duckdb <./importer/init_psql.sql
 for dataset in $datasets; do
-	if [ -f "./importer/$dataset/_export2sqlite.sql" ]; then
+	if [ -f "./importer/$dataset/_export2psql.sql" ]; then
 		echo "===================================================================="
-		echo "Export $dataset datasets to sqlite"
+		echo "Export $dataset datasets to postgresql database"
 		echo "===================================================================="
-		duckdb db/wda_imported.duckdb <./importer/$dataset/_export2sqlite.sql
+		duckdb db/wda_imported.duckdb <./importer/$dataset/_export2psql.sql
 	fi
 done
 # duckdb db/wda.duckdb <./importer/dr5hn/_export2sqlite.sql

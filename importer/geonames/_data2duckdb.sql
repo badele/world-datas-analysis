@@ -1,29 +1,5 @@
 BEGIN TRANSACTION;
 
--- Admin1 code
--- CREATE OR REPLACE TABLE geonames_admin1codes (
---   code TEXT,
---   name TEXT,
---   name_ascii TEXT,
---   geonameid BIGINT
--- );
---
--- INSERT INTO geonames_admin1codes
---     SELECT *
---     FROM read_csv('./downloaded/geonames/admin1CodesASCII.txt');
---
--- -- Admin2 code
--- CREATE OR REPLACE TABLE geonames_admin2codes (
---   code TEXT,
---   name TEXT,
---   name_ascii TEXT,
---   geonameid BIGINT
--- );
---
--- INSERT INTO geonames_admin2codes
---     SELECT *
---     FROM read_csv('./downloaded/geonames/admin2Codes.txt');
-
 -- Countries
 DROP TABLE IF EXISTS geonames_countries;
 CREATE TABLE geonames_countries (
@@ -186,7 +162,7 @@ UPDATE geonames_countries gc SET city_admin_level = (SELECT MAX(city_admin_level
 
 COMMIT;
 
-COPY geonames_countries TO './dataset/geonames/countries.csv' (DELIMITER '|', HEADER);
+COPY geonames_countries TO './dataset/geonames/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 
-.read './importer/geonames/_commons.sql'
+-- .read './importer/geonames/_commons.sql'

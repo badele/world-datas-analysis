@@ -21,11 +21,11 @@ def update():
     #
     # duggytuxy.update()
     # ipsum.update()
-    opendata3m.ecocompteur.update()
-    vigilo.update()
+    # opendata3m.ecocompteur.update()
+    # vigilo.update()
 
     # World Datas Analysis
-    wda.update()
+    # wda.update()
 
 
 if __name__ == "__main__":
