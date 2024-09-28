@@ -1,38 +1,7 @@
 BEGIN;
--------------------------------------------------------------------------------
--- Active PSQL DuckDB FDW extension
--------------------------------------------------------------------------------
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT
-            1
-        FROM
-            pg_extension
-        WHERE
-            extname = 'duckdb_fdw') THEN
-    CREATE EXTENSION duckdb_fdw;
-END IF;
-END
-$$;
--------------------------------------------------------------------------------
--- enable duckdb server
--------------------------------------------------------------------------------
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT
-            1
-        FROM
-            pg_foreign_server
-        WHERE
-            srvname = 'duckdb_svr') THEN
-    CREATE SERVER duckdb_svr FOREIGN DATA WRAPPER duckdb_fdw OPTIONS (
-        DATABASE ':memory:'
-    );
-END IF;
-END
-$$;
+
+\i './importer/init_psql.sql';
+
 -------------------------------------------------------------------------------
 -- Load data from Parquet files
 -------------------------------------------------------------------------------
@@ -60,7 +29,9 @@ CREATE FOREIGN TABLE public.duckdb_geonames_countries (
     city_admin_level integer)
 SERVER duckdb_svr OPTIONS (
     TABLE 'read_parquet("./dataset/geonames/countries.parquet")'
-);
+)
+;
+
 DROP FOREIGN TABLE IF EXISTS public.duckdb_geonames_allentries CASCADE;
 CREATE FOREIGN TABLE public.duckdb_geonames_allentries (
     geonames_fullcode text,
@@ -98,14 +69,18 @@ CREATE FOREIGN TABLE public.duckdb_geonames_allentries (
     city_admin_level integer)
 SERVER duckdb_svr OPTIONS (
     TABLE 'read_parquet("./dataset/geonames/allentries.parquet")'
-);
+)
+;
+
 -------------------------------------------------------------------------------
 -- Copy data from DuckDB to Postgres tables
 -------------------------------------------------------------------------------
 DROP TABLE IF EXISTS geonames_countries CASCADE;
 DROP TABLE IF EXISTS geonames_allentries CASCADE;
+
 CREATE TABLE geonames_countries AS TABLE duckdb_geonames_countries;
 CREATE TABLE geonames_allentries AS TABLE duckdb_geonames_allentries;
+
 -------------------------------------------------------------------------------
 -- Create index
 -------------------------------------------------------------------------------
@@ -113,8 +88,10 @@ CREATE INDEX idx_geonames_allentries_admin1 ON geonames_allentries (country_code
 CREATE INDEX idx_geonames_allentries_admin2 ON geonames_allentries (country_code, admin2_code);
 CREATE INDEX idx_geonames_allentries_admin3 ON geonames_allentries (country_code, admin3_code);
 CREATE INDEX idx_geonames_allentries_admin4 ON geonames_allentries (country_code, admin4_code);
+
 CREATE UNIQUE INDEX idx_geonames_country_iso ON geonames_countries (iso);
 CREATE UNIQUE INDEX idx_geonames_allentries_id ON geonames_allentries (id);
+
 -------------------------------------------------------------------------------
 -- Create view
 -------------------------------------------------------------------------------
@@ -145,11 +122,14 @@ SELECT
     gc.city_admin_level AS geonames_country_city_admin_level
 FROM
     geonames_countries gc
-    LEFT JOIN geonames_allentries ga ON gc.geonameid = ga.id;
+    LEFT JOIN geonames_allentries ga ON gc.geonameid = ga.id
+;
 ALTER TABLE public.wda_geonames_countries OWNER TO wda;
+
 -- CHECK COUNT CONTENT
 SELECT
     'Check geonames wda_geonames_countries';
+
 DO $$
 DECLARE
     src_count int;
@@ -172,6 +152,7 @@ BEGIN
     END IF;
 END
 $$;
+
 --------------------------------------
 -- Cities
 --------------------------------------
@@ -370,8 +351,10 @@ FROM
     LEFT JOIN admin3 ga3 ON ga3.admin3_id = ga.id
     LEFT JOIN admin4 ga4 ON ga4.admin4_id = ga.id
 WHERE
-    ga.feature_code = ANY (ARRAY['ADM1'::text, 'ADM2'::text, 'ADM3'::text, 'ADM4'::text]);
+    ga.feature_code = ANY (ARRAY['ADM1'::text, 'ADM2'::text, 'ADM3'::text, 'ADM4'::text])
+;
 ALTER TABLE public.wda_geonames_cities OWNER TO wda;
+
 -- CHECK COUNT CONTENT
 DO $$
 DECLARE
@@ -398,6 +381,7 @@ BEGIN
     END IF;
 END
 $$;
+
 DELETE FROM wda_scopes_reference
 WHERE provider = 'geonames'
     AND dataset = 'wda_geonames_cities';
@@ -427,7 +411,9 @@ SELECT
         SELECT
             COUNT(*)
         FROM
-            wda_geonames_cities) AS nb_entries;
+            wda_geonames_cities) AS nb_entries
+;
+
 INSERT INTO wda_scopes_reference
 SELECT
     'geonames',
@@ -445,5 +431,6 @@ SELECT
         SELECT
             COUNT(*)
         FROM
-            wda_geonames_countries) AS nb_entries;
+            wda_geonames_countries) AS nb_entries
+;
 COMMIT;

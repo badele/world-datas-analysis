@@ -95,4 +95,4 @@ def update():
     update_categories()
     update_scopes()
 
-    wdalib.export2CSV(provider)
+    wdalib.data2duckdb(provider)

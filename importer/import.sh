@@ -4,7 +4,6 @@
 datasets="dr5hn sapics duggytuxy vigilo wda"
 datasets="geonames vigilo opendata3m wda"
 datasets="geonames vigilo"
-datasets="geonames"
 
 ###############################################################################
 # Import to postgresql

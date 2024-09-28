@@ -22,7 +22,7 @@ def update():
     # duggytuxy.update()
     # ipsum.update()
     # opendata3m.ecocompteur.update()
-    # vigilo.update()
+    vigilo.update()
 
     # World Datas Analysis
     # wda.update()

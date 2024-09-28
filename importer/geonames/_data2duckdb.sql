@@ -140,13 +140,10 @@ SET geonames_fullcode = COALESCE(country_code, '') || '-' ||
 WHERE feature_code='ADM4'
 ;
 
-
-
 UPDATE geonames_allentries ga set admin1_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin1_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin1_fullcode IS NOT NULL;
 UPDATE geonames_allentries ga set admin2_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin2_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin2_fullcode IS NOT NULL;
 UPDATE geonames_allentries ga set admin3_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin3_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin3_fullcode IS NOT NULL;
 UPDATE geonames_allentries ga set admin4_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin4_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin4_fullcode IS NOT NULL;
-
 
 UPDATE geonames_allentries ga set admin1_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin1_id);
 UPDATE geonames_allentries ga set admin2_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin2_id);
@@ -164,5 +161,3 @@ COMMIT;
 
 COPY geonames_countries TO './dataset/geonames/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-
--- .read './importer/geonames/_commons.sql'
