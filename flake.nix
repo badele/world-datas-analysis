@@ -33,8 +33,7 @@
               # Database
               duckdb
               jq
-              sqlite
-              sqlitebrowser
+              parquet-tools
 
               # R environment
               R

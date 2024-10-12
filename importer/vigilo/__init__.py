@@ -9,7 +9,7 @@ import wdalib
 provider = "vigilo"
 
 
-def update_categories():
+def download_categories():
     filename = f"./downloaded/{provider}/categories.json"
 
     resp = requests.get("https://vigilo-bf7f2.firebaseio.com/categorieslist.json")
@@ -19,7 +19,7 @@ def update_categories():
     wdalib.writeContentToFile(filename, resp.text)
 
 
-def update_scopes():
+def download_scopes():
     citiesresp = requests.get("https://vigilo-bf7f2.firebaseio.com/citylist.json")
     if citiesresp.status_code != 200:
         return ""
@@ -62,7 +62,7 @@ def update_scopes():
                 city["scope"] = scope
                 instances.append(city)
 
-            update_observations(scope, name, api_path)
+            download_observations(scope, name, api_path)
 
         except requests.exceptions.SSLError:
             print(f"!!! Bad SSL certificate for {name} ({scope}) !!!")
@@ -75,7 +75,7 @@ def update_scopes():
     wdalib.writeContentToFile(instancesfilename, json.dumps(instances))
 
 
-def update_observations(scope, name, api_path):
+def download_observations(scope, name, api_path):
     filename = f"./downloaded/{provider}/observations_{scope}.json"
 
     wdalib.downloadFile(
@@ -85,14 +85,18 @@ def update_observations(scope, name, api_path):
     )
 
 
-def update():
-    if not wdalib.isFolderOutdated(f"./dataset/{provider}", 7 * 24):
+def download():
+    if not wdalib.isFolderOutdated(f"./downloaded/{provider}", 7 * 24):
         return
 
-    wdalib.init_provider(provider)
-    wdalib.show_title(f"Update {provider}")
+    wdalib.init_download(provider)
+    wdalib.show_title(f"Download {provider}")
 
-    update_categories()
-    update_scopes()
+    download_categories()
+    download_scopes()
+
+
+def update():
+    wdalib.init_dataset(provider)
 
     wdalib.data2duckdb(provider)

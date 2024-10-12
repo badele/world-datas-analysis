@@ -13,10 +13,12 @@ import zipfile
 from tqdm import tqdm
 
 
-def init_provider(provider):
+def init_download(provider):
     shutil.rmtree(f"./downloaded/{provider}", ignore_errors=True)
     os.makedirs(f"./downloaded/{provider}", exist_ok=True)
 
+
+def init_dataset(provider):
     shutil.rmtree(f"./dataset/{provider}", ignore_errors=True)
     os.makedirs(f"./dataset/{provider}", exist_ok=True)
 

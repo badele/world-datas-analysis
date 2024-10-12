@@ -22,14 +22,12 @@ CREATE TABLE geonames_countries (
     geonameid INTEGER,
     neighbours TEXT,
     equivalent_fips_code TEXT,
-    city_admin_level INTEGER
 );
 
 INSERT INTO geonames_countries
-    SELECT  *, NULL
+    SELECT  *
     FROM read_csv('./downloaded/geonames/countryInfo.txt',skip=50);
 
--- entries
 DROP TABLE IF EXISTS geonames_allentries;
 CREATE TABLE geonames_allentries (
     geonames_fullcode TEXT,
@@ -64,14 +62,19 @@ CREATE TABLE geonames_allentries (
     admin2_name TEXT,
     admin3_name TEXT,
     admin4_name TEXT,
-    city_admin_level INTEGER
+    city_id BIGINT,
+    city_name TEXT
 );
 
 INSERT INTO geonames_allentries
-    SELECT NULL,*,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+    SELECT NULL,*,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
     FROM read_csv('./downloaded/geonames/allCountries.txt')
-    WHERE column06 = 'A';
+    WHERE column06 = 'A' or column06 = 'P'
 ;
+
+-- Encoding problem in this field
+ALTER TABLE geonames_allentries DROP COLUMN alternatenames;
+CREATE INDEX idx_geonames_allentries_lat_lon ON geonames_allentries (latitude,longitude);
 
 -------------------------------------------------------------------------------
 -- Compute admin fullcodes
@@ -150,12 +153,15 @@ UPDATE geonames_allentries ga set admin2_name=(SELECT name FROM geonames_allentr
 UPDATE geonames_allentries ga set admin3_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin3_id);
 UPDATE geonames_allentries ga set admin4_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin4_id);
 
-UPDATE geonames_allentries SET city_admin_level=4 WHERE admin4_id IS NOT NULL;
-UPDATE geonames_allentries SET city_admin_level=3 WHERE city_admin_level IS NULL AND admin3_id IS NOT NULL;
-UPDATE geonames_allentries SET city_admin_level=2 WHERE city_admin_level IS NULL AND admin2_id IS NOT NULL;
-UPDATE geonames_allentries SET city_admin_level=1 WHERE city_admin_level IS NULL AND admin1_id IS NOT NULL;
+UPDATE geonames_allentries ga set city_id=admin4_id  WHERE admin4_name IS NOT NULL AND city_id IS NULL;
+UPDATE geonames_allentries ga set city_id=admin3_id  WHERE admin3_name IS NOT NULL AND city_id IS NULL;
+UPDATE geonames_allentries ga set city_id=admin2_id  WHERE admin2_name IS NOT NULL AND city_id IS NULL;
+UPDATE geonames_allentries ga set city_id=admin1_id  WHERE admin1_name IS NOT NULL AND city_id IS NULL;
 
-UPDATE geonames_countries gc SET city_admin_level = (SELECT MAX(city_admin_level) FROM geonames_allentries WHERE country_code=gc.iso GROUP BY country_code);
+UPDATE geonames_allentries ga set city_name=admin4_name  WHERE admin4_name IS NOT NULL AND city_name IS NULL;
+UPDATE geonames_allentries ga set city_name=admin3_name  WHERE admin3_name IS NOT NULL AND city_name IS NULL;
+UPDATE geonames_allentries ga set city_name=admin2_name  WHERE admin2_name IS NOT NULL AND city_name IS NULL;
+UPDATE geonames_allentries ga set city_name=admin1_name  WHERE admin1_name IS NOT NULL AND city_name IS NULL;
 
 COMMIT;
 

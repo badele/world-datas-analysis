@@ -22,10 +22,10 @@ If you don't have nix, install the following tools:
 ## Usage
 
 ```
-just import # Import data to sqlite (used by grafana)
-just chart  # open the grafana (admin/admin)
-just stop   # stop the grafana server
-just browse # Browse world-datas-analysis with sqlitebrowser
+just import     # Import data to PostgreSQL (used by grafana)
+just chart      # open the grafana (admin/admin)
+just stop       # stop the grafana server
+just browse     # Browse world-datas-analysis with sqlitebrowser
 ```
 
 ## Scopes reference

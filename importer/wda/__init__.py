@@ -9,4 +9,4 @@ def update():
     wdalib.init_provider(provider)
     wdalib.show_title(f"Update {provider}")
 
-    wdalib.export2CSV(provider)
+    wdalib.data2duckdb(provider)

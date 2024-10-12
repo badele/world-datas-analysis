@@ -8,27 +8,7 @@ provider = "geonames"
 repo_url = "https://download.geonames.org/export"
 
 
-def update_admin1codes():
-    filename = f"./downloaded/{provider}/admin1CodesASCII.txt"
-
-    wdalib.downloadFile(
-        f"{repo_url}/dump/admin1CodesASCII.txt",
-        "admin1CodesASCII",
-        filename,
-    )
-
-
-def update_admin2codes():
-    filename = f"./downloaded/{provider}/admin2Codes.txt"
-
-    wdalib.downloadFile(
-        f"{repo_url}/dump/admin2Codes.txt",
-        "admin2Codes",
-        filename,
-    )
-
-
-def update_countries():
+def download_countries():
     filename = f"./downloaded/{provider}/countryInfo.txt"
 
     wdalib.downloadFile(
@@ -38,7 +18,7 @@ def update_countries():
     )
 
 
-def update_allentries():
+def download_allentries():
     filename = f"./downloaded/{provider}/allCountries.zip"
 
     wdalib.downloadFile(
@@ -54,14 +34,18 @@ def update_allentries():
     )
 
 
-def update():
-    if not wdalib.isFolderOutdated(f"./dataset/{provider}", 7 * 24):
+def download():
+    if not wdalib.isFolderOutdated(f"./downloaded/{provider}", 7 * 24):
         return
 
-    wdalib.init_provider(provider)
-    wdalib.show_title(f"Update {provider}")
+    wdalib.init_download(provider)
+    wdalib.show_title(f"Download {provider}")
 
-    update_countries()
-    update_allentries()
+    download_countries()
+    download_allentries()
+
+
+def update():
+    wdalib.init_dataset(provider)
 
     wdalib.data2duckdb(provider)

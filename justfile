@@ -62,6 +62,10 @@ precommit-install:
 # dataset
 ###############################################################################
 
+# Download datasets
+@download:
+    just docker-run ./importer/download.sh
+
 # Update datasets
 @update:
     just docker-run ./importer/update.sh
@@ -109,10 +113,17 @@ precommit-install:
 @chart: start
     command -v xdg-open > /dev/null && xdg-open http://localhost:3000 || echo "goto to http://localhost:3000"
 
+# Open browser to pgadmin page
+@pgadmin: start
+    command -v xdg-open > /dev/null && xdg-open http://localhost:8080 || echo "goto to http://localhost:8080"
 
-# Browse world datas
-@browse:
-    sqlitebrowser db/wda.sqlite
+# Inspect parquet file
+@parquet-inspect FILE:
+    parquet-tools inspect {{ FILE }}
+
+# Convert parquet file to CSV
+@parquet-csv FILE:
+    parquet-tools csv {{ FILE }}
 
 # Show installed packages
 @packages:

@@ -5,8 +5,8 @@ BEGIN;
 -------------------------------------------------------------------------------
 -- Load data from Parquet files
 -------------------------------------------------------------------------------
-DROP FOREIGN TABLE IF EXISTS public.duckdb_geonames_countries CASCADE;
-CREATE FOREIGN TABLE public.duckdb_geonames_countries (
+DROP FOREIGN TABLE IF EXISTS duckdb_geonames_countries CASCADE;
+CREATE FOREIGN TABLE duckdb_geonames_countries (
     iso text,
     iso3 text,
     iso_numeric integer,
@@ -25,20 +25,19 @@ CREATE FOREIGN TABLE public.duckdb_geonames_countries (
     postal_code_regex text,
     geonameid integer,
     neighbours text,
-    equivalent_fips_code text,
-    city_admin_level integer)
+    equivalent_fips_code text
+)
 SERVER duckdb_svr OPTIONS (
     TABLE 'read_parquet("./dataset/geonames/countries.parquet")'
 )
 ;
 
-DROP FOREIGN TABLE IF EXISTS public.duckdb_geonames_allentries CASCADE;
-CREATE FOREIGN TABLE public.duckdb_geonames_allentries (
+DROP FOREIGN TABLE IF EXISTS duckdb_geonames_allentries CASCADE;
+CREATE FOREIGN TABLE duckdb_geonames_allentries (
     geonames_fullcode text,
     id integer,
     "name" text,
     asciiname text,
-    alternatenames text,
     latitude double precision,
     longitude double precision,
     feature_class text,
@@ -66,7 +65,9 @@ CREATE FOREIGN TABLE public.duckdb_geonames_allentries (
     admin2_name text,
     admin3_name text,
     admin4_name text,
-    city_admin_level integer)
+    city_id bigint,
+    city_name text
+)
 SERVER duckdb_svr OPTIONS (
     TABLE 'read_parquet("./dataset/geonames/allentries.parquet")'
 )
@@ -95,7 +96,7 @@ CREATE UNIQUE INDEX idx_geonames_allentries_id ON geonames_allentries (id);
 -------------------------------------------------------------------------------
 -- Create view
 -------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW public.wda_geonames_countries AS
+CREATE OR REPLACE VIEW wda_geonames_countries AS
 SELECT
     gc.geonameid AS geonames_country_id,
     ga.feature_class AS geonames_country_feature_class,
@@ -107,8 +108,8 @@ SELECT
     gc.capital AS geonames_country_capital,
     ga.population AS geonames_country_population,
     ga.elevation AS geonames_country_elevation,
-    ga.dem AS geomames_dem,
-    gc.currency_name AS geomames_currency_name,
+    ga.dem AS geomames_country_dem,
+    gc.currency_name AS geomames_country_currency_name,
     gc.phone_prefix AS geonames_country_phone_prefix,
     gc.postal_code_format AS geonames_country_postal_code_format,
     gc.postal_code_regex AS geonames_country_postal_code_regex,
@@ -118,13 +119,11 @@ SELECT
     ga.longitude AS geonames_country_longitude,
     ga.latitude AS geonames_country_latitude,
     ga.timezone AS geonames_country_timezone,
-    ga.modification AS geonames_country_modification,
-    gc.city_admin_level AS geonames_country_city_admin_level
+    ga.modification AS geonames_country_modification
 FROM
     geonames_countries gc
     LEFT JOIN geonames_allentries ga ON gc.geonameid = ga.id
 ;
-ALTER TABLE public.wda_geonames_countries OWNER TO wda;
 
 -- CHECK COUNT CONTENT
 SELECT
@@ -156,20 +155,16 @@ $$;
 --------------------------------------
 -- Cities
 --------------------------------------
-CREATE OR REPLACE VIEW public.wda_geonames_cities AS
+DROP VIEW IF EXISTS wda_geonames_cities CASCADE;
+CREATE OR REPLACE VIEW wda_geonames_cities AS
 WITH admin1 AS (
     SELECT
-        geonames_allentries.admin1_id,
+        geonames_allentries.id AS admin1_id,
         geonames_allentries.admin1_name,
         geonames_allentries.latitude AS admin1_latitude,
         geonames_allentries.longitude AS admin1_longitude,
-        geonames_allentries.feature_class AS admin1_feature_class,
-        geonames_allentries.feature_code AS admin1_feature_code,
-        geonames_allentries.country_code AS admin1_country_code,
-        geonames_allentries.cc2 AS admin1_cc2,
         geonames_allentries.population AS admin1_population,
         geonames_allentries.elevation AS admin1_elevation,
-        geonames_allentries.dem AS admin1_dem,
         geonames_allentries.timezone AS admin1_timezone,
         geonames_allentries.modification AS admin1_modification
     FROM
@@ -180,17 +175,12 @@ WITH admin1 AS (
 ),
 admin2 AS (
     SELECT
-        geonames_allentries.admin2_id,
+        geonames_allentries.id AS admin2_id,
         geonames_allentries.admin2_name,
         geonames_allentries.latitude AS admin2_latitude,
         geonames_allentries.longitude AS admin2_longitude,
-        geonames_allentries.feature_class AS admin2_feature_class,
-        geonames_allentries.feature_code AS admin2_feature_code,
-        geonames_allentries.country_code AS admin2_country_code,
-        geonames_allentries.cc2 AS admin2_cc2,
         geonames_allentries.population AS admin2_population,
         geonames_allentries.elevation AS admin2_elevation,
-        geonames_allentries.dem AS admin2_dem,
         geonames_allentries.timezone AS admin2_timezone,
         geonames_allentries.modification AS admin2_modification
     FROM
@@ -201,17 +191,12 @@ admin2 AS (
 ),
 admin3 AS (
     SELECT
-        geonames_allentries.admin3_id,
+        geonames_allentries.id AS admin3_id,
         geonames_allentries.admin3_name,
         geonames_allentries.latitude AS admin3_latitude,
         geonames_allentries.longitude AS admin3_longitude,
-        geonames_allentries.feature_class AS admin3_feature_class,
-        geonames_allentries.feature_code AS admin3_feature_code,
-        geonames_allentries.country_code AS admin3_country_code,
-        geonames_allentries.cc2 AS admin3_cc2,
         geonames_allentries.population AS admin3_population,
         geonames_allentries.elevation AS admin3_elevation,
-        geonames_allentries.dem AS admin3_dem,
         geonames_allentries.timezone AS admin3_timezone,
         geonames_allentries.modification AS admin3_modification
     FROM
@@ -222,21 +207,16 @@ admin3 AS (
 ),
 admin4 AS (
     SELECT
-        geonames_allentries.admin4_id,
+        geonames_allentries.id AS admin4_id,
         geonames_allentries.admin4_name,
         geonames_allentries.latitude AS admin4_latitude,
         geonames_allentries.longitude AS admin4_longitude,
-        geonames_allentries.feature_class AS admin4_feature_class,
-        geonames_allentries.feature_code AS admin4_feature_code,
-        geonames_allentries.country_code AS admin4_country_code,
-        geonames_allentries.cc2 AS admin4_cc2,
         geonames_allentries.admin1_code,
         geonames_allentries.admin2_code,
         geonames_allentries.admin3_code,
         geonames_allentries.admin4_code,
         geonames_allentries.population AS admin4_population,
         geonames_allentries.elevation AS admin4_elevation,
-        geonames_allentries.dem AS admin4_dem,
         geonames_allentries.timezone AS admin4_timezone,
         geonames_allentries.modification AS admin4_modification
     FROM
@@ -246,80 +226,52 @@ admin4 AS (
         AND geonames_allentries.feature_code = 'ADM4'::text
 )
 SELECT
-    ga.geonames_fullcode AS geonames_geonames_fullcode,
-    ga.id AS geonames_city_id,
-    ga.name AS geonames_city_name,
-    ga.country_code AS geonames_city_country_code,
-    ga.feature_class AS geonames_city_feature_class,
-    ga.feature_code AS geonames_city_feature_code,
-    ga.admin1_code AS geonames_city_admin1_code,
-    ga.admin2_code AS geonames_city_admin2_code,
-    ga.admin3_code AS geonames_city_admin3_code,
-    ga.admin4_code AS geonames_city_admin4_code,
-    ga.population AS geonames_city_population,
-    ga.longitude AS geonames_city_longitude,
-    ga.latitude AS geonames_city_latitude,
-    ga.elevation AS geonames_city_elevation,
-    ga.dem AS geonames_city_dem,
-    ga.timezone AS geonames_city_timezone,
-    ga.modification AS geonames_city_modification,
-    ga.city_admin_level AS geonames_city_city_admin_level,
-    ga1.admin1_id,
-    ga1.admin1_name,
-    ga1.admin1_latitude,
-    ga1.admin1_longitude,
-    ga1.admin1_feature_class,
-    ga1.admin1_feature_code,
-    ga1.admin1_country_code,
-    ga1.admin1_cc2,
-    ga1.admin1_population,
-    ga1.admin1_elevation,
-    ga1.admin1_dem,
-    ga1.admin1_timezone,
-    ga1.admin1_modification,
-    ga2.admin2_id,
-    ga2.admin2_name,
-    ga2.admin2_latitude,
-    ga2.admin2_longitude,
-    ga2.admin2_feature_class,
-    ga2.admin2_feature_code,
-    ga2.admin2_country_code,
-    ga2.admin2_cc2,
-    ga2.admin2_population,
-    ga2.admin2_elevation,
-    ga2.admin2_dem,
-    ga2.admin2_timezone,
-    ga2.admin2_modification,
-    ga3.admin3_id,
-    ga3.admin3_name,
-    ga3.admin3_latitude,
-    ga3.admin3_longitude,
-    ga3.admin3_feature_class,
-    ga3.admin3_feature_code,
-    ga3.admin3_country_code,
-    ga3.admin3_cc2,
-    ga3.admin3_population,
-    ga3.admin3_elevation,
-    ga3.admin3_dem,
-    ga3.admin3_timezone,
-    ga3.admin3_modification,
-    ga4.admin4_id,
-    ga4.admin4_name,
-    ga4.admin4_latitude,
-    ga4.admin4_longitude,
-    ga4.admin4_feature_class,
-    ga4.admin4_feature_code,
-    ga4.admin4_country_code,
-    ga4.admin4_cc2,
-    ga4.admin1_code,
-    ga4.admin2_code,
-    ga4.admin3_code,
-    ga4.admin4_code,
-    ga4.admin4_population,
-    ga4.admin4_elevation,
-    ga4.admin4_dem,
-    ga4.admin4_timezone,
-    ga4.admin4_modification,
+    ga.id AS geonames_id,
+    ga.feature_class AS geonames_feature_class,
+    ga.feature_code AS geonames_feature_code,
+    ga.name AS geonames_name,
+    ga.admin4_name AS geonames_admin4_name,
+    ga.admin3_name AS geonames_admin3_name,
+    ga.admin2_name AS geonames_admin2_name,
+    ga.admin1_name AS geonames_admin1_name,
+    ga.admin4_code AS geonames_admin4_code,
+    ga.admin3_code AS geonames_admin3_code,
+    ga.admin2_code AS geonames_admin2_code,
+    ga.admin1_code AS geonames_admin1_code,
+    ga.population AS geonames_population,
+    ga4.admin4_population AS geonames_admin4_population,
+    ga3.admin3_population AS geonames_admin3_population,
+    ga2.admin2_population AS geonames_admin2_population,
+    ga1.admin1_population AS geonames_admin1_population,
+    ga.longitude AS geonames_longitude,
+    ga.latitude AS geonames_latitude,
+    ga4.admin4_latitude AS geonames_admin4_latitude,
+    ga4.admin4_longitude AS geomames_admin4_longitude,
+    ga3.admin3_latitude AS geonames_admin3_latitude,
+    ga3.admin3_longitude AS geomames_admin3_longitude,
+    ga2.admin2_latitude AS geonames_admin2_latitude,
+    ga2.admin2_longitude AS geomames_admin2_longitude,
+    ga1.admin1_latitude AS geonames_admin1_latitude,
+    ga1.admin1_longitude AS geomames_admin1_longitude,
+    ga.elevation AS geonames_elevation,
+    ga4.admin4_elevation AS geonames_admin4_elevation,
+    ga3.admin3_elevation AS geonames_admin3_elevation,
+    ga2.admin2_elevation AS geonames_admin2_elevation,
+    ga1.admin1_elevation AS geonames_admin1_elevation,
+    ga.timezone AS geonames_timezone,
+    ga4.admin4_timezone AS geonames_admin4_timezone,
+    ga3.admin3_timezone AS geonames_admin3_timezone,
+    ga2.admin2_timezone AS geonames_admin2_timezone,
+    ga1.admin1_timezone AS geonames_admin1_timezone,
+    ga.modification AS geonames_modification,
+    ga4.admin4_modification AS geonames_admin4_modification,
+    ga3.admin3_modification AS geonames_admin3_modification,
+    ga2.admin2_modification AS geonames_admin2_modification,
+    ga1.admin1_modification AS geonames_admin1_modification,
+    ga.admin4_id AS geonames_admin4_id,
+    ga.admin3_id AS geonames_admin3_id,
+    ga.admin2_id AS geonames_admin2_id,
+    ga.admin1_id AS geonames_admin1_id,
     gc.geonames_country_id,
     gc.geonames_country_feature_class,
     gc.geonames_country_feature_code,
@@ -330,8 +282,7 @@ SELECT
     gc.geonames_country_capital,
     gc.geonames_country_population,
     gc.geonames_country_elevation,
-    gc.geomames_dem,
-    gc.geomames_currency_name,
+    gc.geomames_country_currency_name,
     gc.geonames_country_phone_prefix,
     gc.geonames_country_postal_code_format,
     gc.geonames_country_postal_code_regex,
@@ -341,19 +292,16 @@ SELECT
     gc.geonames_country_longitude,
     gc.geonames_country_latitude,
     gc.geonames_country_timezone,
-    gc.geonames_country_modification,
-    gc.geonames_country_city_admin_level
+    gc.geonames_country_modification
 FROM
     geonames_allentries ga
     LEFT JOIN wda_geonames_countries gc ON ga.country_code = gc.geonames_country_iso
-    LEFT JOIN admin1 ga1 ON ga1.admin1_id = ga.id
-    LEFT JOIN admin2 ga2 ON ga2.admin2_id = ga.id
-    LEFT JOIN admin3 ga3 ON ga3.admin3_id = ga.id
-    LEFT JOIN admin4 ga4 ON ga4.admin4_id = ga.id
-WHERE
-    ga.feature_code = ANY (ARRAY['ADM1'::text, 'ADM2'::text, 'ADM3'::text, 'ADM4'::text])
+    LEFT JOIN admin1 ga1 ON ga.admin1_id IS NOT NULL AND ga.admin1_id = ga1.admin1_id
+    LEFT JOIN admin2 ga2 ON ga.admin2_id IS NOT NULL AND ga.admin2_id = ga2.admin2_id
+    LEFT JOIN admin3 ga3 ON ga.admin3_id IS NOT NULL AND ga.admin3_id = ga3.admin3_id
+    LEFT JOIN admin4 ga4 ON ga.admin4_id IS NOT NULL AND ga.admin4_id = ga4.admin4_id
 ;
-ALTER TABLE public.wda_geonames_cities OWNER TO wda;
+
 
 -- CHECK COUNT CONTENT
 DO $$
@@ -365,10 +313,7 @@ BEGIN
     SELECT
         COUNT(*) INTO src_count
     FROM
-        geonames_allentries
-    WHERE
-        feature_class = 'A'
-        AND feature_code IN ('ADM1', 'ADM2', 'ADM3', 'ADM4');
+        geonames_allentries;
     SELECT
         COUNT(*) INTO dst_count
     FROM
@@ -381,6 +326,24 @@ BEGIN
     END IF;
 END
 $$;
+
+-- CREATE OR REPLACE FUNCTION find_nearest_city_id(ref_lat DOUBLE PRECISION, ref_lon DOUBLE PRECISION)
+-- RETURNS BIGINT AS $$
+-- DECLARE
+--     nearest_id BIGINT;
+-- BEGIN
+--     SELECT id
+--     INTO nearest_id
+--     FROM geonames_allentries
+--     -- WHERE is_city is true
+--     WHERE feature_code = 'PPL'
+--     ORDER BY sqrt( power((latitude - ref_lat), 2) + power((longitude - ref_lon), 2) ) ASC
+--     LIMIT 1;
+--
+--     RETURN nearest_id;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
 
 DELETE FROM wda_scopes_reference
 WHERE provider = 'geonames'

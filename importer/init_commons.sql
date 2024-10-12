@@ -2,6 +2,13 @@
 -- Dataset
 --------------------------------------
 
+CREATE TABLE IF NOT EXISTS geonames_latlon_cache(
+    id INTEGER,
+    latlon TEXT
+)
+;
+CREATE INDEX IF NOT EXISTS idx_geonames_latlon_cache_latlon ON geonames_latlon_cache (latlon);
+
 -- DROP TABLE IF EXISTS wda_providers;
 CREATE TABLE IF NOT EXISTS wda_providers(
     provider	    TEXT,
