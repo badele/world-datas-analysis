@@ -28,6 +28,7 @@
               pre-commit
 
               git
+              git-lfs
               unzip
 
               # Database

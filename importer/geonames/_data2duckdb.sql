@@ -166,4 +166,4 @@ UPDATE geonames_allentries ga set city_name=admin1_name  WHERE admin1_name IS NO
 COMMIT;
 
 COPY geonames_countries TO './dataset/geonames/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (country_code));
