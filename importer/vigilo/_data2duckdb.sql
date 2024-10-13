@@ -252,6 +252,6 @@ COPY geonames_latlon_cache TO './dataset/geonames/latlon_cache.parquet' (FORMAT 
 -------------------------------------------------------------------------------
 COPY vigilo_categories TO './dataset/vigilo/categories.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 COPY vigilo_scopes TO './dataset/vigilo/scopes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY vigilo_observations TO './dataset/vigilo/observations.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY vigilo_observations TO './dataset/vigilo/observations.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (scopeid));
 
 COMMIT;
