@@ -1,3 +1,13 @@
+.direnv
+
+# Grafana
+grafana-store
+grafana/csv
+grafana/pdf
+grafana/png
+grafana/plugins
+grafana/grafana.db
+
 # Database
 db
 exported

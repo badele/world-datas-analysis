@@ -1,0 +1,34 @@
+-- CREATE INDEX wda_ ON wda_blacklist_ips (ip_number);
+
+-- DROP VIEW IF EXISTS v_wda_blacklist_ips_countries;
+-- CREATE VIEW v_wda_blacklist_ips_countries AS
+--     SELECT ip,duggytuxy,ipsum,
+--     dc.emoji AS flag,
+--     dc.name AS country,
+--     iso2,
+--     iso3,
+--     longitude,
+--     latitude
+--     FROM wda_blacklist_ips bi
+--     LEFT JOIN sapics_countries_ipv4 sc ON bi.ip_number>= sc.range_start AND bi.ip_number<= sc.range_end
+--     LEFT JOIN dr5hn_countries dc ON sc.country = dc.iso2;
+--
+-- DROP VIEW IF EXISTS v_wda_blacklist_ips_asn;
+-- CREATE VIEW v_wda_blacklist_ips_asn AS
+--     SELECT ip,duggytuxy,ipsum,
+--     sa.*
+--     FROM wda_blacklist_ips bi
+--     LEFT JOIN sapics_asn_ipv4 sa ON bi.ip_number>= sa.range_start AND bi.ip_number<= sa.range_end;
+--
+-- INSERT OR REPLACE INTO wda_datasets
+--     SELECT 'wda','duggytuxy,stamparm','v_wda_blacklist_ips_asn', 'ASN', 'wda blacklist ips with ASN informations', 'https://github.com/badele/world-datas-analysis', (SELECT column_count FROM duckdb_views WHERE view_name='v_wda_blacklist_ips_asn') as nb_vars, COUNT(*), COUNT(DISTINCT as_organization)
+--     FROM v_wda_blacklist_ips_asn;
+--
+-- INSERT OR REPLACE INTO wda_datasets
+--     SELECT 'wda','duggytuxy,stamparm','v_wda_blacklist_ips_countries', 'countries', 'wda blacklist ips width countries informations', 'https://github.com/badele/world-datas-analysis', (SELECT column_count FROM duckdb_views WHERE view_name='v_wda_blacklist_ips_countries') as nb_vars, COUNT(*), COUNT(DISTINCT iso2)
+--     FROM v_wda_blacklist_ips_countries;
+--
+-- INSERT OR REPLACE INTO wda_providers
+-- SELECT 'wda',  'WDA blacklist ips', 'https://github.com/badele/world-datas-analysis', count(*), sum(nb_observations)
+-- FROM wda_datasets wd
+-- WHERE provider='wda';

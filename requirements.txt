@@ -1,17 +1,12 @@
-# Datas manipulation
-numpy==1.19.5
-pandas==1.2.1
-tabulate==0.8.7
-geopandas==0.7.0
+# duckdb
+duckdb==1.0.0
 
-# Sqlite importer
-sqlitebiter==0.32.1
+# git
+GitPython==3.1.43
 
-# Download datas
-requests==2.23.0
+# requests
+requests==2.32.3
+tqdm==4.66.4
 
-# Support excel files
-xlrd==1.2.0
-
-# Unzip 7z (used by Admin Express)
-py7zr==0.6
+# Fix json
+json_repair==0.25.2

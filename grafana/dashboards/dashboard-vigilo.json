@@ -1,0 +1,2867 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT geonames_admin1_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_admin1_name IN (${region:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY geonames_admin1_name\nORDER BY nb DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Régions",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 4,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT geonames_admin2_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_admin2_name IN (${departement:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY geonames_admin2_name\nORDER BY nb DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Départements",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 9,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT geonames_admin3_name ,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_admin3_name IN (${arrondissement:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY geonames_admin3_name\nORDER BY nb DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Arrondissement",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 14,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT geonames_admin4_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_admin4_name IN (${ville:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY geonames_admin4_name\nORDER BY nb DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Ville",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 19,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT geonames_name,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_name IN (${quartier:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY geonames_name\nORDER BY nb DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Quartier",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dateTimeAsLocalNoDateIfToday"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 9
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ts$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT max(obs_ts)*1000 AS ts\nFROM wda_vigilo_observations \nWHERE geonames_name IN (${quartier:sqlstring}) AND cat_name IN (${category:sqlstring})",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Last update",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "description": "Basé sur le filtre des villes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 18,
+        "x": 6,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "-- 24h => 86400\n-- week =>604800\n-- 30 days => 2592000\nSELECT  cast((obs_ts / ($__interval_ms / 1000) ) as bigint) * ($__interval_ms / 1000)*1000 AS ts_in_milliseconds,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_name IN (${quartier:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY ts_in_milliseconds",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "observations",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "ts_in_milliseconds"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "obs"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 11
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_name IN (${quartier:sqlstring}) AND cat_name IN (${category:sqlstring})",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "nb observations",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT cat_name as category,count(*) AS nb\nFROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_name IN (${quartier:sqlstring}) AND cat_name IN (${category:sqlstring})\nGROUP BY category\nORDER BY nb DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Categories",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P995C8F1A0F23A57C"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 18,
+        "x": 6,
+        "y": 13
+      },
+      "id": 3,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "coordinates_lat",
+              "longitude": "coordinates_lon",
+              "mode": "coords"
+            },
+            "name": "Infos",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "blur": 15,
+              "radius": 3,
+              "weight": {
+                "field": "approved",
+                "fixed": 1,
+                "max": 1,
+                "min": 0
+              }
+            },
+            "location": {
+              "latitude": "obs_latitude",
+              "longitude": "obs_longitude",
+              "mode": "coords"
+            },
+            "name": "Layer 1",
+            "tooltip": false,
+            "type": "heatmap"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 45.908052,
+          "lon": -3.424189,
+          "shared": false,
+          "zoom": 5.2
+        }
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P995C8F1A0F23A57C"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT geonames_admin1_name AS geonames_region, geonames_admin2_name AS departement,geonames_admin3_name AS arrondissement, geonames_admin4_name AS ville, geonames_name as quartier, obs_token,obs_latitude,obs_longitude,obs_address,cat_name AS category,obs_approved\n‣ FROM wda_vigilo_observations \nWHERE obs_ts >= $__from / 1000  and obs_ts < $__to /1000  AND geonames_name IN (${quartier:sqlstring}) AND cat_name IN (${category:sqlstring})\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Panel Title",
+      "type": "geomap"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Auvergne-Rhône-Alpes",
+            "Bretagne",
+            "Grand Est",
+            "Hauts-de-France",
+            "Île-de-France",
+            "Nouvelle-Aquitaine",
+            "Occitanie",
+            "Pays de la Loire",
+            "Provence-Alpes-Côte d'Azur"
+          ],
+          "value": [
+            "Auvergne-Rhône-Alpes",
+            "Bretagne",
+            "Grand Est",
+            "Hauts-de-France",
+            "Île-de-France",
+            "Nouvelle-Aquitaine",
+            "Occitanie",
+            "Pays de la Loire",
+            "Provence-Alpes-Côte d'Azur"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P995C8F1A0F23A57C"
+        },
+        "definition": "SELECT DISTINCT geonames_admin1_name FROM wda_vigilo_observations",
+        "description": "",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "region",
+        "options": [],
+        "query": "SELECT DISTINCT geonames_admin1_name FROM wda_vigilo_observations",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "",
+            "Charente-Maritime",
+            "Ille-et-Vilaine",
+            "Bouches-du-Rhône",
+            "Isère",
+            "Val-de-Marne",
+            "Côtes-d'Armor",
+            "Hérault",
+            "Finistère",
+            "Gironde",
+            "Dordogne",
+            "Loire-Atlantique",
+            "Bas-Rhin",
+            "Gard",
+            "Hauts-de-Seine",
+            "Yvelines",
+            "Oise",
+            "Essonne"
+          ],
+          "value": [
+            "",
+            "Charente-Maritime",
+            "Ille-et-Vilaine",
+            "Bouches-du-Rhône",
+            "Isère",
+            "Val-de-Marne",
+            "Côtes-d'Armor",
+            "Hérault",
+            "Finistère",
+            "Gironde",
+            "Dordogne",
+            "Loire-Atlantique",
+            "Bas-Rhin",
+            "Gard",
+            "Hauts-de-Seine",
+            "Yvelines",
+            "Oise",
+            "Essonne"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P995C8F1A0F23A57C"
+        },
+        "definition": "SELECT DISTINCT geonames_admin2_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring})",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "departement",
+        "options": [],
+        "query": "SELECT DISTINCT geonames_admin2_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring})",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Arrondissement de Palaiseau",
+            "Arrondissement de La Rochelle",
+            "Arrondissement de Beauvais",
+            "Arrondissement de Lodève",
+            "Arrondissement de L'Haÿ-les-Roses",
+            "Arrondissement de Compiègne",
+            "Arrondissement de Brest",
+            "Arrondissement de Périgueux",
+            "Arrondissement de Senlis",
+            "Arrondissement de Saint-Brieuc",
+            "Arrondissement de Rennes",
+            "Arrondissement d'Antony",
+            "Arrondissement d'Aix-en-Provence",
+            "Arrondissement de La Tour-du-Pin",
+            "Arrondissement of Montpellier",
+            "Arrondissement de Marseille",
+            "Arrondissement de Strasbourg",
+            "Arrondissement de Versailles",
+            "Arrondissement de Nîmes",
+            "Arrondissement d'Arcachon",
+            "Arrondissement de Nantes"
+          ],
+          "value": [
+            "Arrondissement de Palaiseau",
+            "Arrondissement de La Rochelle",
+            "Arrondissement de Beauvais",
+            "Arrondissement de Lodève",
+            "Arrondissement de L'Haÿ-les-Roses",
+            "Arrondissement de Compiègne",
+            "Arrondissement de Brest",
+            "Arrondissement de Périgueux",
+            "Arrondissement de Senlis",
+            "Arrondissement de Saint-Brieuc",
+            "Arrondissement de Rennes",
+            "Arrondissement d'Antony",
+            "Arrondissement d'Aix-en-Provence",
+            "Arrondissement de La Tour-du-Pin",
+            "Arrondissement of Montpellier",
+            "Arrondissement de Marseille",
+            "Arrondissement de Strasbourg",
+            "Arrondissement de Versailles",
+            "Arrondissement de Nîmes",
+            "Arrondissement d'Arcachon",
+            "Arrondissement de Nantes"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P995C8F1A0F23A57C"
+        },
+        "definition": "SELECT DISTINCT geonames_admin3_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring}) AND geonames_admin2_name IN (${departement:sqlstring}) ",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "arrondissement",
+        "options": [],
+        "query": "SELECT DISTINCT geonames_admin3_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring}) AND geonames_admin2_name IN (${departement:sqlstring}) ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Nantes",
+            "La Rochelle",
+            "Plan-de-Cuques",
+            "Lattes",
+            "Mundolsheim",
+            "Bures-sur-Yvette",
+            "Sautron",
+            "Saint-Martin-le-Nœud",
+            "Saint-Sébastien-sur-Loire",
+            "La Teste-de-Buch",
+            "Le Teich",
+            "Chilly-Mazarin",
+            "Domarin",
+            "Saint-Gély-du-Fesc",
+            "Fouquenies",
+            "Hangenbieten",
+            "Villebon-sur-Yvette",
+            "Saint-Georges-d'Orques",
+            "Longjumeau",
+            "Ploufragan",
+            "Souffelweyersheim",
+            "Carnoux-en-Provence",
+            "Palaiseau",
+            "Éguilles",
+            "Plabennec",
+            "Vendenheim",
+            "Bièvres",
+            "Saclay",
+            "Jouy-en-Josas",
+            "Saint-Quentin-Fallavier",
+            "Wissous",
+            "Lamorlaye",
+            "Vaulx-Milieu",
+            "Aytré",
+            "Grabels",
+            "Servon-sur-Vilaine",
+            "Carquefou",
+            "Le Crès",
+            "Le Meux",
+            "Villeneuve-lès-Maguelone",
+            "Montpellier",
+            "Holtzheim",
+            "Vineuil-Saint-Firmin",
+            "Domloup",
+            "Goincourt",
+            "Montlhéry",
+            "Niederhausbergen",
+            "Igny",
+            "Cessieu",
+            "Saint-Quay-Portrieux",
+            "Marseille",
+            "Gouesnou",
+            "Trégueux",
+            "Marcoussis",
+            "Villejust",
+            "Strasbourg",
+            "Wolfisheim",
+            "Noyal-sur-Vilaine",
+            "Frontignan",
+            "Antony",
+            "Vertou",
+            "La Jarne",
+            "Bassillac et Auberoche",
+            "Mittelhausbergen",
+            "Lagord",
+            "Illkirch-Graffenstaden",
+            "Guilers",
+            "Bouc-Bel-Air",
+            "Hœnheim",
+            "Longpont-sur-Orge",
+            "Saint-Aubin",
+            "Allonne",
+            "Les Sorinières",
+            "L'Isle-d'Abeau",
+            "Eckbolsheim",
+            "Guipavas",
+            "Plougastel-Daoulas",
+            "Castelnau-le-Lez",
+            "Bourgoin-Jallieu",
+            "Saint-Brieuc",
+            "La Bouilladisse",
+            "Clapiers",
+            "Therdonne",
+            "Saint-Herblain",
+            "Coulounieix-Chamiers",
+            "Orvault",
+            "Sanilhac",
+            "Aubagne",
+            "Châtenay-Malabry",
+            "Trémuson",
+            "Villefontaine",
+            "Périgny",
+            "Saulx-les-Chartreux",
+            "Compiègne",
+            "Palavas-les-Flots",
+            "Boulazac Isle Manoire",
+            "Gif-sur-Yvette",
+            "Brest",
+            "Savigny-sur-Orge",
+            "Paray-Vieille-Poste",
+            "Couëron",
+            "Périgueux",
+            "Schiltigheim",
+            "Sète",
+            "Gouvieux",
+            "Roche",
+            "Bouaye",
+            "Indre",
+            "Nozay",
+            "Orsay",
+            "Gujan-Mestras",
+            "Basse-Goulaine",
+            "Gardanne",
+            "Champlan",
+            "Saint-Aunès",
+            "La Chapelle-sur-Erdre",
+            "La Grande-Motte",
+            "Saint-Clément-de-Rivière",
+            "Le Grau-du-Roi",
+            "Dompierre-sur-Mer",
+            "Bonnefamille",
+            "Pignan",
+            "Aix-en-Provence",
+            "Castries",
+            "Vauhallan",
+            "Massy",
+            "Châteaugiron",
+            "Ballainvilliers",
+            "Ostwald",
+            "Villiers-sur-Orge",
+            "Fabrègues",
+            "Plouzané",
+            "Saint-Rogatien",
+            "Beauvais",
+            "La Penne-sur-Huveaune",
+            "Bischheim",
+            "Baillargues",
+            "Four",
+            "Verrières-le-Buisson",
+            "Achenheim",
+            "Sainte-Luce-sur-Loire",
+            "Vendargues",
+            "Nieul-sur-Mer",
+            "Linas",
+            "Rezé",
+            "Saint-Julien",
+            "Trélissac",
+            "Le Relecq-Kerhuon",
+            "Clavette",
+            "Senlis",
+            "Chantilly",
+            "Thouaré-sur-Loire",
+            "Locmaria-Plouzané",
+            "Hillion",
+            "Milizac-Guipronvel",
+            "Fresnes",
+            "Pérols",
+            "Gometz-le-Châtel",
+            "Saint-Jean-de-Védas",
+            "Simiane-Collongue",
+            "Morangis",
+            "Montferrier-sur-Lez",
+            "Jacou",
+            "Marsac-sur-l'Isle",
+            "Lingolsheim",
+            "Yffiniac",
+            "La Jarrie",
+            "La Ville-du-Bois",
+            "Villiers-le-Bâcle",
+            "Bouguenais",
+            "Guzargues",
+            "L'Houmeau",
+            "Les Ulis",
+            "Nivolas-Vermelle",
+            "Mauguio",
+            "Langueux",
+            "Lavérune",
+            "Plérin",
+            "Teyran",
+            "Bohars",
+            "Pordic",
+            "Prades-le-Lez",
+            "Villemoisson-sur-Orge",
+            "Châteaufort",
+            "Saint-Alban-de-Roche",
+            "Quintin",
+            "Puilboreau",
+            "Chancelade",
+            "Juvignac",
+            "La Verpillière",
+            "Angoulins"
+          ],
+          "value": [
+            "Nantes",
+            "La Rochelle",
+            "Plan-de-Cuques",
+            "Lattes",
+            "Mundolsheim",
+            "Bures-sur-Yvette",
+            "Sautron",
+            "Saint-Martin-le-Nœud",
+            "Saint-Sébastien-sur-Loire",
+            "La Teste-de-Buch",
+            "Le Teich",
+            "Chilly-Mazarin",
+            "Domarin",
+            "Saint-Gély-du-Fesc",
+            "Fouquenies",
+            "Hangenbieten",
+            "Villebon-sur-Yvette",
+            "Saint-Georges-d'Orques",
+            "Longjumeau",
+            "Ploufragan",
+            "Souffelweyersheim",
+            "Carnoux-en-Provence",
+            "Palaiseau",
+            "Éguilles",
+            "Plabennec",
+            "Vendenheim",
+            "Bièvres",
+            "Saclay",
+            "Jouy-en-Josas",
+            "Saint-Quentin-Fallavier",
+            "Wissous",
+            "Lamorlaye",
+            "Vaulx-Milieu",
+            "Aytré",
+            "Grabels",
+            "Servon-sur-Vilaine",
+            "Carquefou",
+            "Le Crès",
+            "Le Meux",
+            "Villeneuve-lès-Maguelone",
+            "Montpellier",
+            "Holtzheim",
+            "Vineuil-Saint-Firmin",
+            "Domloup",
+            "Goincourt",
+            "Montlhéry",
+            "Niederhausbergen",
+            "Igny",
+            "Cessieu",
+            "Saint-Quay-Portrieux",
+            "Marseille",
+            "Gouesnou",
+            "Trégueux",
+            "Marcoussis",
+            "Villejust",
+            "Strasbourg",
+            "Wolfisheim",
+            "Noyal-sur-Vilaine",
+            "Frontignan",
+            "Antony",
+            "Vertou",
+            "La Jarne",
+            "Bassillac et Auberoche",
+            "Mittelhausbergen",
+            "Lagord",
+            "Illkirch-Graffenstaden",
+            "Guilers",
+            "Bouc-Bel-Air",
+            "Hœnheim",
+            "Longpont-sur-Orge",
+            "Saint-Aubin",
+            "Allonne",
+            "Les Sorinières",
+            "L'Isle-d'Abeau",
+            "Eckbolsheim",
+            "Guipavas",
+            "Plougastel-Daoulas",
+            "Castelnau-le-Lez",
+            "Bourgoin-Jallieu",
+            "Saint-Brieuc",
+            "La Bouilladisse",
+            "Clapiers",
+            "Therdonne",
+            "Saint-Herblain",
+            "Coulounieix-Chamiers",
+            "Orvault",
+            "Sanilhac",
+            "Aubagne",
+            "Châtenay-Malabry",
+            "Trémuson",
+            "Villefontaine",
+            "Périgny",
+            "Saulx-les-Chartreux",
+            "Compiègne",
+            "Palavas-les-Flots",
+            "Boulazac Isle Manoire",
+            "Gif-sur-Yvette",
+            "Brest",
+            "Savigny-sur-Orge",
+            "Paray-Vieille-Poste",
+            "Couëron",
+            "Périgueux",
+            "Schiltigheim",
+            "Sète",
+            "Gouvieux",
+            "Roche",
+            "Bouaye",
+            "Indre",
+            "Nozay",
+            "Orsay",
+            "Gujan-Mestras",
+            "Basse-Goulaine",
+            "Gardanne",
+            "Champlan",
+            "Saint-Aunès",
+            "La Chapelle-sur-Erdre",
+            "La Grande-Motte",
+            "Saint-Clément-de-Rivière",
+            "Le Grau-du-Roi",
+            "Dompierre-sur-Mer",
+            "Bonnefamille",
+            "Pignan",
+            "Aix-en-Provence",
+            "Castries",
+            "Vauhallan",
+            "Massy",
+            "Châteaugiron",
+            "Ballainvilliers",
+            "Ostwald",
+            "Villiers-sur-Orge",
+            "Fabrègues",
+            "Plouzané",
+            "Saint-Rogatien",
+            "Beauvais",
+            "La Penne-sur-Huveaune",
+            "Bischheim",
+            "Baillargues",
+            "Four",
+            "Verrières-le-Buisson",
+            "Achenheim",
+            "Sainte-Luce-sur-Loire",
+            "Vendargues",
+            "Nieul-sur-Mer",
+            "Linas",
+            "Rezé",
+            "Saint-Julien",
+            "Trélissac",
+            "Le Relecq-Kerhuon",
+            "Clavette",
+            "Senlis",
+            "Chantilly",
+            "Thouaré-sur-Loire",
+            "Locmaria-Plouzané",
+            "Hillion",
+            "Milizac-Guipronvel",
+            "Fresnes",
+            "Pérols",
+            "Gometz-le-Châtel",
+            "Saint-Jean-de-Védas",
+            "Simiane-Collongue",
+            "Morangis",
+            "Montferrier-sur-Lez",
+            "Jacou",
+            "Marsac-sur-l'Isle",
+            "Lingolsheim",
+            "Yffiniac",
+            "La Jarrie",
+            "La Ville-du-Bois",
+            "Villiers-le-Bâcle",
+            "Bouguenais",
+            "Guzargues",
+            "L'Houmeau",
+            "Les Ulis",
+            "Nivolas-Vermelle",
+            "Mauguio",
+            "Langueux",
+            "Lavérune",
+            "Plérin",
+            "Teyran",
+            "Bohars",
+            "Pordic",
+            "Prades-le-Lez",
+            "Villemoisson-sur-Orge",
+            "Châteaufort",
+            "Saint-Alban-de-Roche",
+            "Quintin",
+            "Puilboreau",
+            "Chancelade",
+            "Juvignac",
+            "La Verpillière",
+            "Angoulins"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P995C8F1A0F23A57C"
+        },
+        "definition": "SELECT DISTINCT geonames_admin4_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring}) AND geonames_admin2_name IN (${departement:sqlstring})  AND geonames_admin3_name IN (${arrondissement:sqlstring}) ",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "ville",
+        "options": [],
+        "query": "SELECT DISTINCT geonames_admin4_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring}) AND geonames_admin2_name IN (${departement:sqlstring})  AND geonames_admin3_name IN (${arrondissement:sqlstring}) ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Achenheim",
+            "Agel",
+            "Aix-en-Provence",
+            "Alco",
+            "Allonne",
+            "Angoulins",
+            "Antigone",
+            "Antony",
+            "Arenc",
+            "Argentine",
+            "Aubagne",
+            "Aytré",
+            "Baillargues",
+            "Baille",
+            "Barullu",
+            "Bassillac",
+            "Beaulieu",
+            "Beaumont",
+            "Beauregard",
+            "Beautour",
+            "Beauvais",
+            "Bel-Air",
+            "Belle de Mai",
+            "Bellevue",
+            "Belmont",
+            "Belsunce",
+            "Béraud",
+            "Besselue",
+            "Beuzid",
+            "Bièvres",
+            "Bischheim",
+            "Boirargues",
+            "Bonnefamille",
+            "Bonneveine",
+            "Bouaye",
+            "Boulazac",
+            "Bourgoin",
+            "Bourgoin-Jallieu",
+            "Brest",
+            "Bures-sur-Yvette",
+            "Callelongue",
+            "Carnon-Plage",
+            "Carnoux-en-Provence",
+            "Castellane",
+            "Castelnau-le-Lez",
+            "Castries",
+            "Celleneuve",
+            "Cesson",
+            "Chagnolet",
+            "Champ Fleuri",
+            "Champlan",
+            "Chancelade",
+            "Chantenay-sur-Loire",
+            "Charrièras",
+            "Châteaufort",
+            "Châteaugiron",
+            "Château Gombert",
+            "Châtenay-Malabry",
+            "Chevry",
+            "Chilly-Mazarin",
+            "Chutes-Lavie",
+            "Cinq Avenues",
+            "Cité Bel-Air",
+            "Cité de Beauregard",
+            "Cité de Bongraine",
+            "Cité de la Vacherie",
+            "Cité de l'Ill",
+            "Cité de Port-Neuf",
+            "Cité des Chasseurs",
+            "Cité du Prieuré",
+            "Cité Franc-Espoir",
+            "Clair Bois",
+            "Clapiers",
+            "Clavette",
+            "Coataudon",
+            "Coatuelen",
+            "Coiranne",
+            "Couëron",
+            "Courcelle",
+            "Courtarelles",
+            "Créach Burguy",
+            "Crégandie",
+            "Croix d'Argent",
+            "Cronenbourg",
+            "Cuques",
+            "Dellec",
+            "Dioulouffet",
+            "Domaine de Luminy",
+            "Domaine du Lys",
+            "Domarin",
+            "Domloup",
+            "Dompierre-sur-Mer",
+            "Eckbolsheim",
+            "Éguilles",
+            "Elsau",
+            "Estanove",
+            "Fabrègues",
+            "Faubourg Boutonnet",
+            "Feil",
+            "Fétilly",
+            "Figuerolles",
+            "Fontcaude",
+            "Forestou",
+            "Fouquenies",
+            "Four",
+            "Fourneuf",
+            "Fresnes",
+            "Fretay",
+            "Frontignan",
+            "Gambetta",
+            "Gardanne",
+            "Gesvrine",
+            "Gif-sur-Yvette",
+            "Ginglin",
+            "Gliesberg",
+            "Goincourt",
+            "Gometz-le-Châtel",
+            "Gommonvilliers",
+            "Gouesnou",
+            "Grabels",
+            "Grandval",
+            "Graslin",
+            "Grivery",
+            "Guernevez",
+            "Guipavas",
+            "Guipereux",
+            "Gujan-Mestras",
+            "Guzargues",
+            "Hameau d'Alsace",
+            "Hangenbieten",
+            "Haute Indre",
+            "Hautepierre",
+            "Hœnheim",
+            "Holtzheim",
+            "Hôpitaux-Facultés",
+            "Hôtel-de-Ville",
+            "Igny",
+            "Illkirch-Graffenstaden",
+            "Jacou",
+            "Jouy-en-Josas",
+            "Juvignac",
+            "Keralénoc",
+            "Keraliou",
+            "Kerallann",
+            "Keramazhe",
+            "Kerampèré",
+            "Kerangall",
+            "Kerangoff",
+            "Keranquéré",
+            "Keraudren",
+            "Kerbonne",
+            "Kerbriant",
+            "Kerc'Halvez",
+            "Kerfautras",
+            "Kergaradec",
+            "Kergoat",
+            "Kergrach",
+            "Kérinou",
+            "Kerivin",
+            "Kernabat",
+            "Kéroriou",
+            "Kerouman",
+            "Kerraros",
+            "Kervallon",
+            "Kervao",
+            "Kervichen",
+            "La Barasse",
+            "La Barbinière",
+            "La Bastille",
+            "La Beaujoire",
+            "La Bergerie",
+            "La Billardière",
+            "La Blancarde",
+            "La Blordière",
+            "La Boissière",
+            "Laborie",
+            "La Bouilladisse",
+            "La Bourgade",
+            "La Bugallière",
+            "La Butte Rouge",
+            "La Cabucelle",
+            "La Calade",
+            "La Cantine",
+            "La Capelette",
+            "La Cavale Blanche",
+            "La Cayolle",
+            "La Céréirède",
+            "La Chabossière",
+            "La Chamberte",
+            "La Chapelle-sur-Erdre",
+            "La Charmille",
+            "La Coie",
+            "La Colonne",
+            "La Conception",
+            "La Contrie",
+            "La Cougourlude",
+            "La Courbe",
+            "La Croisette",
+            "La Croix Ferrade",
+            "La Delorme",
+            "La Devèse",
+            "La Duranne",
+            "Lafond",
+            "La Fontaine",
+            "La Fourragère",
+            "La Fourrerie",
+            "La Gare",
+            "La Gare d'Yffiniac",
+            "La Genette",
+            "La Genilliere",
+            "Lagord",
+            "La Goronnière",
+            "La Grammoire",
+            "La Grange Aux Cercles",
+            "La Grassinière",
+            "La Grive",
+            "La Houssais",
+            "La Hulonnière",
+            "L'Aigue Longue",
+            "La Jarne",
+            "La Jarrie",
+            "La Joliette",
+            "La Jonelière",
+            "Laleu",
+            "La Madeleine",
+            "La Madrague",
+            "La Maison-Blanche",
+            "La Manon",
+            "La Martelle",
+            "La Millère",
+            "Lamorlaye",
+            "Lamothe",
+            "La Motte du Couchant",
+            "La Mule",
+            "La Neustrie",
+            "Langueux",
+            "Lanildy",
+            "Lannaërec",
+            "Lanrédec",
+            "Lantel",
+            "La Page",
+            "La Paillade",
+            "La Pallice",
+            "La Peyrade",
+            "La Plage d'Aytré",
+            "La Plaine des Bouchers",
+            "La Pointe Rouge",
+            "La Pomme",
+            "La Pompignane",
+            "La Profondine",
+            "L'arc'hantel",
+            "La Repentie",
+            "La Robertsau",
+            "La Roche",
+            "La Rochelle",
+            "La Rose",
+            "La Rousselière",
+            "L'Arrière-Garde",
+            "La Seigneurerie",
+            "La Sinière",
+            "La Trinité",
+            "La Trocardière",
+            "La Trompette",
+            "Lattes",
+            "Lauzières",
+            "Lavallot",
+            "La Verpillière",
+            "Lavérune",
+            "La Victoire",
+            "La Ville-du-Bois",
+            "La Ville en Bois",
+            "La Ville Hellio",
+            "La Ville Hervy",
+            "La Ville Louais",
+            "La Villette",
+            "La Vrière",
+            "Le Berthet",
+            "Le Bois Raguenet",
+            "Le Bois Saint-Denis",
+            "Le Boucanet",
+            "Le Bouguen",
+            "Le Cabot",
+            "Le Camas",
+            "Le Carpon",
+            "Le Chapitre",
+            "Le Charrel",
+            "Le Chêne",
+            "Le Clos",
+            "Le Contin",
+            "Le Créac'H",
+            "Le Crès",
+            "Le Devois",
+            "Le Douric",
+            "Le Grand Blottereau",
+            "Le Grand Clos",
+            "Le Guichet",
+            "Le Housseau",
+            "Le Légué",
+            "Le Lignon",
+            "Le Linot",
+            "Le Mas de La Raz",
+            "Le Ménil",
+            "Le Merlan",
+            "Le Molard",
+            "Le Parc",
+            "Le Passage",
+            "Le Petit Chantilly",
+            "Le Petit Massy",
+            "Le Petit Paris",
+            "Le Pharo",
+            "Le Pileu",
+            "Le Plateau",
+            "Le Plateau de Savigny",
+            "Le Plessis",
+            "Le Point du Jour",
+            "Le Polygone",
+            "Le Pont-d'Antony",
+            "Le Redon",
+            "Le Rivet",
+            "Le Ruisan",
+            "Le Salaison",
+            "Le Salou",
+            "Les Arceaux",
+            "Les Baléares",
+            "Les Barris",
+            "Les Boyers",
+            "Les Cayols",
+            "Les Cévennes",
+            "Les Chartreux",
+            "Lescoat",
+            "Les Combals",
+            "Les Coudrans",
+            "Les Dervallières",
+            "Les Enclos",
+            "Les Fontaines",
+            "Les Fougères",
+            "Les Grands Carmes",
+            "Les Grands Champs",
+            "Les Hauts de Saint-Jean",
+            "Les Jalots",
+            "Les Maurilloux",
+            "Les Milles",
+            "Les Minimes",
+            "Les Miquelots",
+            "Les Moines",
+            "Les Mourgues",
+            "Les Olives",
+            "L'Esplanade",
+            "Les Platrières",
+            "Les Quatre Moulins",
+            "Les Rochers de Saulx",
+            "Les Roches",
+            "Les Romains",
+            "Les Rosaires",
+            "Les Sorinières",
+            "Les Trois Ponts",
+            "Les Vallées",
+            "Les Villages",
+            "Les Villes Hervé",
+            "Le Teich",
+            "Le Toulon",
+            "Le Treuil Bâton",
+            "Le Val-d'Yvette",
+            "Le Vésinet",
+            "Le Vignaud",
+            "Le Village",
+            "L'Harteloire",
+            "L'Houmeau",
+            "Licellion",
+            "Linas",
+            "Lingolsheim",
+            "L'Isle-d'Abeau",
+            "Locmaria-Plouzané",
+            "Lodi",
+            "Longjumeau",
+            "L'Ormeau",
+            "Lozère",
+            "Luynes",
+            "Madrague de la Ville",
+            "Maguelonne",
+            "Malpassé",
+            "Marcoussis",
+            "Marissel",
+            "Marsac-sur-l'Isle",
+            "Marseille",
+            "Marseille 01",
+            "Marseille 02",
+            "Marseille 03",
+            "Marseille 04",
+            "Marseille 05",
+            "Marseille 06",
+            "Marseille 07",
+            "Marseille 08",
+            "Marseille 09",
+            "Marseille 10",
+            "Marseille 11",
+            "Marseille 12",
+            "Marseille Endoume",
+            "Marseille Prefecture",
+            "Marseille Roucas-Blanc",
+            "Marseille Saint-Victor",
+            "Marseille Vauban",
+            "Massy",
+            "Mauguio",
+            "Maurin",
+            "Mazargues",
+            "Menpenti",
+            "Mesdoun",
+            "Mestriden",
+            "Mireuil",
+            "Mittelhausbergen",
+            "Montagne Verte",
+            "Montferrier-sur-Lez",
+            "Montjay",
+            "Montlhéry",
+            "Montolivet",
+            "Montpellier",
+            "Montredon",
+            "Morangis",
+            "Moulin Blanc",
+            "Mozas",
+            "Muissiat",
+            "Mundolsheim",
+            "Murhof",
+            "Musau",
+            "Nantes",
+            "Neudorf",
+            "Neuhof",
+            "Niederhausbergen",
+            "Nieul-sur-Mer",
+            "Nivolas-Vermelle",
+            "Noailles",
+            "Notre-Dame du Mont",
+            "Notre-Dame Limite",
+            "Noyal-sur-Vilaine",
+            "Nozay",
+            "Opéra",
+            "Orsay",
+            "Ostwald",
+            "Palais de Justice",
+            "Palais de Longchamp",
+            "Palaiseau",
+            "Palavas-les-Flots",
+            "Paray-Vieille-Poste",
+            "Pas du Loup",
+            "Pen ar Valy",
+            "Penfeld",
+            "Périer",
+            "Périgny",
+            "Périgueux",
+            "Pérols",
+            "Petit Kerinou",
+            "Petit Paris",
+            "Pey Blanc",
+            "Pierre Louve",
+            "Pignan",
+            "Plan des Quatre Seigneurs",
+            "Plateau de Quéliverzan",
+            "Plateau des Capucins",
+            "Plérin",
+            "Ploufragan",
+            "Plouzané",
+            "Pontanézen",
+            "Pontaniou",
+            "Pont de l'Arc",
+            "Pont de Vivaux",
+            "Pont Kabioc'H",
+            "Pont-Rousseau",
+            "Pordic",
+            "Port Marianne",
+            "Port Neuf",
+            "Poul ar Bachet",
+            "Prades-le-Lez",
+            "Prat Ledan",
+            "Puilboreau",
+            "Questel",
+            "Quintin",
+            "Quizac",
+            "Ragon",
+            "Recouvrance",
+            "Restic",
+            "Rezé",
+            "Ribeuz",
+            "Roche-Maurice",
+            "Rocomps",
+            "Roethig",
+            "Rompsay",
+            "Roskarven",
+            "Rouet",
+            "Saclay",
+            "Saint-André",
+            "Saint-Aubin",
+            "Saint-Augûtre",
+            "Saint-Aunès",
+            "Saint-Barnabé",
+            "Saint-Barthélémy",
+            "Saint-Bonnet",
+            "Saint-Brieuc",
+            "Saint-Charles",
+            "Saint-Clément-de-Rivière",
+            "Sainte-Anne",
+            "Sainte-Barbe",
+            "Saint-Eloi",
+            "Saint-Éloy",
+            "Sainte-Luce-sur-Loire",
+            "Sainte-Marguerite",
+            "Sainte-Marthe",
+            "Saint-Gély-du-Fesc",
+            "Saint-Georges-d'Orques",
+            "Saint-Germain",
+            "Saint-Giniez",
+            "Saint-Herblain",
+            "Saint-Hervé",
+            "Saint-Jacques",
+            "Saint-Jean",
+            "Saint-Jean-de-Védas",
+            "Saint-Jean du Désert",
+            "Saint-Joseph",
+            "Saint-Jouan",
+            "Saint-Julien",
+            "Saint-Just",
+            "Saint-Just-des-Marais",
+            "Saint-Lambert",
+            "Saint-Laurent-Plage",
+            "Saint-Lazare",
+            "Saint-Loup",
+            "Saint-Marc",
+            "Saint-Martin",
+            "Saint-Martin-le-Nœud",
+            "Saint-Maurice",
+            "Saint-Mauront",
+            "Saint-Michel",
+            "Saint-Mitre",
+            "Saint-Pierre",
+            "Saint-Pierre-Quilbignon",
+            "Saint-Quay-Portrieux",
+            "Saint-Quentin-Fallavier",
+            "Saint-Rogatien",
+            "Saint-Sébastien-sur-Loire",
+            "Saulx-les-Chartreux",
+            "Sautron",
+            "Schiltigheim",
+            "Senlis",
+            "Servenoble",
+            "Servon-sur-Vilaine",
+            "Sète",
+            "Sèvres",
+            "Simiane-Collongue",
+            "Solignac",
+            "Soucheix",
+            "Souffelweyersheim",
+            "Stockfeld",
+            "Strasbourg",
+            "Substantion",
+            "Tanneries",
+            "Tasdon",
+            "Tenières",
+            "Teyran",
+            "Thiers",
+            "Tourbian",
+            "Toutevoie",
+            "Trégueux",
+            "Trélissac",
+            "Trémuson",
+            "Trentemoult",
+            "Valy Hir",
+            "Vaufrège",
+            "Vaugouin",
+            "Vauguières Le Bas",
+            "Vauhallan",
+            "Vaulx-Milieu",
+            "Vautreuil",
+            "Vendargues",
+            "Vendenheim",
+            "Vendôme",
+            "Veneffles",
+            "Verrières-le-Buisson",
+            "Vertou",
+            "Vert Plan",
+            "Vieille Chapelle",
+            "Vieux-Maisons",
+            "Villaine",
+            "Villebon-sur-Yvette",
+            "Villefontaine",
+            "Villejust",
+            "Villemoisson-sur-Orge",
+            "Villeneuve",
+            "Villeneuve des Salines",
+            "Villeneuve-lès-Maguelone",
+            "Villiers-le-Bâcle",
+            "Villiers-sur-Orge",
+            "Vineuil-Saint-Firmin",
+            "Voisinlieu",
+            "Wagicourt",
+            "Wissous",
+            "Wolfisheim",
+            "Zone d'aménagement concerté de Malbosc"
+          ],
+          "value": [
+            "Achenheim",
+            "Agel",
+            "Aix-en-Provence",
+            "Alco",
+            "Allonne",
+            "Angoulins",
+            "Antigone",
+            "Antony",
+            "Arenc",
+            "Argentine",
+            "Aubagne",
+            "Aytré",
+            "Baillargues",
+            "Baille",
+            "Barullu",
+            "Bassillac",
+            "Beaulieu",
+            "Beaumont",
+            "Beauregard",
+            "Beautour",
+            "Beauvais",
+            "Bel-Air",
+            "Belle de Mai",
+            "Bellevue",
+            "Belmont",
+            "Belsunce",
+            "Béraud",
+            "Besselue",
+            "Beuzid",
+            "Bièvres",
+            "Bischheim",
+            "Boirargues",
+            "Bonnefamille",
+            "Bonneveine",
+            "Bouaye",
+            "Boulazac",
+            "Bourgoin",
+            "Bourgoin-Jallieu",
+            "Brest",
+            "Bures-sur-Yvette",
+            "Callelongue",
+            "Carnon-Plage",
+            "Carnoux-en-Provence",
+            "Castellane",
+            "Castelnau-le-Lez",
+            "Castries",
+            "Celleneuve",
+            "Cesson",
+            "Chagnolet",
+            "Champ Fleuri",
+            "Champlan",
+            "Chancelade",
+            "Chantenay-sur-Loire",
+            "Charrièras",
+            "Châteaufort",
+            "Châteaugiron",
+            "Château Gombert",
+            "Châtenay-Malabry",
+            "Chevry",
+            "Chilly-Mazarin",
+            "Chutes-Lavie",
+            "Cinq Avenues",
+            "Cité Bel-Air",
+            "Cité de Beauregard",
+            "Cité de Bongraine",
+            "Cité de la Vacherie",
+            "Cité de l'Ill",
+            "Cité de Port-Neuf",
+            "Cité des Chasseurs",
+            "Cité du Prieuré",
+            "Cité Franc-Espoir",
+            "Clair Bois",
+            "Clapiers",
+            "Clavette",
+            "Coataudon",
+            "Coatuelen",
+            "Coiranne",
+            "Couëron",
+            "Courcelle",
+            "Courtarelles",
+            "Créach Burguy",
+            "Crégandie",
+            "Croix d'Argent",
+            "Cronenbourg",
+            "Cuques",
+            "Dellec",
+            "Dioulouffet",
+            "Domaine de Luminy",
+            "Domaine du Lys",
+            "Domarin",
+            "Domloup",
+            "Dompierre-sur-Mer",
+            "Eckbolsheim",
+            "Éguilles",
+            "Elsau",
+            "Estanove",
+            "Fabrègues",
+            "Faubourg Boutonnet",
+            "Feil",
+            "Fétilly",
+            "Figuerolles",
+            "Fontcaude",
+            "Forestou",
+            "Fouquenies",
+            "Four",
+            "Fourneuf",
+            "Fresnes",
+            "Fretay",
+            "Frontignan",
+            "Gambetta",
+            "Gardanne",
+            "Gesvrine",
+            "Gif-sur-Yvette",
+            "Ginglin",
+            "Gliesberg",
+            "Goincourt",
+            "Gometz-le-Châtel",
+            "Gommonvilliers",
+            "Gouesnou",
+            "Grabels",
+            "Grandval",
+            "Graslin",
+            "Grivery",
+            "Guernevez",
+            "Guipavas",
+            "Guipereux",
+            "Gujan-Mestras",
+            "Guzargues",
+            "Hameau d'Alsace",
+            "Hangenbieten",
+            "Haute Indre",
+            "Hautepierre",
+            "Hœnheim",
+            "Holtzheim",
+            "Hôpitaux-Facultés",
+            "Hôtel-de-Ville",
+            "Igny",
+            "Illkirch-Graffenstaden",
+            "Jacou",
+            "Jouy-en-Josas",
+            "Juvignac",
+            "Keralénoc",
+            "Keraliou",
+            "Kerallann",
+            "Keramazhe",
+            "Kerampèré",
+            "Kerangall",
+            "Kerangoff",
+            "Keranquéré",
+            "Keraudren",
+            "Kerbonne",
+            "Kerbriant",
+            "Kerc'Halvez",
+            "Kerfautras",
+            "Kergaradec",
+            "Kergoat",
+            "Kergrach",
+            "Kérinou",
+            "Kerivin",
+            "Kernabat",
+            "Kéroriou",
+            "Kerouman",
+            "Kerraros",
+            "Kervallon",
+            "Kervao",
+            "Kervichen",
+            "La Barasse",
+            "La Barbinière",
+            "La Bastille",
+            "La Beaujoire",
+            "La Bergerie",
+            "La Billardière",
+            "La Blancarde",
+            "La Blordière",
+            "La Boissière",
+            "Laborie",
+            "La Bouilladisse",
+            "La Bourgade",
+            "La Bugallière",
+            "La Butte Rouge",
+            "La Cabucelle",
+            "La Calade",
+            "La Cantine",
+            "La Capelette",
+            "La Cavale Blanche",
+            "La Cayolle",
+            "La Céréirède",
+            "La Chabossière",
+            "La Chamberte",
+            "La Chapelle-sur-Erdre",
+            "La Charmille",
+            "La Coie",
+            "La Colonne",
+            "La Conception",
+            "La Contrie",
+            "La Cougourlude",
+            "La Courbe",
+            "La Croisette",
+            "La Croix Ferrade",
+            "La Delorme",
+            "La Devèse",
+            "La Duranne",
+            "Lafond",
+            "La Fontaine",
+            "La Fourragère",
+            "La Fourrerie",
+            "La Gare",
+            "La Gare d'Yffiniac",
+            "La Genette",
+            "La Genilliere",
+            "Lagord",
+            "La Goronnière",
+            "La Grammoire",
+            "La Grange Aux Cercles",
+            "La Grassinière",
+            "La Grive",
+            "La Houssais",
+            "La Hulonnière",
+            "L'Aigue Longue",
+            "La Jarne",
+            "La Jarrie",
+            "La Joliette",
+            "La Jonelière",
+            "Laleu",
+            "La Madeleine",
+            "La Madrague",
+            "La Maison-Blanche",
+            "La Manon",
+            "La Martelle",
+            "La Millère",
+            "Lamorlaye",
+            "Lamothe",
+            "La Motte du Couchant",
+            "La Mule",
+            "La Neustrie",
+            "Langueux",
+            "Lanildy",
+            "Lannaërec",
+            "Lanrédec",
+            "Lantel",
+            "La Page",
+            "La Paillade",
+            "La Pallice",
+            "La Peyrade",
+            "La Plage d'Aytré",
+            "La Plaine des Bouchers",
+            "La Pointe Rouge",
+            "La Pomme",
+            "La Pompignane",
+            "La Profondine",
+            "L'arc'hantel",
+            "La Repentie",
+            "La Robertsau",
+            "La Roche",
+            "La Rochelle",
+            "La Rose",
+            "La Rousselière",
+            "L'Arrière-Garde",
+            "La Seigneurerie",
+            "La Sinière",
+            "La Trinité",
+            "La Trocardière",
+            "La Trompette",
+            "Lattes",
+            "Lauzières",
+            "Lavallot",
+            "La Verpillière",
+            "Lavérune",
+            "La Victoire",
+            "La Ville-du-Bois",
+            "La Ville en Bois",
+            "La Ville Hellio",
+            "La Ville Hervy",
+            "La Ville Louais",
+            "La Villette",
+            "La Vrière",
+            "Le Berthet",
+            "Le Bois Raguenet",
+            "Le Bois Saint-Denis",
+            "Le Boucanet",
+            "Le Bouguen",
+            "Le Cabot",
+            "Le Camas",
+            "Le Carpon",
+            "Le Chapitre",
+            "Le Charrel",
+            "Le Chêne",
+            "Le Clos",
+            "Le Contin",
+            "Le Créac'H",
+            "Le Crès",
+            "Le Devois",
+            "Le Douric",
+            "Le Grand Blottereau",
+            "Le Grand Clos",
+            "Le Guichet",
+            "Le Housseau",
+            "Le Légué",
+            "Le Lignon",
+            "Le Linot",
+            "Le Mas de La Raz",
+            "Le Ménil",
+            "Le Merlan",
+            "Le Molard",
+            "Le Parc",
+            "Le Passage",
+            "Le Petit Chantilly",
+            "Le Petit Massy",
+            "Le Petit Paris",
+            "Le Pharo",
+            "Le Pileu",
+            "Le Plateau",
+            "Le Plateau de Savigny",
+            "Le Plessis",
+            "Le Point du Jour",
+            "Le Polygone",
+            "Le Pont-d'Antony",
+            "Le Redon",
+            "Le Rivet",
+            "Le Ruisan",
+            "Le Salaison",
+            "Le Salou",
+            "Les Arceaux",
+            "Les Baléares",
+            "Les Barris",
+            "Les Boyers",
+            "Les Cayols",
+            "Les Cévennes",
+            "Les Chartreux",
+            "Lescoat",
+            "Les Combals",
+            "Les Coudrans",
+            "Les Dervallières",
+            "Les Enclos",
+            "Les Fontaines",
+            "Les Fougères",
+            "Les Grands Carmes",
+            "Les Grands Champs",
+            "Les Hauts de Saint-Jean",
+            "Les Jalots",
+            "Les Maurilloux",
+            "Les Milles",
+            "Les Minimes",
+            "Les Miquelots",
+            "Les Moines",
+            "Les Mourgues",
+            "Les Olives",
+            "L'Esplanade",
+            "Les Platrières",
+            "Les Quatre Moulins",
+            "Les Rochers de Saulx",
+            "Les Roches",
+            "Les Romains",
+            "Les Rosaires",
+            "Les Sorinières",
+            "Les Trois Ponts",
+            "Les Vallées",
+            "Les Villages",
+            "Les Villes Hervé",
+            "Le Teich",
+            "Le Toulon",
+            "Le Treuil Bâton",
+            "Le Val-d'Yvette",
+            "Le Vésinet",
+            "Le Vignaud",
+            "Le Village",
+            "L'Harteloire",
+            "L'Houmeau",
+            "Licellion",
+            "Linas",
+            "Lingolsheim",
+            "L'Isle-d'Abeau",
+            "Locmaria-Plouzané",
+            "Lodi",
+            "Longjumeau",
+            "L'Ormeau",
+            "Lozère",
+            "Luynes",
+            "Madrague de la Ville",
+            "Maguelonne",
+            "Malpassé",
+            "Marcoussis",
+            "Marissel",
+            "Marsac-sur-l'Isle",
+            "Marseille",
+            "Marseille 01",
+            "Marseille 02",
+            "Marseille 03",
+            "Marseille 04",
+            "Marseille 05",
+            "Marseille 06",
+            "Marseille 07",
+            "Marseille 08",
+            "Marseille 09",
+            "Marseille 10",
+            "Marseille 11",
+            "Marseille 12",
+            "Marseille Endoume",
+            "Marseille Prefecture",
+            "Marseille Roucas-Blanc",
+            "Marseille Saint-Victor",
+            "Marseille Vauban",
+            "Massy",
+            "Mauguio",
+            "Maurin",
+            "Mazargues",
+            "Menpenti",
+            "Mesdoun",
+            "Mestriden",
+            "Mireuil",
+            "Mittelhausbergen",
+            "Montagne Verte",
+            "Montferrier-sur-Lez",
+            "Montjay",
+            "Montlhéry",
+            "Montolivet",
+            "Montpellier",
+            "Montredon",
+            "Morangis",
+            "Moulin Blanc",
+            "Mozas",
+            "Muissiat",
+            "Mundolsheim",
+            "Murhof",
+            "Musau",
+            "Nantes",
+            "Neudorf",
+            "Neuhof",
+            "Niederhausbergen",
+            "Nieul-sur-Mer",
+            "Nivolas-Vermelle",
+            "Noailles",
+            "Notre-Dame du Mont",
+            "Notre-Dame Limite",
+            "Noyal-sur-Vilaine",
+            "Nozay",
+            "Opéra",
+            "Orsay",
+            "Ostwald",
+            "Palais de Justice",
+            "Palais de Longchamp",
+            "Palaiseau",
+            "Palavas-les-Flots",
+            "Paray-Vieille-Poste",
+            "Pas du Loup",
+            "Pen ar Valy",
+            "Penfeld",
+            "Périer",
+            "Périgny",
+            "Périgueux",
+            "Pérols",
+            "Petit Kerinou",
+            "Petit Paris",
+            "Pey Blanc",
+            "Pierre Louve",
+            "Pignan",
+            "Plan des Quatre Seigneurs",
+            "Plateau de Quéliverzan",
+            "Plateau des Capucins",
+            "Plérin",
+            "Ploufragan",
+            "Plouzané",
+            "Pontanézen",
+            "Pontaniou",
+            "Pont de l'Arc",
+            "Pont de Vivaux",
+            "Pont Kabioc'H",
+            "Pont-Rousseau",
+            "Pordic",
+            "Port Marianne",
+            "Port Neuf",
+            "Poul ar Bachet",
+            "Prades-le-Lez",
+            "Prat Ledan",
+            "Puilboreau",
+            "Questel",
+            "Quintin",
+            "Quizac",
+            "Ragon",
+            "Recouvrance",
+            "Restic",
+            "Rezé",
+            "Ribeuz",
+            "Roche-Maurice",
+            "Rocomps",
+            "Roethig",
+            "Rompsay",
+            "Roskarven",
+            "Rouet",
+            "Saclay",
+            "Saint-André",
+            "Saint-Aubin",
+            "Saint-Augûtre",
+            "Saint-Aunès",
+            "Saint-Barnabé",
+            "Saint-Barthélémy",
+            "Saint-Bonnet",
+            "Saint-Brieuc",
+            "Saint-Charles",
+            "Saint-Clément-de-Rivière",
+            "Sainte-Anne",
+            "Sainte-Barbe",
+            "Saint-Eloi",
+            "Saint-Éloy",
+            "Sainte-Luce-sur-Loire",
+            "Sainte-Marguerite",
+            "Sainte-Marthe",
+            "Saint-Gély-du-Fesc",
+            "Saint-Georges-d'Orques",
+            "Saint-Germain",
+            "Saint-Giniez",
+            "Saint-Herblain",
+            "Saint-Hervé",
+            "Saint-Jacques",
+            "Saint-Jean",
+            "Saint-Jean-de-Védas",
+            "Saint-Jean du Désert",
+            "Saint-Joseph",
+            "Saint-Jouan",
+            "Saint-Julien",
+            "Saint-Just",
+            "Saint-Just-des-Marais",
+            "Saint-Lambert",
+            "Saint-Laurent-Plage",
+            "Saint-Lazare",
+            "Saint-Loup",
+            "Saint-Marc",
+            "Saint-Martin",
+            "Saint-Martin-le-Nœud",
+            "Saint-Maurice",
+            "Saint-Mauront",
+            "Saint-Michel",
+            "Saint-Mitre",
+            "Saint-Pierre",
+            "Saint-Pierre-Quilbignon",
+            "Saint-Quay-Portrieux",
+            "Saint-Quentin-Fallavier",
+            "Saint-Rogatien",
+            "Saint-Sébastien-sur-Loire",
+            "Saulx-les-Chartreux",
+            "Sautron",
+            "Schiltigheim",
+            "Senlis",
+            "Servenoble",
+            "Servon-sur-Vilaine",
+            "Sète",
+            "Sèvres",
+            "Simiane-Collongue",
+            "Solignac",
+            "Soucheix",
+            "Souffelweyersheim",
+            "Stockfeld",
+            "Strasbourg",
+            "Substantion",
+            "Tanneries",
+            "Tasdon",
+            "Tenières",
+            "Teyran",
+            "Thiers",
+            "Tourbian",
+            "Toutevoie",
+            "Trégueux",
+            "Trélissac",
+            "Trémuson",
+            "Trentemoult",
+            "Valy Hir",
+            "Vaufrège",
+            "Vaugouin",
+            "Vauguières Le Bas",
+            "Vauhallan",
+            "Vaulx-Milieu",
+            "Vautreuil",
+            "Vendargues",
+            "Vendenheim",
+            "Vendôme",
+            "Veneffles",
+            "Verrières-le-Buisson",
+            "Vertou",
+            "Vert Plan",
+            "Vieille Chapelle",
+            "Vieux-Maisons",
+            "Villaine",
+            "Villebon-sur-Yvette",
+            "Villefontaine",
+            "Villejust",
+            "Villemoisson-sur-Orge",
+            "Villeneuve",
+            "Villeneuve des Salines",
+            "Villeneuve-lès-Maguelone",
+            "Villiers-le-Bâcle",
+            "Villiers-sur-Orge",
+            "Vineuil-Saint-Firmin",
+            "Voisinlieu",
+            "Wagicourt",
+            "Wissous",
+            "Wolfisheim",
+            "Zone d'aménagement concerté de Malbosc"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P995C8F1A0F23A57C"
+        },
+        "definition": "SELECT DISTINCT geonames_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring}) AND geonames_admin2_name IN (${departement:sqlstring})  AND geonames_admin3_name IN (${arrondissement:sqlstring}) AND geonames_admin4_name IN (${ville:sqlstring}) ",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "quartier",
+        "options": [],
+        "query": "SELECT DISTINCT geonames_name FROM wda_vigilo_observations WHERE geonames_admin1_name IN (${region:sqlstring}) AND geonames_admin2_name IN (${departement:sqlstring})  AND geonames_admin3_name IN (${arrondissement:sqlstring}) AND geonames_admin4_name IN (${ville:sqlstring}) ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Signalisation, marquage",
+            "Défaut d'entretien",
+            "Absence d'aménagement",
+            "Incivilité récurrente sur la route",
+            "COVID - Voirie en période de confinement",
+            "Absence d'arceaux de stationnement",
+            "Aménagement mal conçu",
+            "Éclairage public insuffisant",
+            "Autre",
+            "COVID - Distanciation physique impossible",
+            "COVID - Aménagement fermé",
+            "Vol ou dégradation de vélo",
+            "Accident, chute, incident",
+            "Véhicule ou objet gênant"
+          ],
+          "value": [
+            "Signalisation, marquage",
+            "Défaut d'entretien",
+            "Absence d'aménagement",
+            "Incivilité récurrente sur la route",
+            "COVID - Voirie en période de confinement",
+            "Absence d'arceaux de stationnement",
+            "Aménagement mal conçu",
+            "Éclairage public insuffisant",
+            "Autre",
+            "COVID - Distanciation physique impossible",
+            "COVID - Aménagement fermé",
+            "Vol ou dégradation de vélo",
+            "Accident, chute, incident",
+            "Véhicule ou objet gênant"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P995C8F1A0F23A57C"
+        },
+        "definition": "SELECT DISTINCT cat_name from wda_vigilo_observations",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "category",
+        "options": [],
+        "query": "SELECT DISTINCT cat_name from wda_vigilo_observations",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6y",
+    "to": "now"
+  },
+  "timeRangeUpdatedDuringEditOrView": false,
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Vigilo observations",
+  "version": 9,
+  "weekStart": ""
+}

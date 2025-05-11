@@ -1,0 +1,84 @@
+services:
+  psql:
+    container_name: psql
+    image: docker.io/chumaky/postgres_duckdb_fdw:16.3_fdw1.0.0
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wda
+      POSTGRES_USER: wda
+      POSTGRES_PASSWORD: wda
+    networks:
+      - wda
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/postgresql:/var/lib/postgresql/data
+      - ./dataset:/dataset
+      # - ./dataset:/var/lib/postgresql/data/dataset
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    networks:
+      - wda
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DISABLE_POSTFIX: "True"
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    user: root
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: pgpass
+        target: /pgpass
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    restart: unless-stopped
+    user: '472'
+    networks:
+      - wda
+    ports:
+      - '3000:3000'
+    volumes:
+      - $PWD/grafana:/var/lib/grafana
+      - $PWD/db:/db
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+    environment:
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource 3.5.0
+    depends_on:
+        - psql
+
+configs:
+  pgpass:
+    content: psql:5432:*:wda:wda
+  servers.json:
+    content: |
+      {"Servers": {"1": {
+        "Group": "Servers",
+        "Name": "wda",
+        "Host": "psql",
+        "Port": 5432,
+        "MaintenanceDB": "postgres",
+        "Username": "wda",
+        "PassFile": "/pgpass",
+        "SSLMode": "prefer"
+      }}}
+
+
+networks:
+  wda:
+    driver: bridge
+
+volumes:
+  pgadmin-data:
