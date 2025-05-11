@@ -26,9 +26,7 @@ precommit-install:
 @precommit-check:
     pre-commit run --all-files
 
-###############################################################################
 # Check requirements
-###############################################################################
 @requirements-check:
     command -v curl >/dev/null 2>&1 || (echo "Please install curl" ; exit 1)
     command -v xz >/dev/null 2>&1 || (echo "Please install xz-utils" ; exit 1)
@@ -90,6 +88,7 @@ precommit-install:
 # Update documentation
 @doc-update FAKEFILENAME:
     just docker-run 'python3 ./updatedoc.py'
+
 [private]
 @perm-grafana:
     mkdir -p grafana-storage
@@ -108,7 +107,7 @@ precommit-install:
 # Start grafana
 @start: perm-grafana
     docker compose up -d
-    echo "go to http://localhost:3000/dashboards"
+    echo "go to http://localhost:9300/dashboards"
 
 # Stop grafana
 @stop: perm-user
@@ -120,11 +119,11 @@ precommit-install:
 
 # Open browser to grafana page
 @chart: start
-    command -v xdg-open > /dev/null && xdg-open http://localhost:3000 || echo "goto to http://localhost:3000/dashboards"
+    command -v xdg-open > /dev/null && xdg-open http://localhost:9300 || echo "goto to http://localhost:9300/dashboards"
 
 # Open browser to pgadmin page
 @pgadmin: start
-    command -v xdg-open > /dev/null && xdg-open http://localhost:8080 || echo "goto to http://localhost:8080"
+    command -v xdg-open > /dev/null && xdg-open http://localhost:9080 || echo "goto to http://localhost:9080"
 
 # Inspect parquet file
 @parquet-inspect FILE:

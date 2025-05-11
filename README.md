@@ -20,13 +20,30 @@ Works on :
 
 ## Usage
 
+### View on Grafana
+
+**INFO:** While waiting for [DuckDB](https://duckdb.org/) support in Grafana and
+to speed up data access from Grafana (especially for accessing views), the data
+is exported to the [PostgreSQL](https://www.postgresql.org/) database.
+
 ```
-just import     # Import data to PostgreSQL (used by grafana)
-just chart      # open the grafana (admin/admin)
-just stop       # stop the grafana server
+just import     # Import data to PostgreSQL (used by Grafana)
+just chart      # Open Grafana (admin/admin)
+just stop       # Stop the Grafana server
 ```
 
-**Note:** The grafana account is `admin/admin`
+**Note:** The Grafana account credentials are `admin/admin`.
+
+### For developers: Convert data to Parquet format
+
+Before having a dataset viewable in Grafana, you need to download and convert it
+to Parquet format. This reduces size and improves performance in DuckDB. Learn
+more about [Parquet](https://parquet.apache.org/).
+
+```bash
+just download
+just update
+```
 
 ## Scopes reference
 
@@ -68,20 +85,21 @@ them with geonames city elements
 
 ## Todo
 
-| Status | Category           | Scope       | Description                                                                                                                               | Sample Report                                                                                                       |
-| ------ | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| [x]    | Geonames           | Cities      | [Geonames](https://download.geonames.org/export/dump/)                                                                                    | [International Covid-19](international/covid-19/README.md) / [French Covid-19](countries/french/covid-19/README.md) |
-| [x]    | bike counter       | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66) |                                                                                                                     |
-| [x]    | vigilo             | Montpellier | [Vigilo](https://vigilo.city)                                                                                                             |                                                                                                                     |
-| [ ]    | Covid              | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                    | [International Covid-19](international/covid-19/README.md) / [French Covid-19](countries/french/covid-19/README.md) |
-| [ ]    | NASA               | Countries   | [Anormal température](https://data.giss.nasa.gov/gistemp/)                                                                                |                                                                                                                     |
-| [ ]    | Population         | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                          |                                                                                                                     |
-| [ ]    | Population         | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                      |                                                                                                                     |
-| [ ]    | Population         | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                              |                                                                                                                     |
-| [ ]    | Rental bike        | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                  |                                                                                                                     |
-| [ ]    | Weather            | Cities      | [European Centre for Medium-Range Weather Forecasts](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch)   |                                                                                                                     |
-| [ ]    | Weather            | Cities      | [European Climate Assessment & Dataset](https://www.ecad.eu/dailydata/predefinedseries.php)                                               |                                                                                                                     |
-| [ ]    | universitetetioslo | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                                 |                                                                                                                     |
+| Status | Category           | Scope       | Description                                                                                                                               |
+| ------ | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [x]    | Geonames           | Cities      | [Geonames](https://download.geonames.org/export/dump/)                                                                                    |
+| [x]    | bike counter       | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66) |
+| [x]    | vigilo             | Montpellier | [Vigilo](https://vigilo.city)                                                                                                             |
+| [ ]    | Enterprise         | Countries   | [Sirene](https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/)                        |
+| [ ]    | Covid              | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                    |
+| [ ]    | NASA               | Countries   | [Anormal température](https://data.giss.nasa.gov/gistemp/)                                                                                |
+| [ ]    | Population         | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                          |
+| [ ]    | Population         | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                      |
+| [ ]    | Population         | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                              |
+| [ ]    | Rental bike        | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                  |
+| [ ]    | Weather            | Cities      | [European Centre for Medium-Range Weather Forecasts](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch)   |
+| [ ]    | Weather            | Cities      | [European Climate Assessment & Dataset](https://www.ecad.eu/dailydata/predefinedseries.php)                                               |
+| [ ]    | universitetetioslo | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                                 |
 
 ## Project commands
 
