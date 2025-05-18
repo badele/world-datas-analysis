@@ -3,9 +3,7 @@
 set -x
 
 # TODO automate this
-datasets="dr5hn sapics duggytuxy vigilo wda"
-datasets="geonames vigilo opendata3m wda"
-datasets="geonames vigilo"
+datasets=${DATAS_LIST:-""}
 
 ###############################################################################
 # Import to postgresql

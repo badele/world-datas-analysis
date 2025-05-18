@@ -1,5 +1,9 @@
 -- INSTALL sqlite; LOAD sqlite;
 -- INSTALL postgres; LOAD postgres;
+-- INSTALL excel; LOAD excel;
+--
+-- SET autoinstall_known_extensions=1;
+-- SET autoload_known_extensions=1;
 
 .read './importer/init_commons.sql'
 

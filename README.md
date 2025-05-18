@@ -66,9 +66,10 @@ them with geonames city elements
 
 <!-- BEGIN PROVIDER -->
 
-| provider | description                                           | website             | nb_datasets | nb_observations |
-| -------- | ----------------------------------------------------- | ------------------- | ----------: | --------------: |
-| vigilo   | Observations of the collaborative citizen application | https://vigilo.city |           1 |           25548 |
+| provider | description                                                     | website             | nb_datasets | nb_observations |
+| -------- | --------------------------------------------------------------- | ------------------- | ----------: | --------------: |
+| vigilo   | Observations of the collaborative citizen application           | https://vigilo.city |           1 |           25548 |
+| sirene   | System for the Identification of the Register of Establishments | https://sirene.fr   |           1 |         2125502 |
 
 <!-- END PROVIDER -->
 
@@ -76,10 +77,11 @@ them with geonames city elements
 
 <!-- BEGIN DATASET -->
 
-| provider   | real_provider | dataset                                 | wda_scope | wda_scope_ref       | description                 | source                                                                                                                  | nb_variables | nb_observations | nb_scopes |
-| ---------- | ------------- | --------------------------------------- | --------- | ------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -----------: | --------------: | --------: |
-| opendata3m | opendata3m    | wda_opendata3m_ecocompteur_observations | city      | wda_geonames_cities | ecocompteur observations    | https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66 |          107 |           54149 |        11 |
-| vigilo     | vigilo        | wda_vigilo_observations                 | city      | wda_geonames_cities | vigilo citizen observations | https://vigilo.city                                                                                                     |          111 |           25548 |       173 |
+| provider   | real_provider | dataset                                 | wda_scope | wda_scope_ref       | description                                                            | source                                                                                                                  | nb_variables | nb_observations | nb_scopes |
+| ---------- | ------------- | --------------------------------------- | --------- | ------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -----------: | --------------: | --------: |
+| opendata3m | opendata3m    | wda_opendata3m_ecocompteur_observations | city      | wda_geonames_cities | ecocompteur observations                                               | https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66 |          107 |           54149 |        11 |
+| vigilo     | vigilo        | wda_vigilo_observations                 | city      | wda_geonames_cities | vigilo citizen observations                                            | https://vigilo.city                                                                                                     |          111 |           25548 |       173 |
+| sirene     | sirene        | wda_sirene_etablissements               | city      | wda_geonames_cities | National Business and Establishment Identification and Registry System | https://sirene.fr                                                                                                       |           46 |         2125502 |     31509 |
 
 <!-- END DATASET -->
 
@@ -87,19 +89,19 @@ them with geonames city elements
 
 | Status | Category           | Scope       | Description                                                                                                                               |
 | ------ | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| [x]    | Geonames           | Cities      | [Geonames](https://download.geonames.org/export/dump/)                                                                                    |
-| [x]    | bike counter       | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66) |
-| [x]    | vigilo             | Montpellier | [Vigilo](https://vigilo.city)                                                                                                             |
-| [ ]    | Enterprise         | Countries   | [Sirene](https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/)                        |
-| [ ]    | Covid              | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                    |
-| [ ]    | NASA               | Countries   | [Anormal température](https://data.giss.nasa.gov/gistemp/)                                                                                |
-| [ ]    | Population         | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                          |
-| [ ]    | Population         | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                      |
-| [ ]    | Population         | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                              |
-| [ ]    | Rental bike        | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                  |
-| [ ]    | Weather            | Cities      | [European Centre for Medium-Range Weather Forecasts](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch)   |
-| [ ]    | Weather            | Cities      | [European Climate Assessment & Dataset](https://www.ecad.eu/dailydata/predefinedseries.php)                                               |
-| [ ]    | universitetetioslo | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                                 |
+| ✅     | Geonames           | Cities      | [Geonames](https://download.geonames.org/export/dump/)                                                                                    |
+| ✅     | bike counter       | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66) |
+| ✅     | vigilo             | Montpellier | [Vigilo](https://vigilo.city)                                                                                                             |
+| ✅     | Enterprise         | Cities      | [Sirene](https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/)                        |
+| 🛒     | Covid              | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                    |
+| 🛒     | NASA               | Countries   | [Anormal température](https://data.giss.nasa.gov/gistemp/)                                                                                |
+| 🛒     | Population         | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                          |
+| 🛒     | Population         | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                      |
+| 🛒     | Population         | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                              |
+| 🛒     | Rental bike        | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                  |
+| 🛒     | Weather            | Cities      | [European Centre for Medium-Range Weather Forecasts](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch)   |
+| 🛒     | Weather            | Cities      | [European Climate Assessment & Dataset](https://www.ecad.eu/dailydata/predefinedseries.php)                                               |
+| 🛒     | universitetetioslo | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                                 |
 
 ## Project commands
 
