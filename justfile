@@ -55,7 +55,7 @@ precommit-install:
 
 # Run the wda docker image
 @docker-run CMD="": start
-    docker run --net host -it --rm -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
+    docker run --net host -it --rm -e DATAS_LIST="$DATAS_LIST" -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
 
 ###############################################################################
 # DB
@@ -87,7 +87,7 @@ precommit-install:
 
 # Update documentation
 @doc-update FAKEFILENAME:
-    just docker-run 'python3 ./updatedoc.py'
+    DATAS_LIST="" just docker-run 'python3 ./updatedoc.py'
 
 [private]
 @perm-grafana:

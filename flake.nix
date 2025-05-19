@@ -14,8 +14,7 @@
         overlay = (final: prev: { });
         overlays = [ overlay ];
       in
-      rec
-      {
+      rec {
         devShells.default = with pkgs;
           mkShell {
             name = "Default developpement shell";
@@ -46,8 +45,6 @@
             ];
             shellHook = ''
                 export PROJ="world-datas-analysis"
-                export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib
-                export LD_LIBRARY_PATH=${pkgs.zlib}/lib:$LD_LIBRARY_PATH
 
                 # Install virtualenv
                 if [ ! -e .venv ]; then
