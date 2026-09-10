@@ -2,6 +2,7 @@ apiVersion: 1
 
 datasources:
   - name: wda-psql
+    uid: wda-psql
     isDefault: true
     type: postgres
     url: psql:5432

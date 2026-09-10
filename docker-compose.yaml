@@ -12,9 +12,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./db/postgresql:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
       - ./dataset:/dataset
-      # - ./dataset:/var/lib/postgresql/data/dataset
+      # DuckDB FDW scripts use paths relative to PostgreSQL's data directory.
+      - ./dataset:/var/lib/postgresql/data/dataset
 
   pgadmin:
     image: dpage/pgadmin4
@@ -50,7 +51,7 @@ services:
     ports:
       - '9300:3000'
     volumes:
-      - $PWD/grafana:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
       - $PWD/db:/db
       - ./grafana/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
@@ -81,4 +82,6 @@ networks:
     driver: bridge
 
 volumes:
+  postgres-data:
+  grafana-data:
   pgadmin-data:

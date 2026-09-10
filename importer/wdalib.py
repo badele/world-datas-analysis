@@ -145,17 +145,16 @@ def data2duckdb(provider, tables=None):
 
     show_title(f"Exporting {provider} to DuckDB")
 
-    command = f"duckdb db/wda.duckdb < ./importer/{provider}/_data2duckdb.sql"
-    process = subprocess.run(command, shell=True, check=True)
-    if process.returncode != 0:
-        print(
-            "###############################################################################"
-        )
-        print("# ERROR")
-        print(
-            "###############################################################################"
-        )
-        print("stderr:", process.stderr)
+    sql_file = f"./importer/{provider}/_data2duckdb.sql"
+    command = f"duckdb db/wda.duckdb < {sql_file}"
+    print(f"[{provider}] Executing DuckDB script: {sql_file}", flush=True)
+    try:
+        subprocess.run(command, shell=True, check=True)
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError(
+            f"DuckDB export failed for provider '{provider}' "
+            f"using '{sql_file}' (exit code {error.returncode})"
+        ) from error
 
     if tables is not None:
         writeHash(provider, computedhash)

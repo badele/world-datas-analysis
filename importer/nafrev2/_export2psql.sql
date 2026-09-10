@@ -14,7 +14,7 @@ CREATE FOREIGN TABLE duckdb_nafrev2_sections (
     section TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/nafrev2/sections.parquet")'
+    TABLE 'read_parquet("./dataset/nafrev2/sections.parquet")'
 );
 
 DROP TABLE IF EXISTS nafrev2_sections CASCADE;
@@ -30,7 +30,7 @@ CREATE FOREIGN TABLE duckdb_nafrev2_divisions (
     division TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/nafrev2/divisions.parquet")'
+    TABLE 'read_parquet("./dataset/nafrev2/divisions.parquet")'
 );
 
 DROP TABLE IF EXISTS nafrev2_divisions CASCADE;
@@ -47,7 +47,7 @@ CREATE FOREIGN TABLE duckdb_nafrev2_groupes (
     groupe TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/nafrev2/groupes.parquet")'
+    TABLE 'read_parquet("./dataset/nafrev2/groupes.parquet")'
 );
 
 DROP TABLE IF EXISTS nafrev2_groupes CASCADE;
@@ -65,7 +65,7 @@ CREATE FOREIGN TABLE duckdb_nafrev2_classes (
     classe TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/nafrev2/classes.parquet")'
+    TABLE 'read_parquet("./dataset/nafrev2/classes.parquet")'
 );
 
 DROP TABLE IF EXISTS nafrev2_classes CASCADE;
@@ -84,7 +84,7 @@ CREATE FOREIGN TABLE duckdb_nafrev2_sous_classes (
     sous_classe TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/nafrev2/sous_classes.parquet")'
+    TABLE 'read_parquet("./dataset/nafrev2/sous_classes.parquet")'
 );
 
 DROP TABLE IF EXISTS nafrev2_sous_classes CASCADE;
