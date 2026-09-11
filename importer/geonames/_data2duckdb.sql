@@ -26,7 +26,35 @@ CREATE TABLE geonames_countries (
 
 INSERT INTO geonames_countries
     SELECT  *
-    FROM read_csv('./downloaded/geonames/countryInfo.txt',skip=50);
+    -- GeoNames files are tab-separated and may contain literal quotes.
+    FROM read_csv(
+        './downloaded/geonames/countryInfo.txt',
+        delim='\t',
+        header=false,
+        skip=50,
+        quote='',
+        columns={
+            'iso': 'VARCHAR',
+            'iso3': 'VARCHAR',
+            'iso_numeric': 'INTEGER',
+            'fips': 'VARCHAR',
+            'country': 'VARCHAR',
+            'capital': 'VARCHAR',
+            'area_km2': 'DOUBLE',
+            'population': 'BIGINT',
+            'continent': 'VARCHAR',
+            'tld': 'VARCHAR',
+            'currency_code': 'VARCHAR',
+            'currency_name': 'VARCHAR',
+            'phone_prefix': 'VARCHAR',
+            'postal_code_format': 'VARCHAR',
+            'postal_code_regex': 'VARCHAR',
+            'languages': 'VARCHAR',
+            'geonameid': 'INTEGER',
+            'neighbours': 'VARCHAR',
+            'equivalent_fips_code': 'VARCHAR'
+        }
+    );
 
 DROP TABLE IF EXISTS geonames_allentries;
 CREATE TABLE geonames_allentries (
@@ -68,8 +96,35 @@ CREATE TABLE geonames_allentries (
 
 INSERT INTO geonames_allentries
     SELECT NULL,*,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
-    FROM read_csv('./downloaded/geonames/allCountries.txt')
-    WHERE column06 = 'A' or column06 = 'P'
+    -- Use an explicit schema because automatic detection mistakes quoted names for headers.
+    FROM read_csv(
+        './downloaded/geonames/allCountries.txt',
+        delim='\t',
+        header=false,
+        quote='',
+        columns={
+            'geonameid': 'INTEGER',
+            'name': 'VARCHAR',
+            'asciiname': 'VARCHAR',
+            'alternatenames': 'VARCHAR',
+            'latitude': 'DOUBLE',
+            'longitude': 'DOUBLE',
+            'feature_class': 'VARCHAR',
+            'feature_code': 'VARCHAR',
+            'country_code': 'VARCHAR',
+            'cc2': 'VARCHAR',
+            'admin1_code': 'VARCHAR',
+            'admin2_code': 'VARCHAR',
+            'admin3_code': 'VARCHAR',
+            'admin4_code': 'VARCHAR',
+            'population': 'BIGINT',
+            'elevation': 'INTEGER',
+            'dem': 'INTEGER',
+            'timezone': 'VARCHAR',
+            'modification': 'DATE'
+        }
+    )
+    WHERE feature_class IN ('A', 'P')
 ;
 
 -- Encoding problem in this field

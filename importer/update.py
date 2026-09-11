@@ -35,10 +35,25 @@ def update():
     for dataset in datasets_to_update:
         dataset = dataset.strip()  # Remove any extra whitespace
         if dataset in update_functions:
-            print(f"updateing {dataset}...")
-            update_functions[dataset]()
+            update_function = update_functions[dataset]
+            print(
+                f"[update] Starting dataset '{dataset}' with "
+                f"{update_function.__module__}.{update_function.__name__}()",
+                flush=True,
+            )
+            try:
+                update_function()
+            except Exception as error:
+                print(
+                    f"[update] Failed dataset '{dataset}': "
+                    f"{type(error).__name__}: {error}",
+                    flush=True,
+                )
+                raise
+            else:
+                print(f"[update] Completed dataset '{dataset}'", flush=True)
         else:
-            print(f"Warning: No update function found for '{dataset}'")
+            print(f"[update] Warning: no update function found for '{dataset}'")
 
 
 if __name__ == "__main__":

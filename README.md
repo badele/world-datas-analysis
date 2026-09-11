@@ -34,6 +34,16 @@ just stop       # Stop the Grafana server
 
 **Note:** The Grafana account credentials are `admin/admin`.
 
+### Git LFS prerequisite
+
+Parquet files from the `dataset/` directory are stored with [Git LFS](https://git-lfs.com/).
+Install and initialize Git LFS before downloading or importing datasets:
+
+```bash
+git lfs install
+git lfs version
+```
+
 ### For developers: Convert data to Parquet format
 
 Before having a dataset viewable in Grafana, you need to download and convert it
@@ -43,6 +53,7 @@ more about [Parquet](https://parquet.apache.org/).
 ```bash
 just download
 just update
+just import
 ```
 
 ## Scopes reference

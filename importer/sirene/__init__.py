@@ -9,13 +9,16 @@ import wdalib
 PROVIDER = "sirene"
 FILES = {
     "sirene_unite_legale": {
-        "url": "https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip",
+        "url": "https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047",
+        "output_file": "StockUniteLegale_utf8.zip",
     },
     "sirene_etablissement": {
-        "url": "https://files.data.gouv.fr/insee-sirene/StockEtablissement_utf8.zip",
+        "url": "https://www.data.gouv.fr/fr/datasets/r/0651fb76-bcf3-4f6a-a38d-bc04fa708576",
+        "output_file": "StockEtablissement_utf8.zip",
     },
     "sirene_etablissement_geoloc": {
-        "url": "https://files.data.gouv.fr/insee-sirene-geo/GeolocalisationEtablissement_Sirene_pour_etudes_statistiques_utf8.zip",
+        "url": "https://www.data.gouv.fr/fr/datasets/r/ba6a4e4c-aac6-4764-bbd2-f80ae345afc5",
+        "output_file": "GeolocalisationEtablissement_Sirene_pour_etudes_statistiques_utf8.zip",
     },
     "sirene_nafrev2": {
         "url": "https://static.data.gouv.fr/resources/nomenclature-dactivites-francaise-naf/20190206-152239/naf2008-liste-n4-classes.csv",

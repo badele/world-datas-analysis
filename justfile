@@ -81,6 +81,11 @@ precommit-install:
 @import: requirements-check
     just docker-run ./importer/import.sh
 
+# Run Python unit tests
+@test:
+    docker run --rm -v $(pwd):/wda -w /wda {{ dockerimage }} \
+        /venv/bin/python -m unittest discover -s tests
+
 # Lint the project
 @lint: requirements-check
     pre-commit run --all-files
@@ -89,28 +94,13 @@ precommit-install:
 @doc-update FAKEFILENAME:
     DATAS_LIST="" just docker-run 'python3 ./updatedoc.py'
 
-[private]
-@perm-grafana:
-    mkdir -p grafana-storage
-    sudo chown -R 472 grafana
-    sudo chown -R 472 dataset
-    sudo chown -R 472 grafana-storage
-
-[private]
-@perm-user:
-    mkdir -p grafana-storage
-    sudo chown -R $(id -u) db
-    sudo chown -R $(id -u) dataset
-    sudo chown -R $(id -u) grafana
-    sudo chown -R $(id -u) grafana-storage
-
 # Start grafana
-@start: perm-grafana
+@start:
     docker compose up -d
     echo "go to http://localhost:9300/dashboards"
 
 # Stop grafana
-@stop: perm-user
+@stop:
     docker compose stop
 
 # Reset grafana storage

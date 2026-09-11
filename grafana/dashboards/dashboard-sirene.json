@@ -18,13 +18,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "gridPos": {
         "h": 2,
@@ -49,7 +48,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "fieldConfig": {
         "defaults": {
@@ -88,9 +87,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -103,7 +100,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -135,7 +132,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "description": "",
       "fieldConfig": {
@@ -175,9 +172,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -190,7 +185,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -222,7 +217,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "description": "",
       "fieldConfig": {
@@ -262,9 +257,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -277,7 +270,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -309,7 +302,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "description": "",
       "fieldConfig": {
@@ -349,9 +342,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -364,7 +355,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -396,7 +387,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "description": "",
       "fieldConfig": {
@@ -436,9 +427,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -451,7 +440,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -483,7 +472,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "description": "",
       "fieldConfig": {
@@ -523,9 +512,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -538,7 +525,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -570,7 +557,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "description": "",
       "fieldConfig": {
@@ -610,9 +597,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": true
         },
@@ -625,7 +610,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -657,7 +642,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "fieldConfig": {
         "defaults": {
@@ -725,9 +710,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "showHeader": true,
@@ -738,7 +721,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -770,7 +753,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "P995C8F1A0F23A57C"
+        "uid": "wda-psql"
       },
       "fieldConfig": {
         "defaults": {
@@ -789,8 +772,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -907,7 +889,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "P995C8F1A0F23A57C"
+            "uid": "wda-psql"
           },
           "editorMode": "code",
           "format": "table",
@@ -944,16 +926,12 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "C:Industrie manufacturière"
-          ],
-          "value": [
-            "C"
-          ]
+          "text": ["M:Activités spécialisées, scientifiques et techniques"],
+          "value": ["M"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct insee_section_id || ':' || insee_section as __text,insee_section_id as __value from wda_sirene_etablissements",
         "hide": 0,
@@ -972,17 +950,13 @@
         "current": {
           "selected": true,
           "text": [
-            "10:Industries alimentaires",
-            "11:Fabrication de boissons"
+            "74:Autres activités spécialisées, scientifiques et techniques"
           ],
-          "value": [
-            "10",
-            "11"
-          ]
+          "value": ["74"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct insee_division_id || ':' || insee_division as __text,insee_division_id as __value from wda_sirene_etablissements WHERE insee_section_id IN (${section:sqlstring})",
         "hide": 0,
@@ -1001,29 +975,13 @@
         "current": {
           "selected": true,
           "text": [
-            "10.1:Transformation et conservation de la viande et préparation de produits à base de viande",
-            "10.2:Transformation et conservation de poisson, de crustacés et de mollusques",
-            "10.3:Transformation et conservation de fruits et légumes",
-            "10.4:Fabrication d'huiles et graisses végétales et animales",
-            "10.5:Fabrication de produits laitiers",
-            "10.6:Travail des grains ; fabrication de produits amylacés",
-            "10.8:Fabrication d'autres produits alimentaires",
-            "11.0:Fabrication de boissons"
+            "74.9:Autres activités spécialisées, scientifiques et techniques n.c.a."
           ],
-          "value": [
-            "10.1",
-            "10.2",
-            "10.3",
-            "10.4",
-            "10.5",
-            "10.6",
-            "10.8",
-            "11.0"
-          ]
+          "value": ["74.9"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct insee_groupe_id || ':' || insee_groupe as __text,insee_groupe_id as __value from wda_sirene_etablissements WHERE insee_division_id IN (${division:sqlstring})",
         "hide": 0,
@@ -1042,67 +1000,13 @@
         "current": {
           "selected": true,
           "text": [
-            "10.11:Transformation et conservation de la viande de boucherie",
-            "10.12:Transformation et conservation de la viande de volaille",
-            "10.13:Préparation de produits à base de viande",
-            "10.20:Transformation et conservation de poisson, de crustacés et de mollusques",
-            "10.31:Transformation et conservation de pommes de terre",
-            "10.32:Préparation de jus de fruits et légumes",
-            "10.39:Autre transformation et conservation de fruits et légumes",
-            "10.41:Fabrication d'huiles et graisses",
-            "10.42:Fabrication de margarine et graisses comestibles similaires",
-            "10.51:Exploitation de laiteries et fabrication de fromage",
-            "10.52:Fabrication de glaces et sorbets",
-            "10.61:Travail des grains",
-            "10.62:Fabrication de produits amylacés",
-            "10.81:Fabrication de sucre",
-            "10.82:Fabrication de cacao, chocolat et de produits de confiserie",
-            "10.83:Transformation du thé et du café",
-            "10.84:Fabrication de condiments et assaisonnements",
-            "10.85:Fabrication de plats préparés",
-            "10.86:Fabrication d'aliments homogénéisés et diététiques",
-            "10.89:Fabrication d'autres produits alimentaires n.c.a.",
-            "11.01:Production de boissons alcooliques distillées",
-            "11.02:Production de vin (de raisin)",
-            "11.03:Fabrication de cidre et de vins de fruits",
-            "11.04:Production d'autres boissons fermentées non distillées",
-            "11.05:Fabrication de bière",
-            "11.06:Fabrication de malt",
-            "11.07:Industrie des eaux minérales et autres eaux embouteillées et des boissons rafraîchissantes"
+            "74.90:Autres activités spécialisées, scientifiques et techniques n.c.a."
           ],
-          "value": [
-            "10.11",
-            "10.12",
-            "10.13",
-            "10.20",
-            "10.31",
-            "10.32",
-            "10.39",
-            "10.41",
-            "10.42",
-            "10.51",
-            "10.52",
-            "10.61",
-            "10.62",
-            "10.81",
-            "10.82",
-            "10.83",
-            "10.84",
-            "10.85",
-            "10.86",
-            "10.89",
-            "11.01",
-            "11.02",
-            "11.03",
-            "11.04",
-            "11.05",
-            "11.06",
-            "11.07"
-          ]
+          "value": ["74.90"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct insee_classe_id || ':' || insee_classe as __text,insee_classe_id as __value from wda_sirene_etablissements WHERE insee_groupe_id IN (${groupe:sqlstring})",
         "hide": 0,
@@ -1121,85 +1025,13 @@
         "current": {
           "selected": true,
           "text": [
-            "10.11Z:Transformation et conservation de la viande de boucherie",
-            "10.12Z:Transformation et conservation de la viande de volaille",
-            "10.13A:Préparation industrielle de produits à base de viande",
-            "10.13B:Charcuterie",
-            "10.20Z:Transformation et conservation de poisson, de crustacés et de mollusques",
-            "10.31Z:Transformation et conservation de pommes de terre",
-            "10.32Z:Préparation de jus de fruits et légumes",
-            "10.39A:Autre transformation et conservation de légumes",
-            "10.39B:Transformation et conservation de fruits",
-            "10.41A:Fabrication d'huiles et graisses brutes",
-            "10.41B:Fabrication d'huiles et graisses raffinées",
-            "10.42Z:Fabrication de margarine et graisses comestibles similaires",
-            "10.51A:Fabrication de lait liquide et de produits frais",
-            "10.51B:Fabrication de beurre",
-            "10.51C:Fabrication de fromage",
-            "10.51D:Fabrication d'autres produits laitiers",
-            "10.52Z:Fabrication de glaces et sorbets",
-            "10.61A:Meunerie",
-            "10.61B:Autres activités du travail des grains",
-            "10.62Z:Fabrication de produits amylacés",
-            "10.81Z:Fabrication de sucre",
-            "10.82Z:Fabrication de cacao, chocolat et de produits de confiserie",
-            "10.83Z:Transformation du thé et du café",
-            "10.84Z:Fabrication de condiments et assaisonnements",
-            "10.85Z:Fabrication de plats préparés",
-            "10.86Z:Fabrication d'aliments homogénéisés et diététiques",
-            "10.89Z:Fabrication d'autres produits alimentaires n.c.a.",
-            "11.01Z:Production de boissons alcooliques distillées",
-            "11.02A:Fabrication de vins effervescents",
-            "11.02B:Vinification",
-            "11.03Z:Fabrication de cidre et de vins de fruits",
-            "11.04Z:Production d'autres boissons fermentées non distillées",
-            "11.05Z:Fabrication de bière",
-            "11.06Z:Fabrication de malt",
-            "11.07A:Industrie des eaux de table",
-            "11.07B:Production de boissons rafraîchissantes"
+            "74.90B:Activités spécialisées, scientifiques et techniques diverses"
           ],
-          "value": [
-            "10.11Z",
-            "10.12Z",
-            "10.13A",
-            "10.13B",
-            "10.20Z",
-            "10.31Z",
-            "10.32Z",
-            "10.39A",
-            "10.39B",
-            "10.41A",
-            "10.41B",
-            "10.42Z",
-            "10.51A",
-            "10.51B",
-            "10.51C",
-            "10.51D",
-            "10.52Z",
-            "10.61A",
-            "10.61B",
-            "10.62Z",
-            "10.81Z",
-            "10.82Z",
-            "10.83Z",
-            "10.84Z",
-            "10.85Z",
-            "10.86Z",
-            "10.89Z",
-            "11.01Z",
-            "11.02A",
-            "11.02B",
-            "11.03Z",
-            "11.04Z",
-            "11.05Z",
-            "11.06Z",
-            "11.07A",
-            "11.07B"
-          ]
+          "value": ["74.90B"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct insee_sous_classe_id || ':' || insee_sous_classe as __text,insee_sous_classe_id as __value from wda_sirene_etablissements WHERE insee_classe_id IN (${classe:sqlstring})",
         "hide": 0,
@@ -1217,30 +1049,16 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "1",
-            "3",
-            "6",
-            "10",
-            "20",
-            "50"
-          ],
-          "value": [
-            "1",
-            "3",
-            "6",
-            "10",
-            "20",
-            "50"
-          ]
+          "text": ["0"],
+          "value": ["0"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct ets_minnbeffectifsetablissement FROM wda_sirene_etablissements where ets_minnbeffectifsetablissement is not null AND insee_sous_classe_id IN (${sousclasse:sqlstring});",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "multi": true,
         "name": "effectif",
         "options": [],
@@ -1254,24 +1072,16 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "30",
-            "34",
-            "44"
-          ],
-          "value": [
-            "30",
-            "34",
-            "44"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct ets_departementetablissement  from wda_sirene_etablissements WHERE  insee_sous_classe_id IN (${sousclasse:sqlstring}) AND ets_minnbeffectifsetablissement IN (${effectif:sqlstring});",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "multi": true,
         "name": "departement",
         "options": [],
@@ -1285,540 +1095,16 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "Abeilhan",
-            "Adissan",
-            "Agde",
-            "Aigues-Mortes",
-            "Alès",
-            "Alignan-du-Vent",
-            "Allègre-les-Fumades",
-            "Ancenis-Saint-Géréon",
-            "Aniane",
-            "Aramon",
-            "Arpaillargues-et-Aureillac",
-            "Aspiran",
-            "Assas",
-            "Autignac",
-            "Bagard",
-            "Bagnols-sur-Cèze",
-            "Balaruc-les-Bains",
-            "Barjac",
-            "Basse-Goulaine",
-            "Batz-sur-Mer",
-            "Beaucaire",
-            "Bédarieux",
-            "Bessan",
-            "Béziers",
-            "Bouaye",
-            "Boujan-sur-Libron",
-            "Bourdic",
-            "Boussay",
-            "Brignon",
-            "Caissargues",
-            "Campbon",
-            "Candillargues",
-            "Capestang",
-            "Cardet",
-            "Carquefou",
-            "Casson",
-            "Castanet-le-Haut",
-            "Castelnau-le-Lez",
-            "Castelnau-Valence",
-            "Cavillargues",
-            "Cers",
-            "Cessenon-sur-Orb",
-            "Châteaubriant",
-            "Chaumes-en-Retz",
-            "Chauvé",
-            "Chusclan",
-            "Clermont-l'Hérault",
-            "Clisson",
-            "Collorgues",
-            "Corconne",
-            "Corneilhan",
-            "Cornillon",
-            "Couëron",
-            "Couffé",
-            "Cournonsec",
-            "Cournonterral",
-            "Cruviers-Lascours",
-            "Cruzy",
-            "Derval",
-            "Divatte-sur-Loire",
-            "Domazan",
-            "Donges",
-            "Durfort-et-Saint-Martin-de-Sossenac",
-            "Entre-Vignes",
-            "Estézargues",
-            "Faugères",
-            "Fégréac",
-            "Florensac",
-            "Foissac",
-            "Fons",
-            "Fontanès",
-            "Fontès",
-            "Fourques",
-            "Frontignan",
-            "Gabian",
-            "Galargues",
-            "Gallargues-le-Montueux",
-            "Ganges",
-            "Garons",
-            "Gaujac",
-            "Générac",
-            "Génolhac",
-            "Gigean",
-            "Grabels",
-            "Guémené-Penfao",
-            "Guenrouet",
-            "Guérande",
-            "Haute-Goulaine",
-            "Herbignac",
-            "Hérépian",
-            "Issé",
-            "Jacou",
-            "Jans",
-            "La Baule-Escoublac",
-            "La Chapelle-des-Marais",
-            "La Chapelle-Heulin",
-            "La Chapelle-sur-Erdre",
-            "La Chevrolière",
-            "La Grigonnais",
-            "La Haie-Fouassière",
-            "La Meilleraye-de-Bretagne",
-            "La Montagne",
-            "La Planche",
-            "La Remaudière",
-            "La Salvetat-sur-Agout",
-            "Lattes",
-            "Laudun-l'Ardoise",
-            "Lavérune",
-            "Le Bosc",
-            "Le Cellier",
-            "Le Croisic",
-            "Lédignan",
-            "Legé",
-            "Le Grau-du-Roi",
-            "Le Landreau",
-            "Le Pellerin",
-            "Le Pin",
-            "Le Pouget",
-            "Les Aires",
-            "Les Angles",
-            "Les Mages",
-            "Les Moutiers-en-Retz",
-            "Les Sorinières",
-            "Lieuran-lès-Béziers",
-            "Lodève",
-            "Lunel",
-            "Machecoul-Saint-Même",
-            "Malville",
-            "Manduel",
-            "Maraussan",
-            "Marguerittes",
-            "Marsac-sur-Don",
-            "Marseillan",
-            "Marsillargues",
-            "Martignargues",
-            "Massillargues-Attuech",
-            "Mauguio",
-            "Méjannes-lès-Alès",
-            "Mésanger",
-            "Moisdon-la-Rivière",
-            "Monnières",
-            "Monoblet",
-            "Montady",
-            "Montagnac",
-            "Montaren-et-Saint-Médiers",
-            "Montaud",
-            "Montbert",
-            "Montblanc",
-            "Montignargues",
-            "Montoir-de-Bretagne",
-            "Montpellier",
-            "Moulézan",
-            "Mouzillon",
-            "Mudaison",
-            "Murviel-lès-Béziers",
-            "Nantes",
-            "Ners",
-            "Nîmes",
-            "Nissan-lez-Enserune",
-            "Nozay",
-            "Palavas-les-Flots",
-            "Pégairolles-de-l'Escalette",
-            "Pézenas",
-            "Pinet",
-            "Pomérols",
-            "Pontchâteau",
-            "Pont-Saint-Esprit",
-            "Pornic",
-            "Pornichet",
-            "Portiragnes",
-            "Pougnadoresse",
-            "Pouzolles",
-            "Prades-le-Lez",
-            "Puisserguier",
-            "Pujaut",
-            "Quissac",
-            "Redessan",
-            "Remouillé",
-            "Remoulins",
-            "Rezé",
-            "Rochefort-du-Gard",
-            "Rogues",
-            "Roquebrun",
-            "Roquemaure",
-            "Sabran",
-            "Saint-André-des-Eaux",
-            "Saint-Aunès",
-            "Saint-Bauzille-de-la-Sylve",
-            "Saint-Brevin-les-Pins",
-            "Saint-Chinian",
-            "Saint-Christol-lez-Alès",
-            "Saint-Colomban",
-            "Saint-Dézéry",
-            "Sainte-Luce-sur-Loire",
-            "Saint-Étienne-de-Montluc",
-            "Saint-Étienne-des-Sorts",
-            "Saint-Félix-de-Lodez",
-            "Saint-Florent-sur-Auzonnet",
-            "Saint-Gély-du-Fesc",
-            "Saint-Geniès-de-Fontedit",
-            "Saint-Geniès-de-Malgoirès",
-            "Saint-Geniès-des-Mourgues",
-            "Saint-Georges-d'Orques",
-            "Saint-Gilles",
-            "Saint-Herblain",
-            "Saint-Hilaire-de-Chaléons",
-            "Saint-Hippolyte-de-Montaigu",
-            "Saint-Hippolyte-du-Fort",
-            "Saint-Jean-de-Boiseau",
-            "Saint-Jean-de-Minervois",
-            "Saint-Jean-de-Serres",
-            "Saint-Jean-de-Védas",
-            "Saint-Julien-de-Peyrolas",
-            "Saint-Just",
-            "Saint-Laurent-de-Carnols",
-            "Saint-Laurent-des-Arbres",
-            "Saint-Lumine-de-Coutais",
-            "Saint-Lyphard",
-            "Saint-Malo-de-Guersac",
-            "Saint-Marcel-de-Careiret",
-            "Saint-Mars-du-Désert",
-            "Saint-Mathieu-de-Tréviers",
-            "Saint-Maurice-de-Cazevieille",
-            "Saint-Maximin",
-            "Saint-Molf",
-            "Saint-Nazaire",
-            "Saint-Pargoire",
-            "Saint-Paulet-de-Caisson",
-            "Saint-Philbert-de-Grand-Lieu",
-            "Saint-Pons-la-Calm",
-            "Saint-Privat-des-Vieux",
-            "Saint-Sébastien-sur-Loire",
-            "Saint-Thibéry",
-            "Saint-Vincent-des-Landes",
-            "Sautron",
-            "Sérignan",
-            "Sernhac",
-            "Servian",
-            "Sète",
-            "Sommières",
-            "Souvignargues",
-            "Sucé-sur-Erdre",
-            "Tavel",
-            "Teillé",
-            "Thouaré-sur-Loire",
-            "Treillières",
-            "Trèves",
-            "Uzès",
-            "Vailhauquès",
-            "Vallet",
-            "Vallons-de-l'Erdre",
-            "Vauvert",
-            "Vendargues",
-            "Vendres",
-            "Vertou",
-            "Vic-la-Gardiole",
-            "Vieillevigne",
-            "Vigneux-de-Bretagne",
-            "Villeneuve-lès-Béziers",
-            "Villeveyrac",
-            "Villevieille"
-          ],
-          "value": [
-            "Abeilhan",
-            "Adissan",
-            "Agde",
-            "Aigues-Mortes",
-            "Alès",
-            "Alignan-du-Vent",
-            "Allègre-les-Fumades",
-            "Ancenis-Saint-Géréon",
-            "Aniane",
-            "Aramon",
-            "Arpaillargues-et-Aureillac",
-            "Aspiran",
-            "Assas",
-            "Autignac",
-            "Bagard",
-            "Bagnols-sur-Cèze",
-            "Balaruc-les-Bains",
-            "Barjac",
-            "Basse-Goulaine",
-            "Batz-sur-Mer",
-            "Beaucaire",
-            "Bédarieux",
-            "Bessan",
-            "Béziers",
-            "Bouaye",
-            "Boujan-sur-Libron",
-            "Bourdic",
-            "Boussay",
-            "Brignon",
-            "Caissargues",
-            "Campbon",
-            "Candillargues",
-            "Capestang",
-            "Cardet",
-            "Carquefou",
-            "Casson",
-            "Castanet-le-Haut",
-            "Castelnau-le-Lez",
-            "Castelnau-Valence",
-            "Cavillargues",
-            "Cers",
-            "Cessenon-sur-Orb",
-            "Châteaubriant",
-            "Chaumes-en-Retz",
-            "Chauvé",
-            "Chusclan",
-            "Clermont-l'Hérault",
-            "Clisson",
-            "Collorgues",
-            "Corconne",
-            "Corneilhan",
-            "Cornillon",
-            "Couëron",
-            "Couffé",
-            "Cournonsec",
-            "Cournonterral",
-            "Cruviers-Lascours",
-            "Cruzy",
-            "Derval",
-            "Divatte-sur-Loire",
-            "Domazan",
-            "Donges",
-            "Durfort-et-Saint-Martin-de-Sossenac",
-            "Entre-Vignes",
-            "Estézargues",
-            "Faugères",
-            "Fégréac",
-            "Florensac",
-            "Foissac",
-            "Fons",
-            "Fontanès",
-            "Fontès",
-            "Fourques",
-            "Frontignan",
-            "Gabian",
-            "Galargues",
-            "Gallargues-le-Montueux",
-            "Ganges",
-            "Garons",
-            "Gaujac",
-            "Générac",
-            "Génolhac",
-            "Gigean",
-            "Grabels",
-            "Guémené-Penfao",
-            "Guenrouet",
-            "Guérande",
-            "Haute-Goulaine",
-            "Herbignac",
-            "Hérépian",
-            "Issé",
-            "Jacou",
-            "Jans",
-            "La Baule-Escoublac",
-            "La Chapelle-des-Marais",
-            "La Chapelle-Heulin",
-            "La Chapelle-sur-Erdre",
-            "La Chevrolière",
-            "La Grigonnais",
-            "La Haie-Fouassière",
-            "La Meilleraye-de-Bretagne",
-            "La Montagne",
-            "La Planche",
-            "La Remaudière",
-            "La Salvetat-sur-Agout",
-            "Lattes",
-            "Laudun-l'Ardoise",
-            "Lavérune",
-            "Le Bosc",
-            "Le Cellier",
-            "Le Croisic",
-            "Lédignan",
-            "Legé",
-            "Le Grau-du-Roi",
-            "Le Landreau",
-            "Le Pellerin",
-            "Le Pin",
-            "Le Pouget",
-            "Les Aires",
-            "Les Angles",
-            "Les Mages",
-            "Les Moutiers-en-Retz",
-            "Les Sorinières",
-            "Lieuran-lès-Béziers",
-            "Lodève",
-            "Lunel",
-            "Machecoul-Saint-Même",
-            "Malville",
-            "Manduel",
-            "Maraussan",
-            "Marguerittes",
-            "Marsac-sur-Don",
-            "Marseillan",
-            "Marsillargues",
-            "Martignargues",
-            "Massillargues-Attuech",
-            "Mauguio",
-            "Méjannes-lès-Alès",
-            "Mésanger",
-            "Moisdon-la-Rivière",
-            "Monnières",
-            "Monoblet",
-            "Montady",
-            "Montagnac",
-            "Montaren-et-Saint-Médiers",
-            "Montaud",
-            "Montbert",
-            "Montblanc",
-            "Montignargues",
-            "Montoir-de-Bretagne",
-            "Montpellier",
-            "Moulézan",
-            "Mouzillon",
-            "Mudaison",
-            "Murviel-lès-Béziers",
-            "Nantes",
-            "Ners",
-            "Nîmes",
-            "Nissan-lez-Enserune",
-            "Nozay",
-            "Palavas-les-Flots",
-            "Pégairolles-de-l'Escalette",
-            "Pézenas",
-            "Pinet",
-            "Pomérols",
-            "Pontchâteau",
-            "Pont-Saint-Esprit",
-            "Pornic",
-            "Pornichet",
-            "Portiragnes",
-            "Pougnadoresse",
-            "Pouzolles",
-            "Prades-le-Lez",
-            "Puisserguier",
-            "Pujaut",
-            "Quissac",
-            "Redessan",
-            "Remouillé",
-            "Remoulins",
-            "Rezé",
-            "Rochefort-du-Gard",
-            "Rogues",
-            "Roquebrun",
-            "Roquemaure",
-            "Sabran",
-            "Saint-André-des-Eaux",
-            "Saint-Aunès",
-            "Saint-Bauzille-de-la-Sylve",
-            "Saint-Brevin-les-Pins",
-            "Saint-Chinian",
-            "Saint-Christol-lez-Alès",
-            "Saint-Colomban",
-            "Saint-Dézéry",
-            "Sainte-Luce-sur-Loire",
-            "Saint-Étienne-de-Montluc",
-            "Saint-Étienne-des-Sorts",
-            "Saint-Félix-de-Lodez",
-            "Saint-Florent-sur-Auzonnet",
-            "Saint-Gély-du-Fesc",
-            "Saint-Geniès-de-Fontedit",
-            "Saint-Geniès-de-Malgoirès",
-            "Saint-Geniès-des-Mourgues",
-            "Saint-Georges-d'Orques",
-            "Saint-Gilles",
-            "Saint-Herblain",
-            "Saint-Hilaire-de-Chaléons",
-            "Saint-Hippolyte-de-Montaigu",
-            "Saint-Hippolyte-du-Fort",
-            "Saint-Jean-de-Boiseau",
-            "Saint-Jean-de-Minervois",
-            "Saint-Jean-de-Serres",
-            "Saint-Jean-de-Védas",
-            "Saint-Julien-de-Peyrolas",
-            "Saint-Just",
-            "Saint-Laurent-de-Carnols",
-            "Saint-Laurent-des-Arbres",
-            "Saint-Lumine-de-Coutais",
-            "Saint-Lyphard",
-            "Saint-Malo-de-Guersac",
-            "Saint-Marcel-de-Careiret",
-            "Saint-Mars-du-Désert",
-            "Saint-Mathieu-de-Tréviers",
-            "Saint-Maurice-de-Cazevieille",
-            "Saint-Maximin",
-            "Saint-Molf",
-            "Saint-Nazaire",
-            "Saint-Pargoire",
-            "Saint-Paulet-de-Caisson",
-            "Saint-Philbert-de-Grand-Lieu",
-            "Saint-Pons-la-Calm",
-            "Saint-Privat-des-Vieux",
-            "Saint-Sébastien-sur-Loire",
-            "Saint-Thibéry",
-            "Saint-Vincent-des-Landes",
-            "Sautron",
-            "Sérignan",
-            "Sernhac",
-            "Servian",
-            "Sète",
-            "Sommières",
-            "Souvignargues",
-            "Sucé-sur-Erdre",
-            "Tavel",
-            "Teillé",
-            "Thouaré-sur-Loire",
-            "Treillières",
-            "Trèves",
-            "Uzès",
-            "Vailhauquès",
-            "Vallet",
-            "Vallons-de-l'Erdre",
-            "Vauvert",
-            "Vendargues",
-            "Vendres",
-            "Vertou",
-            "Vic-la-Gardiole",
-            "Vieillevigne",
-            "Vigneux-de-Bretagne",
-            "Villeneuve-lès-Béziers",
-            "Villeveyrac",
-            "Villevieille"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "P995C8F1A0F23A57C"
+          "uid": "wda-psql"
         },
         "definition": "SELECT distinct ets_geonames_city FROM wda_sirene_etablissements where  insee_sous_classe_id IN (${sousclasse:sqlstring}) AND ets_minnbeffectifsetablissement IN (${effectif:sqlstring}) AND ets_departementetablissement IN (${departement:sqlstring});",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "multi": true,
         "name": "ville",
         "options": [],
@@ -1840,6 +1126,6 @@
   "timezone": "browser",
   "title": "Sirene etablissements",
   "uid": "aelu5dhajeosge",
-  "version": 42,
+  "version": 4,
   "weekStart": ""
 }
