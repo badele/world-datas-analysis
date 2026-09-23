@@ -35,8 +35,7 @@ __pycache__
 observable/node_modules
 observable/dist
 observable/src/.observablehq/cache
-
-international/covid-19/datas/countries_ratio_deaths_for_1000000hab_*.gdata
+observable/src/data/sirene-etabs/
 
 # R
 renv
