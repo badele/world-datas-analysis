@@ -51,6 +51,10 @@ jobs:
       - name: Build site
         run: just pages-build
 
+      - name: Show PostgreSQL logs on failure
+        if: failure()
+        run: docker compose logs psql
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
