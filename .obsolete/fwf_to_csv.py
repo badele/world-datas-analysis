@@ -2,7 +2,7 @@
 import os
 import sys
 import csv
-import json 
+import json
 import argparse
 import pandas as pd
 import numpy as np
@@ -40,7 +40,7 @@ args = ap.parse_args()
 
 # Search columns formater
 with open(args.input) as ifile:
-    while filtercolumns := next(ifile, None):  
+    while filtercolumns := next(ifile, None):
         if "# columns:" in filtercolumns:
             break
 
@@ -49,6 +49,3 @@ with open(args.input) as ifile:
 
 df = pd.read_fwf(args.input, colspecs=colspecs, comment='#',na_values=DEFAULT_MISSING)
 df.to_csv(args.output,sep='\t',index=False)
-
-
-

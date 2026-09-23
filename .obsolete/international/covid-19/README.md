@@ -1,6 +1,7 @@
 # Covid-19 Summaries
 
 ## Download JHU datas and Graph
+
 ```
 cd world-datas-analysis
 
@@ -20,8 +21,6 @@ sqlite3 world-datas-analysis.db < international/covid-19/export_global_covid19_j
 international/covid-19/generate_graphs.sh
 ```
 
-
-
 # Global Graphs
 
 ### Cases
@@ -30,13 +29,11 @@ international/covid-19/generate_graphs.sh
 
 [Gnuplot Datafile source](datas/countries_ratio_cases_for_1000000hab.gdata)
 
-
 ### Deaths
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_for_1000000hab.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
-
 
 # Filter value datas
 
@@ -46,13 +43,11 @@ international/covid-19/generate_graphs.sh
 
 [Gnuplot Datafile source](datas/countries_ratio_cases_filter_1_for_1000000hab.gdata)
 
-
 ### Deaths
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_filter_1_for_1000000hab.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_filter_1_for_1000000hab.gdata)
-
 
 ### Deaths by country
 
@@ -62,13 +57,11 @@ international/covid-19/generate_graphs.sh
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
 
-
 ### France
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_for_1000000hab_France.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
-
 
 ### Germany
 
@@ -76,13 +69,11 @@ international/covid-19/generate_graphs.sh
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
 
-
 ### Italy
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_for_1000000hab_Italy.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
-
 
 ### Korea South
 
@@ -90,14 +81,11 @@ international/covid-19/generate_graphs.sh
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
 
-
 ### Netherlands
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_for_1000000hab_Netherlands.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
-
-
 
 ### Spain
 
@@ -105,20 +93,17 @@ international/covid-19/generate_graphs.sh
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
 
-
 ### Sweden
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_for_1000000hab_Sweden.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
 
-
 ### United Kingdom
 
 <img width="50%" height="50%" src="pictures/countries_ratio_deaths_for_1000000hab_United Kingdom.png"/>
 
 [Gnuplot Datafile source](datas/countries_ratio_deaths_for_1000000hab.gdata)
-
 
 ### US
 

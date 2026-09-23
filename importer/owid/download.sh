@@ -27,7 +27,7 @@ mysql:5.7 --secure-file-priv="/exported/"
 docker exec -it mysql-wda bash -c "/scripts/docker_download.sh"
 
 ##########################################################
-# Export to CSV 
+# Export to CSV
 ##########################################################
 
 # Execute exporter

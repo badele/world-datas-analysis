@@ -5,7 +5,7 @@ import os
 def splitFile(filename, nblines):
     # Get main filename
     dirname = os.path.dirname(filename)
-    basename = os.path.basename(filename) 
+    basename = os.path.basename(filename)
     fileext = os.path.splitext(basename)
 
     # Open file

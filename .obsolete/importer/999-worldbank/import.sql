@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS x_worldbank_indicator_english;
 
 -- Category
 DELETE FROM db_category WHERE SOURCE_ID=200;
-INSERT INTO db_category (SOURCE_ID,LANG,CategoryKey,Description) SELECT DISTINCT 200,"FR",Topic,Topic FROM x_worldbank_indicator_french;  
+INSERT INTO db_category (SOURCE_ID,LANG,CategoryKey,Description) SELECT DISTINCT 200,"FR",Topic,Topic FROM x_worldbank_indicator_french;
 INSERT INTO db_category (SOURCE_ID,LANG,CategoryKey,Description) SELECT DISTINCT 200,"EN",topic,topic FROM x_worldbank_indicator_english;
 
 -- Indicator
@@ -59,7 +59,7 @@ DROP TABLE x_worldbank_indicator_english;
 -- .import --csv './downloaded/worldbank/WDISeries.csv' x_worldbank_indicator
 
 -- DELETE FROM db_category WHERE SOURCE_ID=200 AND LANG="FR";
--- INSERT INTO db_category (SOURCE_ID,LANG,CategoryKey,Category) SELECT DISTINCT 200,"FR",CategoryKey,CategoryKey FROM x_worldbank_indicator;  
+-- INSERT INTO db_category (SOURCE_ID,LANG,CategoryKey,Category) SELECT DISTINCT 200,"FR",CategoryKey,CategoryKey FROM x_worldbank_indicator;
 
 -- INSERT INTO db_category (SOURCE_ID,LANG,CategoryKey,Category) SELECT DISTINCT 200,"EN",topic,topic FROM x_worldbank_indicator;
 
@@ -79,7 +79,7 @@ DROP TABLE x_worldbank_indicator_english;
 
 
 -- DELETE FROM db_indicator WHERE SOURCE_ID=200;
--- INSERT INTO db_indicator () 
+-- INSERT INTO db_indicator ()
 -- INSERT INTO "main"."db_category" ("SOURCE_ID", "CategoryKey", "LANG", "Category") VALUES ('', '', '', '');
 
 --DROP TABLE x_db_indicator;
@@ -104,7 +104,7 @@ DROP TABLE x_worldbank_indicator_english;
 
 
 -- INSERT INTO worldbank_indicator
--- SELECT 
+-- SELECT
 -- 'EN',
 -- "IndicatorKey",
 -- "Topic",
@@ -145,10 +145,10 @@ DROP TABLE x_worldbank_datas;
 
 DELETE FROM db_historical_country_summary WHERE SOURCE_ID=200;
 INSERT INTO db_historical_country_summary
-SELECT 
+SELECT
 wd.SOURCE_ID,
-wd.COUNTRYCODE, 
-wd.IndicatorKey, 
+wd.COUNTRYCODE,
+wd.IndicatorKey,
 MIN(wd.YEAR) AS first_year,
 MAX(wd.YEAR) AS last_year,
 COUNT(wd.YEAR) AS nbyears,
@@ -165,7 +165,7 @@ SUM((wd.YEAR-wd2.avg_year)*(wd.value-wd2.avg_value)) /
 (SQRT(SUM(POW(wd.YEAR-wd2.avg_year,2))) * SQRT(SUM(POW(wd.value-wd2.avg_value,2)))) AS corr
 FROM db_historical_country_value wd,
  (SELECT
-MAX(YEAR) - MIN(YEAR) + 1.0 nb_years, 
+MAX(YEAR) - MIN(YEAR) + 1.0 nb_years,
 MIN(YEAR) min_year,
 MAX(YEAR) max_year
 FROM db_historical_country_value
@@ -184,20 +184,20 @@ GROUP BY wd.SOURCE_ID, wd.COUNTRYCODE,wd.IndicatorKey;
 -- slope
 UPDATE db_historical_country_summary AS wu SET lr_percent_slope=((2*lr_a+lr_b)-(lr_a+lr_b))/abs(lr_a+lr_b)*100;
 -- UPDATE db_historical_country_summary AS wu SET lr_percent_slope=(
---   SELECT ((2*lr_a+lr_b)-(lr_a+lr_b))/abs(lr_a+lr_b)*100 FROM db_historical_country_summary ws 
+--   SELECT ((2*lr_a+lr_b)-(lr_a+lr_b))/abs(lr_a+lr_b)*100 FROM db_historical_country_summary ws
 --   WHERE wu.COUNTRYCODE = ws.COUNTRYCODE AND wu.IndicatorKey = ws.IndicatorKey
 --   );
 
 -- first value
 UPDATE db_historical_country_summary AS wu SET first_value=(
-  SELECT value FROM db_historical_country_value wd 
+  SELECT value FROM db_historical_country_value wd
   WHERE wu.SOURCE_ID = wd.SOURCE_ID AND wu.COUNTRYCODE = wd.COUNTRYCODE AND wu.IndicatorKey = wd.IndicatorKey AND wu.first_year = wd.year
   );
 
 
 -- last value
 UPDATE db_historical_country_summary AS wu SET last_value=(
-  SELECT value FROM db_historical_country_value wd 
+  SELECT value FROM db_historical_country_value wd
   WHERE wu.SOURCE_ID = wd.SOURCE_ID AND wu.COUNTRYCODE = wd.COUNTRYCODE AND wu.IndicatorKey = wd.IndicatorKey AND wu.last_year = wd.year
   );
 
@@ -212,7 +212,7 @@ UPDATE db_historical_country_summary AS wu SET growth_percent=(last_value - firs
 -- DROP VIEW IF EXISTS v_db_historical_country_summary;
 -- CREATE VIEW IF NOT EXISTS v_db_historical_country_summary
 -- AS
--- SELECT wi.COUNTRYCODE,category,description,CountryCode,first_year,last_year,nbyears,first_value, last_value, growth_percent, min_value, max_value, lr_a, lr_b, lr_percent_slope,data_quality,corr 
+-- SELECT wi.COUNTRYCODE,category,description,CountryCode,first_year,last_year,nbyears,first_value, last_value, growth_percent, min_value, max_value, lr_a, lr_b, lr_percent_slope,data_quality,corr
 -- FROM worldbank_indicator wi
 -- INNER JOIN worldbank_category wc ON wc.CATID=wi.CATID
 -- INNER JOIN db_historical_country_summary ws ON wi.COUNTRYCODE = ws.COUNTRYCODE
@@ -222,10 +222,10 @@ UPDATE db_historical_country_summary AS wu SET growth_percent=(last_value - firs
 DROP VIEW IF EXISTS v_indicator_description;
 CREATE VIEW IF NOT EXISTS v_indicator_description
 AS
-SELECT ds.provider, dc.LANG, dc.Description as Category, did.IndicatorKey, did.Description as Indicator FROM db_indicator_in_category dic 
+SELECT ds.provider, dc.LANG, dc.Description as Category, did.IndicatorKey, did.Description as Indicator FROM db_indicator_in_category dic
 INNER JOIN db_category dc ON dc.CAT_ID = dic.CAT_ID
 INNER JOIN db_indicator_description did ON did.IndicatorKey = dic.IndicatorKey AND dc.lang = did.lang
-INNER JOIN wda_dataset ds ON ds.SOURCE_ID = dc.SOURCE_ID 
+INNER JOIN wda_dataset ds ON ds.SOURCE_ID = dc.SOURCE_ID
 ORDER BY dc.description;
 
 

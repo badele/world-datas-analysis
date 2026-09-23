@@ -17,8 +17,8 @@ INSERT INTO vigilo_categories
     FROM read_json('./downloaded/vigilo/categories.json')
 ;
 
--- scopes
-CREATE OR REPLACE TABLE vigilo_scopes (
+-- scopes from current download (active)
+CREATE OR REPLACE TABLE vigilo_scopes_new (
     id TEXT,
     name TEXT,
     display_name TEXT,
@@ -43,7 +43,7 @@ CREATE OR REPLACE TABLE vigilo_scopes (
 )
 ;
 
-INSERT INTO vigilo_scopes
+INSERT INTO vigilo_scopes_new
     SELECT scope,
     name,
     display_name,
@@ -65,6 +65,107 @@ INSERT INTO vigilo_scopes
     NULL,
     NULL
     FROM read_json('./downloaded/vigilo/scopes.json')
+;
+
+-- historical scopes: backed up before dataset directory was wiped
+-- always exists (created empty with correct schema if no previous scopes.parquet)
+CREATE OR REPLACE TABLE vigilo_scopes_historical (
+    id TEXT,
+    name TEXT,
+    display_name TEXT,
+    iso TEXT,
+    country TEXT,
+    department BIGINT,
+    lat_min DOUBLE,
+    lat_max DOUBLE,
+    lon_min DOUBLE,
+    lon_max DOUBLE,
+    map_center_string TEXT,
+    map_zoom BIGINT,
+    api_path TEXT,
+    map_url TEXT,
+    nominatim_urlbase TEXT,
+    contact_email TEXT,
+    tweet_content TEXT,
+    twitter TEXT,
+    backend_version TEXT,
+    geonames_admin_filter TEXT,
+    geonames_countryid BIGINT,
+    is_active BOOLEAN,
+    first_seen_at DATE,
+    last_seen_at DATE
+)
+;
+
+INSERT INTO vigilo_scopes_historical
+    SELECT * FROM read_parquet('./downloaded/vigilo/scopes_historical.parquet')
+;
+
+-- merged scopes: active (current download) + inactive (historical only)
+CREATE OR REPLACE TABLE vigilo_scopes (
+    id TEXT,
+    name TEXT,
+    display_name TEXT,
+    iso TEXT,
+    country TEXT,
+    department BIGINT,
+    lat_min DOUBLE,
+    lat_max DOUBLE,
+    lon_min DOUBLE,
+    lon_max DOUBLE,
+    map_center_string TEXT,
+    map_zoom BIGINT,
+    api_path TEXT,
+    map_url TEXT,
+    nominatim_urlbase TEXT,
+    contact_email TEXT,
+    tweet_content TEXT,
+    twitter TEXT,
+    backend_version TEXT,
+    geonames_admin_filter TEXT,
+    geonames_countryid BIGINT,
+    is_active BOOLEAN,
+    first_seen_at DATE,
+    last_seen_at DATE
+)
+;
+
+-- Active scopes: preserve first_seen_at from history when already known
+INSERT INTO vigilo_scopes
+    SELECT
+        n.id,
+        n.name,
+        n.display_name,
+        n.iso,
+        n.country,
+        n.department,
+        n.lat_min,
+        n.lat_max,
+        n.lon_min,
+        n.lon_max,
+        n.map_center_string,
+        n.map_zoom,
+        n.api_path,
+        n.map_url,
+        n.nominatim_urlbase,
+        n.contact_email,
+        n.tweet_content,
+        n.twitter,
+        n.backend_version,
+        n.geonames_admin_filter,
+        n.geonames_countryid,
+        true AS is_active,
+        COALESCE(h.first_seen_at, CURRENT_DATE) AS first_seen_at,
+        CURRENT_DATE AS last_seen_at
+    FROM vigilo_scopes_new n
+    LEFT JOIN vigilo_scopes_historical h ON h.id = n.id
+;
+
+-- Inactive scopes: previously known but absent from current download
+INSERT INTO vigilo_scopes
+    SELECT h.*
+    FROM vigilo_scopes_historical h
+    WHERE h.id NOT IN (SELECT id FROM vigilo_scopes_new)
 ;
 
 -- observations
@@ -246,6 +347,9 @@ INSERT INTO geonames_latlon_cache
     SELECT geonames_districtid,latitude || '-' || longitude as latlon FROM vigilo_observations WHERE latlon NOT IN (SELECT latlon FROM geonames_latlon_cache)
 ;
 COPY geonames_latlon_cache TO './dataset/geonames/latlon_cache.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
+-- Fallback: inactive scopes discovered from partitions have no metadata
+UPDATE vigilo_scopes SET name = id, display_name = id WHERE name IS NULL;
 
 -------------------------------------------------------------------------------
 -- export to ./dataset

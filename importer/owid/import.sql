@@ -110,7 +110,7 @@ CREATE TABLE owid_datasets (
 .import --csv './importer/owid/exported/datasets.csv' owid_datasets
 
 -- Fix bad characters
-update owid_datasets set 
+update owid_datasets set
 name=replace(trim(name),char(9),''),
 description=replace(trim(description),char(9),'');
 
@@ -213,13 +213,13 @@ ALTER TABLE owid_variables
   ADD var_type TEXT;
 
 -- Update variable type from owid_data_values
-UPDATE owid_variables AS ov 
+UPDATE owid_variables AS ov
 SET var_type=ocld.var_type
 FROM (select variableId,typeof(value) as var_type from owid_data_values GROUP BY variableId) AS ocld
 WHERE ov.id = ocld.variableId;
 
 -- Fix bad characters
-update owid_variables set 
+update owid_variables set
 name=replace(trim(name),char(9),''),
 description=replace(trim(description),char(9),'');
 
@@ -250,7 +250,7 @@ CREATE TABLE wda_owid_country_summary (
 
 -- summaries
 INSERT INTO wda_owid_country_summary
-SELECT 
+SELECT
 odv.entityID,
 odv.variableId,
 MIN(odv.year) AS firstyear,
@@ -269,7 +269,7 @@ SUM((odv.year-odv2.avg_year)*(odv.value-odv2.avg_value)) /
 (SQRT(SUM(POW(odv.year-odv2.avg_year,2))) * SQRT(SUM(POW(odv.value-odv2.avg_value,2)))) AS corr
 FROM owid_data_values odv,
 (SELECT
-MAX(YEAR) - MIN(YEAR) + 1.0 nb_years, 
+MAX(YEAR) - MIN(YEAR) + 1.0 nb_years,
 MIN(YEAR) min_year,
 MAX(YEAR) max_year
 FROM owid_data_values) odv1,
@@ -279,7 +279,7 @@ AVG(value) AS avg_value,
 AVG(YEAR) AS avg_year
 FROM owid_data_values
 GROUP BY EntityId,VariableId) AS odv2
-INNER JOIN owid_entities oen ON odv.EntityId = oen.id 
+INNER JOIN owid_entities oen ON odv.EntityId = oen.id
 WHERE oen.validated = 1 AND odv.EntityId = odv2.EntityId AND odv.VariableId = odv2.VariableId
 GROUP BY odv.EntityId,odv.VariableId;
 
@@ -288,7 +288,7 @@ UPDATE wda_owid_country_summary SET lr_percent_slope=((2*lr_a+lr_b)-(lr_a+lr_b))
 
 -- first value
 UPDATE wda_owid_country_summary AS du SET firstvalue=(
-  SELECT value FROM owid_data_values ds 
+  SELECT value FROM owid_data_values ds
   WHERE du.entity_id = ds.EntityId AND du.variable_id = ds.VariableId AND du.firstyear = ds.year
   );
 
@@ -319,21 +319,21 @@ ORDER BY cy.owid_name;
 -- dataset summaries
 --------------------------------------
 
--- Summarize dataset 
-INSERT OR REPLACE INTO wda_variable 
+-- Summarize dataset
+INSERT OR REPLACE INTO wda_variable
 SELECT "owid", od.namespace, od.name, ov.name, ov.coverage, os.name, count(distinct entityId),1,count(odv.variableId) FROM owid_data_values odv
 INNER JOIN owid_variables ov ON odv.variableId = ov.id
 INNER JOIN owid_sources os ON ov.sourceId = os.id
 INNER JOIN owid_datasets od ON ov.datasetId  = od.id
 GROUP BY odv.variableId;
 
-INSERT OR REPLACE INTO wda_dataset 
+INSERT OR REPLACE INTO wda_dataset
 SELECT provider,real_provider,dataset, max(nb_variables), sum(nb_observations),max(nb_scope) FROM wda_variable wv
 WHERE provider="owid"
 GROUP BY provider,real_provider,dataset;
 
 -- Summarize provider
-INSERT OR REPLACE INTO wda_provider 
+INSERT OR REPLACE INTO wda_provider
 SELECT provider, "Our World In Data", "https://ourworldindata.org", 0, max(nb_variables),sum(nb_observations), max(nb_scope)
 FROM wda_variable wv
 WHERE provider="owid"
@@ -363,14 +363,14 @@ CREATE VIEW IF NOT EXISTS v_owid_variables
 AS
 SELECT variableId, min(year) as minyear, max(year) as maxyear, ov.name as variable, os.name as source  FROM owid_data_values odv
 INNER JOIN owid_variables ov ON odv.variableId = ov.id
-INNER JOIN owid_sources os ON ov.sourceId = os.id 
-GROUP BY variableId, ov.name; 
+INNER JOIN owid_sources os ON ov.sourceId = os.id
+GROUP BY variableId, ov.name;
 
 -- SELECT variableId, odv.entityId, iso3, GEOID,min(year) as minyear, max(year) as maxyear, ov.name as variable, os.name as source  FROM owid_data_values odv
 -- INNER JOIN  v_owid_entities voe ON odv.entityId = voe.entityId
 -- INNER JOIN owid_variables ov ON odv.variableId = ov.id
--- INNER JOIN owid_sources os ON ov.sourceId = os.id 
--- GROUP BY variableId, odv.entityId,iso3, GEOID,ov.name; 
+-- INNER JOIN owid_sources os ON ov.sourceId = os.id
+-- GROUP BY variableId, odv.entityId,iso3, GEOID,ov.name;
 
 -- Summarize provider
 -- INSERT OR REPLACE INTO wda_provider
@@ -380,12 +380,12 @@ GROUP BY variableId, ov.name;
 -- WHERE provider="owid"
 -- GROUP BY provider,real_provider;
 
--- INSERT OR REPLACE INTO wda_dataset 
+-- INSERT OR REPLACE INTO wda_dataset
 -- SELECT "vigilo-" || instanceID, "city", "Urban observation for " || name, COUNT(*) FROM v_vigilo_observations
 -- GROUP BY InstanceID;
 
 
--- UPDATE wda_dataset 
+-- UPDATE wda_dataset
 -- SET nb_scopes=(SELECT COUNT(DISTINCT id) FROM owid_entities WHERE validated=1)
 -- WHERE provider='owid' and scope='country';
 
@@ -394,4 +394,3 @@ GROUP BY variableId, ov.name;
 
 
 COMMIT;
-

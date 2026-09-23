@@ -31,58 +31,58 @@ DEFAULT_MISSING = DEFAULT_MISSING.remove('NA')
 # Country
 #######################################
 COUNTRY_COLUMNS = [
-    'iso2', 
-    'iso3', 
-    'isonum', 
-    'fips', 
-    'country', 
+    'iso2',
+    'iso3',
+    'isonum',
+    'fips',
+    'country',
     'capital',
-    'area', 
-    'countrypopulation', 
-    'continent', 
-    'tld', 
+    'area',
+    'countrypopulation',
+    'continent',
+    'tld',
     'currencycode',
-    'currencyname', 
-    'phone', 
+    'currencyname',
+    'phone',
     'postalcodeformat',
     'postalcoderegex',
-    'language', 
-    'GEOID', 
-    'neighbours', 
+    'language',
+    'GEOID',
+    'neighbours',
     'equivfipscode'
 ]
 
 ALLCOUNTRIES_COLUMNS = [
-    'GEOID', 
-    'name', 
-    'asciiname', 
-   'alternatenames', 
-    'latitude', 
+    'GEOID',
+    'name',
+    'asciiname',
+   'alternatenames',
+    'latitude',
     'longitude',
-    'featureclass',  
-    'featurecode', 
-    'countrycode', 
-    'cc2', 
+    'featureclass',
+    'featurecode',
+    'countrycode',
+    'cc2',
     'adm1',
     'adm2',
     'adm3',
     'adm4',
-    'population', 
-    'elevation', 
+    'population',
+    'elevation',
     'dem',
     'timezone',
     'lastupdate'
 ]
 
 FEATURE_COLUMNS = [
-    'code', 
-    'info1', 
+    'code',
+    'info1',
     'info2'
 ]
 
 HIERARCHY_COLUMNS = [
-    'parent', 
-    'child', 
+    'parent',
+    'child',
     'type'
 ]
 
@@ -138,7 +138,7 @@ net.downloadHttpFile(
 skiprows=0
 with open ('./downloaded/geonames/countryInfo.txt', 'r') as tmpfile:
     for line in tmpfile.readlines():
-        if re.match("^#.*", line): 
+        if re.match("^#.*", line):
             skiprows+=1
 
 # Export to sql
@@ -183,14 +183,14 @@ for filename in filenames:
 
     df = pd.read_csv(filename, sep='\t', header = None, names=ALLCOUNTRIES_COLUMNS,dtype=np.str,na_values=DEFAULT_MISSING)
     df.drop(labels=['alternatenames'], axis=1,inplace = True)
-    
-    df.drop(['population'],axis=1,inplace=True)  
+
+    df.drop(['population'],axis=1,inplace=True)
     #df['populationdensity'] = None
     #df['populationdate'] = None
     df['scope'] = None
 
     df = df[(df["featureclass"] == 'A') | (df["featureclass"] == 'P') | (df["featureclass"] == 'L' )]
-    
+
     if append:
         df.to_csv('./downloaded/geonames/allcountries.csv',index=False,mode='a', header=False)
     else:
@@ -206,7 +206,7 @@ if not os.path.exists('./downloaded/geonames/hierarchy/hierarchy.txt'):
         'https://download.geonames.org/export/dump/hierarchy.zip',
         './downloaded/geonames/hierarchy.zip',
         True
-    )    
+    )
 
     print("Unzip Hierarchy")
     with zipfile.ZipFile(f'./downloaded/geonames/hierarchy.zip', 'r') as ziparchive:

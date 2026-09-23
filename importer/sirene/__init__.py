@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*
 
-# https://sirene.fr/static-resources/htm/v_sommaire_311.htm
+# https://www.data.gouv.fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret
 # https://www.insee.fr/fr/statistiques/fichier/2406147/Nomenclatures_NAF_et_CPF_Reedition_2020.pdf
 
 import wdalib

@@ -196,6 +196,7 @@ SELECT
 CREATE INDEX idx_sirene_siren ON wda_sirene_etablissements (ets_siren);
 CREATE INDEX idx_sirene_siret ON wda_sirene_etablissements (ets_siret);
 CREATE INDEX idx_sirene_activite_principale ON wda_sirene_etablissements (ets_activitePrincipaleEtablissement);
+CREATE INDEX idx_sirene_sous_classe ON wda_sirene_etablissements (insee_sous_classe_id);
 
 -------------------------------------------------------------------------------
 -- wda informations
@@ -219,7 +220,7 @@ INSERT INTO wda_datasets
         'city',
         'wda_geonames_cities',
         'National Business and Establishment Identification and Registry System',
-        'https://sirene.fr',
+        'https://www.data.gouv.fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret',
         (SELECT count(*)
 FROM pg_attribute a
   JOIN pg_class t on a.attrelid = t.oid
@@ -236,7 +237,7 @@ INSERT INTO wda_providers
     SELECT
         'sirene',
         'System for the Identification of the Register of Establishments',
-        'https://sirene.fr',
+        'https://www.data.gouv.fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret',
         COUNT(*),
         SUM(nb_observations)
     FROM wda_datasets wd

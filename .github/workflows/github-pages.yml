@@ -1,0 +1,73 @@
+name: Test and publish Observable site
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  JUST_VERSION: "1.23.0"
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository with LFS data
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: ${{ env.JUST_VERSION }}
+
+      - name: Run tests
+        run: just test
+
+  build:
+    name: Build GitHub Pages site
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository with LFS data
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: ${{ env.JUST_VERSION }}
+
+      - name: Build site
+        run: just pages-build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: observable/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy site
+        id: deployment
+        uses: actions/deploy-pages@v4

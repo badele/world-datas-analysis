@@ -14,4 +14,3 @@ python sql_to_fwf.py --db world-datas-analysis.db \
 --query "$QUERY" --comment "Source: $SOURCE" \
 --block-by "category" \
 --output international/country/datas/worldbank_france.txt
-

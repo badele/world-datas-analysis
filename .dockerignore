@@ -1,3 +1,11 @@
 dataset
 db
 download
+downloaded
+grafana-storage
+grafana_old
+grafana.old.2
+observable/node_modules
+observable/dist
+observable/src/.observablehq/cache
+.git

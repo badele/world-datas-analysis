@@ -47,7 +47,7 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 FROM dataset_tags;
 
--- entities 
+-- entities
 SELECT *
 INTO OUTFILE '/exported/entities.csv'
 FIELDS TERMINATED BY ','
@@ -71,7 +71,7 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 FROM sources;
 
--- tags 
+-- tags
 SELECT *
 INTO OUTFILE '/exported/tags.csv'
 FIELDS TERMINATED BY ','

@@ -119,7 +119,7 @@ INSERT INTO wda_datasets
         'section',
         NULL,
         'NAF Rev2 Classification - Sections',
-        'https://nafrev2.fr',
+        'https://www.insee.fr/fr/information/2120875',
         (SELECT count(*) FROM nafrev2_sections),
         COUNT(*),
         COUNT(DISTINCT section_id)
@@ -129,7 +129,7 @@ INSERT INTO wda_providers
     SELECT
         'nafrev2',
         'NAF Rev2 Classification Provider',
-        'https://nafrev2.fr',
+        'https://www.insee.fr/fr/information/2120875',
         COUNT(*),
         SUM(nb_observations)
     FROM wda_datasets wd

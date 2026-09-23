@@ -39,7 +39,10 @@ CREATE FOREIGN TABLE duckdb_vigilo_scopes (
     twitter text,
     backend_version text,
     geonames_admin_filter text,
-    geonames_countryid bigint
+    geonames_countryid bigint,
+    is_active boolean,
+    first_seen_at date,
+    last_seen_at date
 )
 SERVER duckdb_svr OPTIONS (
     TABLE 'read_parquet("/dataset/vigilo/scopes.parquet")'

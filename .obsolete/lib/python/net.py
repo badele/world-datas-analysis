@@ -40,7 +40,7 @@ def downloadStreamFile(
 def downloadStreamedHttpFile(url, filename, verbose=False):
     if verbose:
         print(f"Download {url}")
-    
+
     content = downloadStreamFile(url, filename)
     with open(filename, "wb") as f:
         f.write(content)
@@ -49,10 +49,10 @@ def downloadStreamedHttpFile(url, filename, verbose=False):
 def downloadHttpFile(url, filename, verbose=False):
     if verbose:
         print(f"Download {url}")
-        
+
     r = requests.get(url, allow_redirects=True)
     with open(filename, 'wb') as f:
-        f.write(r.content)    
+        f.write(r.content)
 
 def downloadFtpFile(domaine, ftpfile, filename, username=None, password=None):
     ftp = FTP(domaine)

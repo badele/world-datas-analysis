@@ -41,7 +41,7 @@ def download_instances():
     df.rename(columns={'index': 'name'},inplace=True)
     df=df[df['prod']]
     df.drop(["prod"], axis=1, inplace=True)
-    df.insert(0,'InstanceID',df.index + 1) 
+    df.insert(0,'InstanceID',df.index + 1)
     df.to_csv('./downloaded/vigilo/instance.csv',index=False)
 
     return df
@@ -53,8 +53,8 @@ def download_categories():
 
 def download_observations(instances):
     for index, row in instances.iterrows():
-        api_path = row['api_path'] 
-        scope = row['scope'] 
+        api_path = row['api_path']
+        scope = row['scope']
         instance_id = row['InstanceID']
         try:
             # Get version
