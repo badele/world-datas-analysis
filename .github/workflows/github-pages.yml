@@ -43,6 +43,9 @@ jobs:
         with:
           lfs: true
 
+      - name: Fetch LFS files
+        run: git lfs pull
+
       - name: Setup just
         uses: extractions/setup-just@v2
         with:
