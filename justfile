@@ -3,7 +3,7 @@
 set positional-arguments
 
 envname:=`basename $(pwd)`
-dockerimage:='localhost/badele/world-datas-analysis:latest'
+dockerimage:='badele/world-datas-analysis:latest'
 dockerimage_push:='badele/world-datas-analysis:latest'
 observabledir:='observable'
 
@@ -41,7 +41,8 @@ precommit-install:
 
 # Build all docker images
 @docker-build:
-    docker compose build
+    docker build -q -t {{ dockerimage }} .
+    docker compose build precommit
 
 # Push the wda docker image to docker hub
 @docker-push:
