@@ -181,7 +181,7 @@ def _save_scopes_historical():
     current = f"./dataset/{provider}/scopes.parquet"
     historical = f"./downloaded/{provider}/scopes_historical.parquet"
 
-    if not os.path.exists(current):
+    if not os.path.exists(current) or os.path.getsize(current) == 0:
         if os.path.exists(historical):
             # Previous backup survives a failed run — keep it, just enrich with partitions
             _add_partition_only_scopes(historical)

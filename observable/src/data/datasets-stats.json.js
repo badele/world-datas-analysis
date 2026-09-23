@@ -15,15 +15,18 @@ const [vigilo] = await query(
 `,
 );
 
-const [sirene] = await query(
-  client,
-  `
-  SELECT
-    COUNT(*)                         AS total_etablissements,
-    COUNT(DISTINCT insee_section_id) AS total_sections
-  FROM wda_sirene_etablissements
-`,
-);
+let sirene = { total_etablissements: 0, total_sections: 0 };
+try {
+  [sirene] = await query(
+    client,
+    `
+    SELECT
+      COUNT(*)                         AS total_etablissements,
+      COUNT(DISTINCT insee_section_id) AS total_sections
+    FROM wda_sirene_etablissements
+  `,
+  );
+} catch (_) {}
 
 const [nafrev2] = await query(
   client,

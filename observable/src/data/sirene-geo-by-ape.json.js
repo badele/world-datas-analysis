@@ -3,9 +3,11 @@ import { createClient, query, toJSON } from "./db.js";
 const client = createClient();
 await client.connect();
 
-const rows = await query(
-  client,
-  `
+let rows = [];
+try {
+  rows = await query(
+    client,
+    `
   SELECT
     e.insee_sous_classe_id                                                              AS ape_id,
     e.ets_geonames_cityid                                                               AS city_id,
@@ -24,7 +26,8 @@ const rows = await query(
   GROUP BY e.insee_sous_classe_id, e.ets_geonames_cityid, e.ets_geonames_city
   ORDER BY e.insee_sous_classe_id, nb DESC
   `,
-);
+  );
+} catch (_) {}
 
 await client.end();
 
