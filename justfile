@@ -58,7 +58,7 @@ precommit-install:
 
 # Run the wda docker image
 @docker-run CMD="": docker-build
-    docker run --net host -it --rm -e DATAS_LIST="$DATAS_LIST" -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
+    docker run --net host -i --rm -e DATAS_LIST="$DATAS_LIST" -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
 
 ###############################################################################
 # DB
