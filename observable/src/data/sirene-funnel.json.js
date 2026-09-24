@@ -37,7 +37,6 @@ try {
   );
 } catch (err) {
   process.stderr.write(`sirene-funnel: ${err.message}\n`);
-  process.exit(1);
 } finally {
   await client.end().catch(() => {});
 }
