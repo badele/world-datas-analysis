@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("vigilo-stats-by-category", (client) =>
+  query(
+    client,
+    `
   SELECT
     s.id            AS scope_id,
     s.display_name  AS scope_name,
@@ -22,7 +20,5 @@ const rows = await query(
   GROUP BY s.id, s.display_name, c.name, c.color
   ORDER BY s.display_name, c.name
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));

@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("sirene-stats-by-division", (client) =>
+  query(
+    client,
+    `
   SELECT
     d.section_id,
     d.division_id,
@@ -16,7 +14,5 @@ const rows = await query(
   GROUP BY d.section_id, d.division_id, d.division
   ORDER BY d.section_id, nb_etablissements DESC
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));

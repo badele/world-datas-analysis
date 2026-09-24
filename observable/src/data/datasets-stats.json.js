@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const [vigilo] = await query(
-  client,
-  `
+await runLoader("datasets-stats", async (client) => {
+  const [vigilo] = await query(
+    client,
+    `
   SELECT
     COUNT(*)                                                        AS total_obs,
     (SELECT COUNT(*) FROM vigilo_scopes)                           AS total_scopes,
@@ -13,24 +11,24 @@ const [vigilo] = await query(
     MAX(obs_ts)                                                    AS last_ts
   FROM wda_vigilo_observations
 `,
-);
+  );
 
-let sirene = { total_etablissements: 0, total_sections: 0 };
-try {
-  [sirene] = await query(
-    client,
-    `
+  let sirene = { total_etablissements: 0, total_sections: 0 };
+  try {
+    [sirene] = await query(
+      client,
+      `
     SELECT
       COUNT(*)                         AS total_etablissements,
       COUNT(DISTINCT insee_section_id) AS total_sections
     FROM wda_sirene_etablissements
   `,
-  );
-} catch (_) {}
+    );
+  } catch (_) {}
 
-const [nafrev2] = await query(
-  client,
-  `
+  const [nafrev2] = await query(
+    client,
+    `
   SELECT
     (SELECT COUNT(*) FROM nafrev2_sections)     AS total_sections,
     (SELECT COUNT(*) FROM nafrev2_divisions)    AS total_divisions,
@@ -38,12 +36,9 @@ const [nafrev2] = await query(
     (SELECT COUNT(*) FROM nafrev2_classes)      AS total_classes,
     (SELECT COUNT(*) FROM nafrev2_sous_classes) AS total_sous_classes
 `,
-);
+  );
 
-await client.end();
-
-process.stdout.write(
-  toJSON([
+  return [
     {
       id: "vigilo",
       total_obs: Number(vigilo.total_obs),
@@ -64,5 +59,5 @@ process.stdout.write(
       total_classes: Number(nafrev2.total_classes),
       total_sous_classes: Number(nafrev2.total_sous_classes),
     },
-  ]),
-);
+  ];
+});

@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("nafrev2-hierarchy", (client) =>
+  query(
+    client,
+    `
   SELECT
     ns.section_id,
     ns.section,
@@ -24,7 +22,5 @@ const rows = await query(
   JOIN nafrev2_sections     ns  ON nsc.section_id   = ns.section_id
   ORDER BY nsc.sous_classe_id
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));

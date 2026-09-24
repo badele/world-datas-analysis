@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("vigilo-observations", (client) =>
+  query(
+    client,
+    `
   SELECT
     o.obs_scopeid                       AS scopeid,
     o.obs_token                         AS token,
@@ -25,7 +23,5 @@ const rows = await query(
   WHERE o.obs_latitude IS NOT NULL AND o.obs_longitude IS NOT NULL
   ORDER BY o.obs_ts DESC
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));

@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("wda-datasets", (client) =>
+  query(
+    client,
+    `
   SELECT
     d.provider,
     d.dataset,
@@ -22,7 +20,5 @@ const rows = await query(
   JOIN wda_providers p ON p.provider = d.provider
   ORDER BY d.provider
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));

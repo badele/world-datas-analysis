@@ -1,11 +1,7 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-let rows = [];
-
-try {
-  await client.connect();
-  rows = await query(
+await runLoader("sirene-funnel", (client) =>
+  query(
     client,
     `
     SELECT
@@ -34,11 +30,5 @@ try {
     ORDER BY sc.section_id, sc.division_id, sc.groupe_id, sc.classe_id, sc.sous_classe_id
   `,
     [],
-  );
-} catch (err) {
-  process.stderr.write(`sirene-funnel: ${err.message}\n`);
-} finally {
-  await client.end().catch(() => {});
-}
-
-process.stdout.write(toJSON(rows));
+  ),
+);

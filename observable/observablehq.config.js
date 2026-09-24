@@ -1,5 +1,10 @@
 import { createClient, query } from "./src/data/db.js";
 
+const datasList = (process.env.DATAS_LIST ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 async function* scopePaths() {
   const client = createClient();
   await client.connect();
@@ -24,6 +29,7 @@ export default {
     { name: "Accueil", path: "/" },
     {
       name: "Vigilo",
+      datasets: ["vigilo"],
       open: false,
       pages: [
         { name: "Vue globale", path: "/vigilo" },
@@ -32,15 +38,22 @@ export default {
     },
     {
       name: "NAF Rév. 2",
+      datasets: ["nafrev2"],
       open: false,
       pages: [{ name: "Explorer la nomenclature", path: "/nafrev2" }],
     },
     {
       name: "SIRENE",
+      datasets: ["sirene"],
       open: false,
       pages: [{ name: "Vue d'ensemble", path: "/sirene" }],
     },
-  ],
+  ].filter(
+    (p) =>
+      !p.datasets ||
+      datasList.length === 0 ||
+      p.datasets.some((d) => datasList.includes(d)),
+  ),
   style: "style.css",
   head: `<link rel="stylesheet" href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css">
 <script>

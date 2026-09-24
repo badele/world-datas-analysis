@@ -131,6 +131,7 @@ precommit-install:
         -e PGDATABASE=wda \
         -e PGUSER=wda \
         -e PGPASSWORD=wda \
+        -e DATAS_LIST="$DATAS_LIST" \
         docker.io/library/node:22-slim \
         sh -ec 'npm ci && npm run build'
 

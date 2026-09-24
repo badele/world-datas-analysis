@@ -1,13 +1,11 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-let rows = [];
-try {
-  rows = await query(
-    client,
-    `
+await runLoader(
+  "sirene-geo-by-ape",
+  async (client) => {
+    const rows = await query(
+      client,
+      `
   SELECT
     e.insee_sous_classe_id                                                              AS ape_id,
     e.ets_geonames_cityid                                                               AS city_id,
@@ -26,26 +24,23 @@ try {
   GROUP BY e.insee_sous_classe_id, e.ets_geonames_cityid, e.ets_geonames_city
   ORDER BY e.insee_sous_classe_id, nb DESC
   `,
-  );
-} catch (_) {}
-
-await client.end();
-
-// Group by APE code to allow O(1) lookup on the client
-const byApe = {};
-for (const r of rows) {
-  const k = r.ape_id;
-  if (!byApe[k]) byApe[k] = [];
-  byApe[k].push([
-    r.lat,
-    r.lon,
-    Number(r.nb),
-    Number(r.nb_0),
-    Number(r.nb_1_9),
-    Number(r.nb_10_49),
-    Number(r.nb_50plus),
-    r.city,
-  ]);
-}
-
-process.stdout.write(toJSON(byApe));
+    );
+    const byApe = {};
+    for (const r of rows) {
+      const k = r.ape_id;
+      if (!byApe[k]) byApe[k] = [];
+      byApe[k].push([
+        r.lat,
+        r.lon,
+        Number(r.nb),
+        Number(r.nb_0),
+        Number(r.nb_1_9),
+        Number(r.nb_10_49),
+        Number(r.nb_50plus),
+        r.city,
+      ]);
+    }
+    return byApe;
+  },
+  {},
+);

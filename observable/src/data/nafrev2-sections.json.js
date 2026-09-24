@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("nafrev2-sections", (client) =>
+  query(
+    client,
+    `
   SELECT
     s.section_id,
     s.section,
@@ -21,7 +19,5 @@ const rows = await query(
   GROUP BY s.section_id, s.section
   ORDER BY s.section_id
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));

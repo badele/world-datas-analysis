@@ -1,11 +1,9 @@
-import { createClient, query, toJSON } from "./db.js";
+import { query, runLoader } from "./db.js";
 
-const client = createClient();
-await client.connect();
-
-const rows = await query(
-  client,
-  `
+await runLoader("vigilo-stats", (client) =>
+  query(
+    client,
+    `
   SELECT
     s.id,
     s.display_name,
@@ -26,7 +24,5 @@ const rows = await query(
   HAVING COUNT(o.obs_token) > 200
   ORDER BY count DESC
 `,
+  ),
 );
-
-await client.end();
-process.stdout.write(toJSON(rows));
