@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "observable preview --host 0.0.0.0",
     "build": "observable build",
-    "postbuild": "mkdir -p dist/_file/data/sirene-etabs && cp src/data/sirene-etabs/*.json dist/_file/data/sirene-etabs/",
+    "postbuild": "mkdir -p dist/_file/data/sirene-etabs && cp src/data/sirene-etabs/*.json dist/_file/data/sirene-etabs/ 2>/dev/null || true",
     "clean": "rm -rf dist"
   },
   "dependencies": {
