@@ -138,8 +138,8 @@ precommit-install:
 # Prepare the database and build the site for GitHub Pages
 @pages-build:
     docker compose up -d psql
-    DATAS_LIST="geonames,vigilo,nafrev2" just import
-    DATAS_LIST="vigilo,nafrev2" just observable-pages-build
+    DATAS_LIST="geonames,vigilo,nafrev2,sirene" just import
+    DATAS_LIST="vigilo,nafrev2,sirene" just observable-pages-build
 
 # Start Observable dev server with hot reload (port 3000)
 @observable-dev:

@@ -1,6 +1,8 @@
 # World Data Analysis
 
-A platform for exploring French and international open data: urban mobility, economic activity, geography. Data is visualised through **Observable Framework** (interactive interface) and **Grafana** (dashboards).
+A platform for exploring French and international open data: urban mobility,
+economic activity, geography. Data is visualised through **Observable
+Framework** (interactive interface) and **Grafana** (dashboards).
 
 ![Observable Framework](doc/grafana.png)
 
@@ -44,9 +46,12 @@ flowchart TD
 
 **Tech stack:**
 
-- [DuckDB](https://duckdb.org/) — high-performance data processing and Parquet conversion
-- [PostgreSQL](https://www.postgresql.org/) — relational database queried by Observable and Grafana
-- [Observable Framework](https://observablehq.com/framework/) — interactive data exploration interface
+- [DuckDB](https://duckdb.org/) — high-performance data processing and Parquet
+  conversion
+- [PostgreSQL](https://www.postgresql.org/) — relational database queried by
+  Observable and Grafana
+- [Observable Framework](https://observablehq.com/framework/) — interactive data
+  exploration interface
 - [Grafana](https://grafana.com/) — dashboards and time-series visualisation
 - [Docker Compose](https://docs.docker.com/compose/) — service orchestration
 - [Git LFS](https://git-lfs.com/) — Parquet file storage in the repository
@@ -104,7 +109,7 @@ DATAS_LIST=sirene just import
 >
 > ```bash
 > DATAS_LIST=sirene,vigilo just update
-> DATAS_LIST=geonames,sirene,nafrev2 just import
+> DATAS_LIST=geonames,vigilo,nafrev2,sirene just import
 > ```
 
 Available datasets: `geonames`, `vigilo`, `sirene`, `nafrev2`
@@ -124,7 +129,8 @@ just observable-build   # Production build
 
 ### Grafana
 
-Dashboards for visualising reports and trends. Available at http://localhost:9300 (`admin/admin`).
+Dashboards for visualising reports and trends. Available at
+http://localhost:9300 (`admin/admin`).
 
 ### pgAdmin
 
@@ -160,7 +166,9 @@ just precommit-install  # Configure git pre-commit hooks
 
 ## Reference scopes
 
-Datasets are linked to geographic scopes so they can be cross-referenced. For example, a SIRENE establishment can be joined to a GeoNames city via the INSEE commune code.
+Datasets are linked to geographic scopes so they can be cross-referenced. For
+example, a SIRENE establishment can be joined to a GeoNames city via the INSEE
+commune code.
 
 <!-- BEGIN SCOPEREFERENCE -->
 
