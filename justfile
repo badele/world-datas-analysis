@@ -131,7 +131,7 @@ precommit-install:
         -e PGDATABASE=wda \
         -e PGUSER=wda \
         -e PGPASSWORD=wda \
-        -e DATAS_LIST="$DATAS_LIST" \
+        -e DATAS_LIST="${DATAS_LIST:-}" \
         docker.io/library/node:22-slim \
         sh -ec 'npm ci && npm run build'
 
@@ -139,7 +139,7 @@ precommit-install:
 @pages-build:
     docker compose up -d psql
     DATAS_LIST="geonames,vigilo,nafrev2" just import
-    just observable-pages-build
+    DATAS_LIST="vigilo,nafrev2" just observable-pages-build
 
 # Start Observable dev server with hot reload (port 3000)
 @observable-dev:
