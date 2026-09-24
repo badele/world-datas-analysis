@@ -1,7 +1,7 @@
 .head on
 
 --------------------------------------
--- Database summary 
+-- Database summary
 --------------------------------------
 BEGIN TRANSACTION;
 
@@ -15,14 +15,14 @@ CREATE TABLE IF NOT EXISTS db_summary (
 
 
 --------------------------------------
--- geonames 
+-- geonames
 --------------------------------------
 
 REPLACE INTO db_summary SELECT SOURCE_ID, 'nb countries',count(GEOID) from geonames_country;
 REPLACE INTO db_summary SELECT SOURCE_ID, 'nb entries', count(GEOID) from geonames_allentries;
 
 --------------------------------------
--- commons 
+-- commons
 --------------------------------------
 
 REPLACE INTO db_summary SELECT SOURCE_ID,'nb distinct indicators',  count(DISTINCT IndicatorKey) from db_indicator_description;
@@ -31,7 +31,7 @@ REPLACE INTO db_summary SELECT SOURCE_ID,'nb indicators values', count(*) FROM d
 
 
 --------------------------------------
--- worldbank 
+-- worldbank
 --------------------------------------
 
 
@@ -42,9 +42,8 @@ SELECT * FROM db_summary ORDER BY sourcename, value DESC;
 SELECT "";
 SELECT "=== TABLES ===";
 
-SELECT type,name FROM sqlite_master 
+SELECT type,name FROM sqlite_master
 WHERE name NOT LIKE 'x_%' AND (type LIKE 'table' OR type LIKE 'view')
-ORDER BY name; 
+ORDER BY name;
 
 COMMIT;
-

@@ -16,7 +16,7 @@ suppressPackageStartupMessages({
   library(here)
   library(RSQLite)
   library(forcats)
-  library(tidyverse) 
+  library(tidyverse)
   library(kableExtra)
 })
 

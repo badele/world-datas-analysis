@@ -1,68 +1,166 @@
-# world-datas-analysis
+# World Data Analysis
 
-Miscellaneous worlds data and analysis
+A platform for exploring French and international open data: urban mobility, economic activity, geography. Data is visualised through **Observable Framework** (interactive interface) and **Grafana** (dashboards).
 
-![grafana](doc/grafana.png)
+![Observable Framework](doc/grafana.png)
 
-## Requirements
+---
 
-Installing prerequisites on various distributions
+## Available datasets
+
+| Dataset          | Description                                                        | Source                                                                                                                   |         Entries |
+| ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ | --------------: |
+| **Vigilo**       | Citizen reports related to cycling and pedestrian travel           | [vigilo.city](https://vigilo.city)                                                                                       |         ~25,000 |
+| **SIRENE**       | National registry of French businesses and establishments (INSEE)  | [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/) |            ~2 M |
+| **NAF Rev. 2**   | French economic activity classification (5 hierarchy levels)       | [INSEE](https://www.insee.fr)                                                                                            |   732 APE codes |
+| **GeoNames**     | Global geographic reference (cities, countries, commune codes)     | [geonames.org](https://geonames.org)                                                                                     | ~534,000 cities |
+| **Eco-counters** | Cycling and pedestrian counts — Montpellier Méditerranée Métropole | [data.montpellier3m.fr](https://data.montpellier3m.fr)                                                                   |         ~54,000 |
+
+---
+
+## Architecture
+
+### Visualize data
+
+```mermaid
+flowchart TD
+    D[just import]
+    D --> F["Grafana\n(port 9300)"]
+    D --> E["Observable Framework\n(port 9400 dev / 9500 prod)"]
+    D --> G["pgAdmin\n(port 9600)"]
+```
+
+### Contribute
+
+```mermaid
+flowchart TD
+    A["Source data\n(CSV, ZIP)"] --> B[just download]
+    B --> C[just update]
+    C --> D[just import]
+    D --> E["Observable Framework\n(port 9400 dev / 9500 prod)"]
+    D --> F["Grafana\n(port 9300)"]
+    D --> G["pgAdmin\n(port 9600)"]
+```
+
+**Tech stack:**
+
+- [DuckDB](https://duckdb.org/) — high-performance data processing and Parquet conversion
+- [PostgreSQL](https://www.postgresql.org/) — relational database queried by Observable and Grafana
+- [Observable Framework](https://observablehq.com/framework/) — interactive data exploration interface
+- [Grafana](https://grafana.com/) — dashboards and time-series visualisation
+- [Docker Compose](https://docs.docker.com/compose/) — service orchestration
+- [Git LFS](https://git-lfs.com/) — Parquet file storage in the repository
+
+---
+
+## Prerequisites
+
+- Docker + Docker Compose v2
+- [just](https://just.systems/) (task runner)
+- Git LFS
 
 ```bash
-./install_requirements.sh
-```
-
-Works on :
-
-- Alpine
-- Archlinux
-- Ubuntu
-
-## Usage
-
-### View on Grafana
-
-**INFO:** While waiting for [DuckDB](https://duckdb.org/) support in Grafana and
-to speed up data access from Grafana (especially for accessing views), the data
-is exported to the [PostgreSQL](https://www.postgresql.org/) database.
-
-```
-just import     # Import data to PostgreSQL (used by Grafana)
-just chart      # Open Grafana (admin/admin)
-just stop       # Stop the Grafana server
-```
-
-**Note:** The Grafana account credentials are `admin/admin`.
-
-### Git LFS prerequisite
-
-Parquet files from the `dataset/` directory are stored with [Git LFS](https://git-lfs.com/).
-Install and initialize Git LFS before downloading or importing datasets:
-
-```bash
+# Initialise Git LFS (required for Parquet files)
 git lfs install
-git lfs version
+
+# Check dependencies
+just requirements-check
 ```
 
-### For developers: Convert data to Parquet format
+---
 
-Before having a dataset viewable in Grafana, you need to download and convert it
-to Parquet format. This reduces size and improves performance in DuckDB. Learn
-more about [Parquet](https://parquet.apache.org/).
+## Quick start
+
+### Explore data (Parquet files already available via Git LFS)
 
 ```bash
-just download
-just update
-just import
+just import     # Load Parquet files into PostgreSQL
+just start      # Start all services
 ```
 
-## Scopes reference
+| Port | Service                        | URL                   | Credentials |
+| ---- | ------------------------------ | --------------------- | :---------: |
+| 9300 | Grafana                        | http://localhost:9300 | admin/admin |
+| 9400 | Observable (dev, hot-reload)   | http://localhost:9400 |      —      |
+| 9500 | Observable (production, nginx) | http://localhost:9500 |      —      |
+| 9600 | pgAdmin                        | http://localhost:9600 |   wda/wda   |
 
-When you add new data to this project, you can sync with reference data by
-scope.
+### Refresh data from sources
 
-For example, if you import a new dataset associated with cities, you can link
-them with geonames city elements
+```bash
+just download           # Download source files
+just update             # Convert to Parquet (DuckDB)
+just import             # Load into PostgreSQL
+```
+
+To process a specific dataset:
+
+```bash
+DATAS_LIST=sirene just update
+DATAS_LIST=sirene just import
+```
+
+> **Note:** `DATAS_LIST` accepts multiple comma-separated dataset names:
+>
+> ```bash
+> DATAS_LIST=sirene,vigilo just update
+> DATAS_LIST=geonames,sirene,nafrev2 just import
+> ```
+
+Available datasets: `geonames`, `vigilo`, `sirene`, `nafrev2`
+
+---
+
+## Services
+
+### Observable Framework
+
+Interactive data exploration with maps, charts and filterable tables.
+
+```bash
+just observable-dev     # Start dev server with hot-reload (port 9400)
+just observable-build   # Production build
+```
+
+### Grafana
+
+Dashboards for visualising reports and trends. Available at http://localhost:9300 (`admin/admin`).
+
+### pgAdmin
+
+PostgreSQL administration interface available at http://localhost:9600.
+
+---
+
+## Command reference
+
+```
+just help               # List all available commands
+
+# Data pipeline
+just download           # Download source files
+just update             # Convert CSV → Parquet (DuckDB)
+just import             # Load Parquet → PostgreSQL
+just db-reset           # Reset the DuckDB database
+
+# Services
+just start              # Start all Docker services
+just stop               # Stop all services
+just observable-dev     # Observable in development mode
+just observable-build   # Build Observable (production)
+
+# Tools
+just duckdb             # Interactive DuckDB CLI
+just psql               # Interactive PostgreSQL CLI
+just lint               # Check code formatting
+just precommit-install  # Configure git pre-commit hooks
+```
+
+---
+
+## Reference scopes
+
+Datasets are linked to geographic scopes so they can be cross-referenced. For example, a SIRENE establishment can be joined to a GeoNames city via the INSEE commune code.
 
 <!-- BEGIN SCOPEREFERENCE -->
 
@@ -73,72 +171,20 @@ them with geonames city elements
 
 <!-- END SCOPEREFERENCE -->
 
-## Providers
+---
 
-<!-- BEGIN PROVIDER -->
+## Roadmap
 
-| provider | description                                                     | website             | nb_datasets | nb_observations |
-| -------- | --------------------------------------------------------------- | ------------------- | ----------: | --------------: |
-| vigilo   | Observations of the collaborative citizen application           | https://vigilo.city |           1 |           25548 |
-| sirene   | System for the Identification of the Register of Establishments | https://sirene.fr   |           1 |         2125502 |
-
-<!-- END PROVIDER -->
-
-## Datasets
-
-<!-- BEGIN DATASET -->
-
-| provider   | real_provider | dataset                                 | wda_scope | wda_scope_ref       | description                                                            | source                                                                                                                  | nb_variables | nb_observations | nb_scopes |
-| ---------- | ------------- | --------------------------------------- | --------- | ------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -----------: | --------------: | --------: |
-| opendata3m | opendata3m    | wda_opendata3m_ecocompteur_observations | city      | wda_geonames_cities | ecocompteur observations                                               | https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66 |          107 |           54149 |        11 |
-| vigilo     | vigilo        | wda_vigilo_observations                 | city      | wda_geonames_cities | vigilo citizen observations                                            | https://vigilo.city                                                                                                     |          111 |           25548 |       173 |
-| sirene     | sirene        | wda_sirene_etablissements               | city      | wda_geonames_cities | National Business and Establishment Identification and Registry System | https://sirene.fr                                                                                                       |           46 |         2125502 |     31509 |
-
-<!-- END DATASET -->
-
-## Todo
-
-| Status | Category           | Scope       | Description                                                                                                                               |
-| ------ | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| ✅     | Geonames           | Cities      | [Geonames](https://download.geonames.org/export/dump/)                                                                                    |
-| ✅     | bike counter       | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66) |
-| ✅     | vigilo             | Montpellier | [Vigilo](https://vigilo.city)                                                                                                             |
-| ✅     | Enterprise         | Cities      | [Sirene](https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/)                        |
-| 🛒     | Covid              | Countries   | [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                    |
-| 🛒     | NASA               | Countries   | [Anormal température](https://data.giss.nasa.gov/gistemp/)                                                                                |
-| 🛒     | Population         | Cities      | [insee estimation](https://www.insee.fr/fr/statistiques/1893198)                                                                          |
-| 🛒     | Population         | Cities      | [insee](https://www.insee.fr/fr/information/2008354)                                                                                      |
-| 🛒     | Population         | Countries   | [United nation](https://population.un.org/wpp/Download/Standard/Population/)                                                              |
-| 🛒     | Rental bike        | Montpellier | [Montpellier 3M](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                  |
-| 🛒     | Weather            | Cities      | [European Centre for Medium-Range Weather Forecasts](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch)   |
-| 🛒     | Weather            | Cities      | [European Climate Assessment & Dataset](https://www.ecad.eu/dailydata/predefinedseries.php)                                               |
-| 🛒     | universitetetioslo | Countries   | [CO2 emissions](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                                 |
-
-## Project commands
-
-<!-- COMMANDS -->
-
-```text
-justfile commands:
-    browse                  # Browse world datas
-    chart                   # Open browser to grafana page
-    db-reset                # Reset duckdb database
-    doc-update FAKEFILENAME # Update documentation
-    docker-build            # Build the wda docker image
-    docker-duckdb           # Run duckdb cli on docker
-    docker-push             # Push the wda docker image to docker hub
-    docker-run CMD=""       # Run the wda docker image
-    help                    # This help
-    import                  # Import datasets to sqlite
-    lint                    # Lint the project
-    packages                # Show installed packages
-    precommit-check         # precommit check
-    precommit-install       # Setup pre-commit
-    precommit-update        # Update pre-commit
-    reset                   # Reset grafana storage
-    start                   # Start grafana
-    stop                    # Stop grafana
-    update                  # Update datasets
-```
-
-<!-- /COMMANDS -->
+| Status | Category   | Scope         | Dataset                                                                                                                                                    |
+| ------ | ---------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅     | GeoNames   | Worldwide     | [Cities and countries](https://download.geonames.org/export/dump/)                                                                                         |
+| ✅     | Mobility   | Montpellier   | [Cycling/pedestrian eco-counters](https://data.montpellier3m.fr/dataset/comptages-velo-et-pieton-issus-des-eco-compteurs/resource/edf3e04f-9409-40fe-be66) |
+| ✅     | Mobility   | France        | [Vigilo — citizen reports](https://vigilo.city)                                                                                                            |
+| ✅     | Economy    | France        | [SIRENE — business registry](https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/)                     |
+| 🛒     | Health     | Worldwide     | [COVID-19 — Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)                                                                          |
+| 🛒     | Climate    | Worldwide     | [Temperature anomalies — NASA GISS](https://data.giss.nasa.gov/gistemp/)                                                                                   |
+| 🛒     | Population | French cities | [INSEE estimates](https://www.insee.fr/fr/statistiques/1893198)                                                                                            |
+| 🛒     | Population | Worldwide     | [United Nations](https://population.un.org/wpp/Download/Standard/Population/)                                                                              |
+| 🛒     | Mobility   | Montpellier   | [VéloMagg — bike sharing](https://data.montpellier3m.fr/dataset/courses-des-velos-velomagg-de-montpellier-mediterranee-metropole)                          |
+| 🛒     | Weather    | Cities        | [ECMWF](https://confluence.ecmwf.int/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch)                                                                 |
+| 🛒     | Energy     | Worldwide     | [CO₂ emissions — University of Oslo](https://folk.universitetetioslo.no/roberan/GCB2020.shtml)                                                             |

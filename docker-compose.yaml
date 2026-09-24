@@ -14,8 +14,11 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./dataset:/dataset
-      # DuckDB FDW scripts use paths relative to PostgreSQL's data directory.
-      - ./dataset:/var/lib/postgresql/data/dataset
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wda -d wda"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
   pgadmin:
     image: dpage/pgadmin4
@@ -24,7 +27,7 @@ services:
     networks:
       - wda
     ports:
-      - "9080:80"
+      - "9600:80"
     environment:
       PGADMIN_DISABLE_POSTFIX: "True"
       PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
@@ -45,11 +48,11 @@ services:
     image: grafana/grafana:11.0.0
     container_name: grafana
     restart: unless-stopped
-    user: '472'
+    user: "472"
     networks:
       - wda
     ports:
-      - '9300:3000'
+      - "9300:3000"
     volumes:
       - grafana-data:/var/lib/grafana
       - $PWD/db:/db
@@ -58,7 +61,89 @@ services:
     environment:
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource 3.5.0
     depends_on:
-        - psql
+      - psql
+
+  observable-dev:
+    image: docker.io/library/node:22-slim
+    container_name: observable-dev
+    restart: unless-stopped
+    networks:
+      - wda
+    ports:
+      - "9400:3000"
+    working_dir: /app
+    volumes:
+      - ./observable:/app
+      - observable-dev-modules:/app/node_modules
+    environment:
+      PGHOST: psql
+      PGPORT: 5432
+      PGDATABASE: wda
+      PGUSER: wda
+      PGPASSWORD: wda
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        npm ci
+        npm run dev
+    depends_on:
+      psql:
+        condition: service_healthy
+
+  observable:
+    image: docker.io/library/nginx:1.27-alpine
+    container_name: observable
+    restart: unless-stopped
+    networks:
+      - wda
+    ports:
+      - "9500:80"
+    volumes:
+      - observable-dist:/usr/share/nginx/html:ro
+      - ./observable/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      observable-build:
+        condition: service_completed_successfully
+
+  observable-build:
+    image: docker.io/library/node:22-slim
+    container_name: observable-build
+    restart: "no"
+    networks:
+      - wda
+    working_dir: /app
+    volumes:
+      - ./observable:/app
+      - observable-build-modules:/app/node_modules
+      - observable-dist:/output
+    environment:
+      PGHOST: psql
+      PGPORT: 5432
+      PGDATABASE: wda
+      PGUSER: wda
+      PGPASSWORD: wda
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        npm ci
+        npm run build -- --debug
+        rm -rf /output/*
+        cp -a dist/. /output/
+    depends_on:
+      psql:
+        condition: service_healthy
+
+  precommit:
+    build:
+      context: .
+      target: precommit
+    volumes:
+      - .:/app
+      - precommit_cache:/root/.cache
+    environment:
+      SKIP: nixpkgs-fmt,deno-fmt,deno-lint
 
 configs:
   pgpass:
@@ -76,7 +161,6 @@ configs:
         "SSLMode": "prefer"
       }}}
 
-
 networks:
   wda:
     driver: bridge
@@ -85,3 +169,7 @@ volumes:
   postgres-data:
   grafana-data:
   pgadmin-data:
+  observable-dist:
+  observable-dev-modules:
+  observable-build-modules:
+  precommit_cache:

@@ -172,7 +172,6 @@ INSERT INTO sirene_etablissements
     WHERE
             statutDiffusionEtablissement='O'
             AND etatAdministratifEtablissement='A'
-            AND caractereEmployeurEtablissement='O'
     ;
 
 
@@ -229,46 +228,25 @@ UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 2000 WHERE et
 UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 5000 WHERE ets.trancheEffectifsEtablissement = '52';
 UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 10000 WHERE ets.trancheEffectifsEtablissement = '53';
 -- --
-SELECT 'fix geonames_cityid' as mess;
+SELECT 'fix geonames_cityid + geonames_city' as mess;
 UPDATE sirene_etablissements ets
-SET geonames_cityid = (
-    SELECT city_id
-    FROM geonames_allentries
-    WHERE
-        country_code = 'FR'
-        AND feature_code = 'ADM4'
-        AND admin4_code = ets.codeCommuneEtablissement
-)
+SET
+    geonames_cityid = g.city_id,
+    geonames_city   = g.city_name
+FROM geonames_allentries g
+WHERE
+    g.country_code  = 'FR'
+    AND g.feature_code  = 'ADM4'
+    AND g.admin4_code   = ets.codeCommuneEtablissement
 ;
 
-SELECT 'fix geonames_city' as mess;
+SELECT 'fix geonames_longitude + geonames_latitude' as mess;
 UPDATE sirene_etablissements ets
-SET geonames_city = (
-    SELECT city_name
-    FROM geonames_allentries
-    WHERE
-        country_code = 'FR'
-        AND feature_code = 'ADM4'
-        AND admin4_code = ets.codeCommuneEtablissement
-)
-;
-
-SELECT 'fix geonames_longitude' as mess;
-UPDATE sirene_etablissements ets
-SET longitude = (
-    SELECT x_longitude
-    FROM tmp_sirene_etablissements_geoloc
-    WHERE siret = ets.siret
-)
-;
-
-SELECT 'fix geonames_latitude' as mess;
-UPDATE sirene_etablissements ets
-SET latitude = (
-    SELECT y_latitude
-    FROM tmp_sirene_etablissements_geoloc
-    WHERE siret = ets.siret
-)
+SET
+    longitude = geoloc.x_longitude,
+    latitude  = geoloc.y_latitude
+FROM tmp_sirene_etablissements_geoloc geoloc
+WHERE geoloc.siret = ets.siret
 ;
 
 -------------------------------------------------------------------------------

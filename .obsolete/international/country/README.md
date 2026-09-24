@@ -1,6 +1,7 @@
 # geonames population
 
 ## Download geonames and export
+
 ```
 cd world-datas-analysis
 
@@ -24,4 +25,3 @@ international/countryexport_geonames.sh
 # Generate graphs
 international/covid-19/generate_graphs.sh
 ```
-

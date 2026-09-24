@@ -1,6 +1,7 @@
 # Covid-19 Summaries
 
 ## Download JHU datas and Graph
+
 ```
 # Download datas from albert 1er totem
 python cities/montpellier/totem/download_from_totem.py

@@ -6,11 +6,11 @@ suppressPackageStartupMessages({
 #' Generate automatically .fwf file (fixed width file) in R
 #' @description This function creates automatically fixed width file
 #' It align columns headers with datas
-#' @param df dataframe   
-#' @param filename filename   
-#' @param nbspaces nb spaces for columns separator   
-#' @param replace_na Empty/NA chain replacement   
-#' @param rowname If it's defined, it convert rownames column to named column   
+#' @param df dataframe
+#' @param filename filename
+#' @param nbspaces nb spaces for columns separator
+#' @param replace_na Empty/NA chain replacement
+#' @param rowname If it's defined, it convert rownames column to named column
 #' @examples write_fwf(mtcars, "carname", "/tmp/mtcars.fwf")
 #'
 #' # colnames: carname,mpg,cyl,disp,hp,drat,wt,qsec,vs,am,gear,carb
@@ -35,7 +35,7 @@ write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "N
   maxwidthname <- nchar(colnames(tmpdf))
   maxwidthvalue <- sapply(tmpdf, function(x) max(nchar(x)))
   maxcols <- pmax(maxwidthname,maxwidthvalue,nasize)
-  delta <- maxwidthvalue - maxwidthname 
+  delta <- maxwidthvalue - maxwidthname
 
   # Compute header
   header <- c()
@@ -49,22 +49,22 @@ write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "N
 
   # Open file
   file <- file(filename, "w")
-  
+
   # Write header
   writeLines(paste("# colnames:", paste(colnames(df), collapse=',')),file)
   writeLines(paste("# width:", paste(unlist(maxcols+nbspaces), collapse=',')),file)
   writeLines(header,file, sep=strrep(" ",nbspaces))
   writeLines("", file, sep="\n")
   close(file)
-  
+
   # Export data
   write.fwf(
     df,
     file=filename,
-    append=TRUE, 
+    append=TRUE,
     width=maxcols,
     colnames=FALSE,
-    na=replace_na, 
+    na=replace_na,
     sep=strrep(" ",nbspaces),
     justify="left"
   )
@@ -72,7 +72,7 @@ write_fwf <- function(df, filename,rowname = FALSE,nbspaces = 3, replace_na = "N
 
 #' Read automatically .fwf file (fixed width file) in R
 #' @description This function read and detect automatically fixed width file
-#' @param maxsearchlines nb lines for the searching the columns metadata description   
+#' @param maxsearchlines nb lines for the searching the columns metadata description
 #' @examples read_fwf("/tmp/mtcars.fwf")
 read_fwf <- function(filename,maxsearchlines=100) {
   # Search columns informations

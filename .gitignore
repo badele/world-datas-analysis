@@ -1,4 +1,5 @@
 .direnv
+.githooks
 
 # Grafana
 grafana-store
@@ -30,7 +31,11 @@ fit.log
 .venv
 __pycache__
 
-international/covid-19/datas/countries_ratio_deaths_for_1000000hab_*.gdata
+# Observable
+observable/node_modules
+observable/dist
+observable/src/.observablehq/cache
+observable/src/data/sirene-etabs/
 
 # R
 renv
