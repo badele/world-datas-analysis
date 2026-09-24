@@ -21,6 +21,7 @@ async function* scopePaths() {
 export default {
   title: "World Data Analysis",
   root: "src",
+  base: process.env.GITHUB_ACTIONS ? "/world-datas-analysis" : "/",
   dynamicPaths: async function* () {
     yield* scopePaths();
   },
