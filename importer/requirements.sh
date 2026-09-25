@@ -3,9 +3,11 @@ set -ex
 
 export DEBIAN_FRONTEND=noninteractive
 
+apt-get update
+
 # Install required packages
 if ! command -v curl &>/dev/null; then
-	apt-get update && apt-get install -y git curl netcat-openbsd unzip python3 python3-venv python3-pip sqlite3
+	apt-get install -y --fix-missing git curl netcat-openbsd unzip python3 python3-venv python3-pip sqlite3
 fi
 
 # Install just package
@@ -15,7 +17,7 @@ fi
 
 # Install postgresql
 if ! command -v psql &>/dev/null; then
-	apt-get update && apt-get install -y postgresql-client
+	apt-get update && apt-get install -y --fix-missing postgresql-client
 fi
 
 # Install duckdb
