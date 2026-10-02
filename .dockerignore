@@ -1,7 +1,9 @@
 dataset
+.obsolete
 db
 download
 downloaded
+grafana
 grafana-storage
 grafana_old
 grafana.old.2
@@ -10,3 +12,4 @@ observable/dist
 observable/src/.observablehq/cache
 observable/src/data/sirene-etabs/*.json
 .git
+.venv

@@ -5,24 +5,101 @@ title: Vigilo — Instance
 ```js
 import { createVigiloMap } from "../components/vigilo-map.js";
 import { createMultiSelect } from "../components/wda-multiselect.js";
+import { initVigiloDB } from "../components/vigilo-db.js";
 import * as Plot from "npm:@observablehq/plot";
 import * as d3 from "npm:d3";
 ```
 
 ```js
 const scopeId = observable.params.scope;
-const allObs = FileAttachment("../data/vigilo-observations.json").json();
-const scopes = FileAttachment("../data/vigilo-scopes.json").json();
-const categories = FileAttachment("../data/vigilo-categories.json").json();
-const statsByCat = FileAttachment(
-  "../data/vigilo-stats-by-category.json",
-).json();
 ```
 
 ```js
-const scopeMeta = scopes.find((s) => s.id === scopeId) ?? {};
+const _vigiBase = "https://pub-6526c18d68154746a16baf2f76a38544.r2.dev/vigilo";
+const { db, conn } = await initVigiloDB(_vigiBase, invalidation);
+
+const _obsResult = await conn.query(`
+  SELECT o.scopeid, o.token, o.ts,
+         ROUND(o.latitude::DOUBLE, 6) AS latitude,
+         ROUND(o.longitude::DOUBLE, 6) AS longitude,
+         o.address, o.comment, o.catid,
+         c.name AS category, c.color,
+         o.approved, o.geonames_city, o.geonames_district
+  FROM read_parquet('observations.parquet') o
+  LEFT JOIN read_parquet('categories.parquet') c ON c.id = o.catid
+  WHERE o.scopeid = '${scopeId}'
+    AND o.latitude IS NOT NULL AND o.longitude IS NOT NULL
+  ORDER BY o.ts DESC
+`);
+const observations = _obsResult.toArray().map((r) => ({
+  scopeid: r.scopeid,
+  token: r.token !== null ? Number(r.token) : null,
+  ts: r.ts !== null ? Number(r.ts) : null,
+  latitude: r.latitude !== null ? Number(r.latitude) : null,
+  longitude: r.longitude !== null ? Number(r.longitude) : null,
+  address: r.address,
+  comment: r.comment,
+  catid: r.catid !== null ? Number(r.catid) : null,
+  category: r.category,
+  color: r.color,
+  approved: r.approved !== null ? Boolean(r.approved) : null,
+  geonames_city: r.geonames_city,
+  geonames_district: r.geonames_district,
+}));
+
+const _scopeResult = await conn.query(`
+  SELECT id, display_name, is_active, country, department,
+         map_center_string, map_zoom
+  FROM read_parquet('scopes.parquet')
+  WHERE id = '${scopeId}'
+`);
+const _scopeRows = _scopeResult.toArray();
+const scopeMeta =
+  _scopeRows.length > 0
+    ? {
+        id: _scopeRows[0].id,
+        display_name: _scopeRows[0].display_name,
+        is_active: _scopeRows[0].is_active,
+        country: _scopeRows[0].country,
+        department: _scopeRows[0].department,
+        map_center_string: _scopeRows[0].map_center_string,
+        map_zoom: _scopeRows[0].map_zoom,
+      }
+    : {};
+
+const _categoriesResult = await conn.query(`
+  SELECT id, name, color FROM read_parquet('categories.parquet') ORDER BY id
+`);
+const categories = _categoriesResult.toArray().map((r) => ({
+  id: Number(r.id),
+  name: r.name,
+  color: r.color,
+}));
+
+const _statsByCatResult = await conn.query(`
+  SELECT s.id AS scope_id, s.display_name AS scope_name,
+         c.name AS category, c.color, COUNT(*)::INTEGER AS count
+  FROM read_parquet('observations.parquet') o
+  JOIN read_parquet('scopes.parquet') s ON s.id = o.scopeid
+  JOIN read_parquet('categories.parquet') c ON c.id = o.catid
+  WHERE s.id IN (
+    SELECT scopeid FROM read_parquet('observations.parquet')
+    GROUP BY scopeid HAVING COUNT(*) > 200
+  )
+  GROUP BY s.id, s.display_name, c.name, c.color
+  ORDER BY s.display_name, c.name
+`);
+const statsByCat = _statsByCatResult.toArray().map((r) => ({
+  scope_id: r.scope_id,
+  scope_name: r.scope_name,
+  category: r.category,
+  color: r.color,
+  count: Number(r.count),
+}));
+```
+
+```js
 const scopeLabel = scopeMeta.display_name ?? scopeId;
-const observations = allObs.filter((d) => d.scopeid === scopeId);
 const firstTs = Math.min(...observations.map((d) => d.ts).filter(Boolean));
 const lastTs = Math.max(...observations.map((d) => d.ts).filter(Boolean));
 const fmtDate = (ts) =>
@@ -33,9 +110,7 @@ const fmtDate = (ts) =>
 const catCounts = categories
   .map((c) => ({
     name: c.name,
-    count: observations.filter(
-      (d) => d.catid === c.id || d.catid === Number(c.id),
-    ).length,
+    count: observations.filter((d) => d.catid === c.id).length,
     color: c.color,
   }))
   .filter((d) => d.count > 0)

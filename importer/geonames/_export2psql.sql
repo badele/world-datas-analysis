@@ -28,7 +28,7 @@ CREATE FOREIGN TABLE duckdb_geonames_countries (
     equivalent_fips_code text
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/geonames/countries.parquet")'
+    TABLE 'read_parquet("/dataset/geonames/raw/countries.parquet")'
 )
 ;
 
@@ -69,7 +69,7 @@ CREATE FOREIGN TABLE duckdb_geonames_allentries (
     city_name text
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/geonames/allentries.parquet/*/*.parquet")'
+    TABLE 'read_parquet("/dataset/geonames/raw/allentries.parquet/*/*.parquet")'
 )
 ;
 

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@observablehq/framework": "^1.13.0",
+    "duckdb": "^1.1.0",
     "pg": "^8.13.0"
   }
 }

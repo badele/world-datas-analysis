@@ -1,262 +1,213 @@
-.mode box
+.mode list
+.headers off
 
+SET temp_directory='/tmp/duckdb_sirene';
+SET memory_limit='4GB';
+PRAGMA enable_progress_bar;
+
+.print ===========================================
+.print == NAFRev2
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> importing NAFRev2...
 BEGIN TRANSACTION;
 
--------------------------------------------------------------------------------
--- NAFRev2
--------------------------------------------------------------------------------
-SELECT 'import NAFRev2' as mess;
 CREATE OR REPLACE TABLE sirene_nafrev2 (
-    code VARCHAR,
+    code        VARCHAR,
     description VARCHAR
-)
-;
+);
+INSERT INTO sirene_nafrev2 FROM read_csv('./downloaded/sirene/NAFRev2.csv', ignore_errors=true);
 
-INSERT INTO sirene_nafrev2
-    FROM read_csv('./downloaded/sirene/NAFRev2.csv',ignore_errors=true)
-;
+COMMIT;
+SELECT format('[{:.1f}s] ✓ NAFRev2 imported', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print
 
-DROP INDEX IF EXISTS idx_sirene_nafrev2_code;
--- CREATE INDEX idx_sirene_nafrev2_code ON sirene_nafrev2 (code);
+.print ===========================================
+.print == Entreprises
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> importing sirene_entreprises...
+BEGIN TRANSACTION;
 
--------------------------------------------------------------------------------
--- unite legales
--------------------------------------------------------------------------------
-SELECT 'import sirene_entreprises' as mess;
-CREATE OR REPLACE TABLE sirene_entreprises (
-    siren VARCHAR,
-    dateCreationUniteLegale DATE,
-    sigleUniteLegale VARCHAR,
-    identifiantAssociationUniteLegale VARCHAR,
-    trancheEffectifsUniteLegale VARCHAR,
-    minNbEffectifsUniteLegale BIGINT,
-    anneeEffectifsUniteLegale BIGINT,
-    dateDernierTraitementUniteLegale TIMESTAMP,
-    nombrePeriodesUniteLegale BIGINT,
-    categorieEntreprise VARCHAR,
-    anneeCategorieEntreprise BIGINT,
-    dateDebut DATE,
-    denominationUniteLegale VARCHAR,
-    denominationUsuelle1UniteLegale VARCHAR,
-    denominationUsuelle2UniteLegale VARCHAR,
-    denominationUsuelle3UniteLegale VARCHAR,
-    activitePrincipaleUniteLegale VARCHAR,
-    nomenclatureActivitePrincipaleUniteLegale VARCHAR,
-    nicSiegeUniteLegale VARCHAR,
-    economieSocialeSolidaireUniteLegale VARCHAR,
-)
-;
-
-INSERT INTO sirene_entreprises
+CREATE OR REPLACE TABLE sirene_entreprises AS
     SELECT
         siren,
-        dateCreationUniteLegale,
-        sigleUniteLegale,
-        identifiantAssociationUniteLegale,
-        trancheEffectifsUniteLegale,
-        NULL,
-        anneeEffectifsUniteLegale,
-        dateDernierTraitementUniteLegale,
-        nombrePeriodesUniteLegale,
-        categorieEntreprise,
-        anneeCategorieEntreprise,
-        dateDebut,
-        denominationUniteLegale,
-        denominationUsuelle1UniteLegale,
-        denominationUsuelle2UniteLegale,
-        denominationUsuelle3UniteLegale,
-        activitePrincipaleUniteLegale,
-        nomenclatureActivitePrincipaleUniteLegale,
-        nicSiegeUniteLegale,
-        economieSocialeSolidaireUniteLegale
-    FROM read_csv('./downloaded/sirene/StockUniteLegale_utf8.csv',ignore_errors=true)
+        denominationUniteLegale
+    FROM read_csv('./downloaded/sirene/StockUniteLegale_utf8.csv', ignore_errors=true)
     WHERE
-        unitePurgeeUniteLegale is not true
-        AND categorieJuridiqueUniteLegale!=1000
-        AND etatAdministratifUniteLegale!='C'
-        AND statutDiffusionUniteLegale='O'
+        unitePurgeeUniteLegale  IS NOT TRUE
+        AND categorieJuridiqueUniteLegale != 1000
+        AND etatAdministratifUniteLegale  != 'C'
+        AND statutDiffusionUniteLegale     = 'O'
 ;
 
-DROP INDEX IF EXISTS idx_sirene_entreprises_siren;
--- CREATE INDEX idx_sirene_entreprises_siren ON sirene_entreprises (siren);
+COMMIT;
+.print >>> indexing sirene_entreprises...
+CREATE INDEX idx_sirene_entreprises_siren ON sirene_entreprises (siren);
+SELECT format('[{:.1f}s] ✓ sirene_entreprises imported + indexed', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print
 
--------------------------------------------------------------------------------
--- Etablissements
--------------------------------------------------------------------------------
-SELECT 'import sirene_etablissements' as mess;
-CREATE OR REPLACE TABLE sirene_etablissements(
-    siren VARCHAR,
-    nic VARCHAR,
-    siret VARCHAR,
-    dateCreationEtablissement DATE,
-    trancheEffectifsEtablissement VARCHAR,
-    minNbEffectifsEtablissement BIGINT,
-    anneeEffectifsEtablissement BIGINT,
-    activitePrincipaleRegistreMetiersEtablissement VARCHAR,
-    dateDernierTraitementEtablissement TIMESTAMP,
-    etablissementSiege BOOLEAN,
-    nombrePeriodesEtablissement BIGINT,
-    complementAdresseEtablissement VARCHAR,
-    numeroVoieEtablissement VARCHAR,
-    indiceRepetitionEtablissement VARCHAR,
-    dernierNumeroVoieEtablissement VARCHAR,
-    typeVoieEtablissement VARCHAR,
-    libelleVoieEtablissement VARCHAR,
-    codePostalEtablissement VARCHAR,
-    libelleCommuneEtablissement VARCHAR,
-    libelleCommuneEtrangerEtablissement VARCHAR,
-    distributionSpecialeEtablissement VARCHAR,
-    codeCommuneEtablissement VARCHAR,
-    departementEtablissement VARCHAR,
-    codePaysEtrangerEtablissement VARCHAR,
-    libellePaysEtrangerEtablissement VARCHAR,
-    identifiantAdresseEtablissement VARCHAR,
-    coordonneeLambertAbscisseEtablissement VARCHAR,
-    coordonneeLambertOrdonneeEtablissement VARCHAR,
-    dateDebut DATE,
-    enseigne1Etablissement VARCHAR,
-    enseigne2Etablissement VARCHAR,
-    enseigne3Etablissement VARCHAR,
-    denominationUsuelleEtablissement VARCHAR,
-    activitePrincipaleEtablissement VARCHAR,
-    nomenclatureActivitePrincipaleEtablissement VARCHAR,
-    geonames_cityid BIGINT,
-    geonames_city TEXT,
-    longitude DOUBLE,
-    latitude DOUBLE
-)
-;
+.print ===========================================
+.print == Etablissements
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> importing sirene_etablissements...
+BEGIN TRANSACTION;
 
-INSERT INTO sirene_etablissements
+CREATE OR REPLACE TABLE sirene_etablissements AS
     SELECT
-        siren,
-        nic,
-        siret,
-        dateCreationEtablissement,
-        trancheEffectifsEtablissement,
-        NULL,
-        anneeEffectifsEtablissement,
-        activitePrincipaleRegistreMetiersEtablissement,
-        dateDernierTraitementEtablissement,
-        etablissementSiege,
-        nombrePeriodesEtablissement,
-        complementAdresseEtablissement,
-        numeroVoieEtablissement,
-        indiceRepetitionEtablissement,
-        dernierNumeroVoieEtablissement,
-        typeVoieEtablissement,
-        libelleVoieEtablissement,
-        codePostalEtablissement,
-        libelleCommuneEtablissement,
-        libelleCommuneEtrangerEtablissement,
-        distributionSpecialeEtablissement,
-        codeCommuneEtablissement,
-        substring(codeCommuneEtablissement, 1, 2),
-        codePaysEtrangerEtablissement,
-        libellePaysEtrangerEtablissement,
-        identifiantAdresseEtablissement,
-        coordonneeLambertAbscisseEtablissement,
-        coordonneeLambertOrdonneeEtablissement,
-        dateDebut,
-        enseigne1Etablissement,
-        enseigne2Etablissement,
-        enseigne3Etablissement,
-        denominationUsuelleEtablissement,
-        activitePrincipaleEtablissement,
-        nomenclatureActivitePrincipaleEtablissement,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-    FROM read_csv('./downloaded/sirene/StockEtablissement_utf8.csv')
+        e.siren,
+        e.nic,
+        e.siret,
+        e.dateCreationEtablissement,
+        e.trancheEffectifsEtablissement,
+        NULL::BIGINT                                    AS minNbEffectifsEtablissement,
+        e.anneeEffectifsEtablissement,
+        e.activitePrincipaleRegistreMetiersEtablissement,
+        e.dateDernierTraitementEtablissement,
+        e.etablissementSiege,
+        e.nombrePeriodesEtablissement,
+        e.complementAdresseEtablissement,
+        e.numeroVoieEtablissement,
+        e.indiceRepetitionEtablissement,
+        e.dernierNumeroVoieEtablissement,
+        e.typeVoieEtablissement,
+        e.libelleVoieEtablissement,
+        e.codePostalEtablissement,
+        e.libelleCommuneEtablissement,
+        e.libelleCommuneEtrangerEtablissement,
+        e.distributionSpecialeEtablissement,
+        e.codeCommuneEtablissement,
+        substring(e.codeCommuneEtablissement, 1, 2)     AS departementEtablissement,
+        e.codePaysEtrangerEtablissement,
+        e.libellePaysEtrangerEtablissement,
+        e.identifiantAdresseEtablissement,
+        e.coordonneeLambertAbscisseEtablissement,
+        e.coordonneeLambertOrdonneeEtablissement,
+        e.dateDebut,
+        e.enseigne1Etablissement,
+        e.enseigne2Etablissement,
+        e.enseigne3Etablissement,
+        e.denominationUsuelleEtablissement,
+        e.activitePrincipaleEtablissement,
+        e.nomenclatureActivitePrincipaleEtablissement,
+        NULL::BIGINT                                    AS geonames_cityid,
+        NULL::VARCHAR                                   AS geonames_city,
+        g.x_longitude::DOUBLE                           AS longitude,
+        g.y_latitude::DOUBLE                            AS latitude
+    FROM read_csv('./downloaded/sirene/StockEtablissement_utf8.csv') e
+    LEFT JOIN read_csv('./downloaded/sirene/GeolocalisationEtablissement_Sirene_pour_etudes_statistiques_utf8.csv') g
+        ON g.siret = e.siret
     WHERE
-            statutDiffusionEtablissement='O'
-            AND etatAdministratifEtablissement='A'
-    ;
-
-
-DROP INDEX IF EXISTS idx_sirene_etablissements_siren;
--- CREATE INDEX idx_sirene_etablissements_siren ON sirene_etablissements (siren);
---
-DROP INDEX IF EXISTS idx_sirene_etablissements_siret;
--- CREATE INDEX idx_sirene_etablissements_siret ON sirene_etablissements (siret);
---
-DROP INDEX IF EXISTS idx_tmp_sirene_etablissements_trancheEffectifsEtablissement;
--- CREATE INDEX idx_tmp_sirene_etablissements_trancheEffectifsEtablissement ON sirene_etablissements (trancheEffectifsEtablissement);
-
--------------------------------------------------------------------------------
--- Etablissements geolocalisation
--------------------------------------------------------------------------------
-SELECT 'import sirene_etablissements_geoloc' as mess;
-CREATE OR REPLACE TABLE tmp_sirene_etablissements_geoloc(
-    siret VARCHAR,
-    y_latitude DOUBLE,
-    x_longitude DOUBLE
-)
+        e.statutDiffusionEtablissement = 'O'
+        AND e.etatAdministratifEtablissement = 'A'
 ;
 
-INSERT INTO tmp_sirene_etablissements_geoloc
-SELECT
-    siret,
-    y_latitude,
-    x_longitude
-FROM read_csv('./downloaded/sirene/GeolocalisationEtablissement_Sirene_pour_etudes_statistiques_utf8.csv')
+COMMIT;
+SELECT format('[{:.1f}s] ✓ sirene_etablissements imported', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print
+
+.print ===========================================
+.print == Fixes
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> updating effectifs...
+BEGIN TRANSACTION;
+
+UPDATE sirene_etablissements
+SET minNbEffectifsEtablissement = CASE trancheEffectifsEtablissement
+    WHEN 'NN' THEN 0
+    WHEN '00' THEN 0
+    WHEN '01' THEN 1
+    WHEN '02' THEN 3
+    WHEN '03' THEN 6
+    WHEN '11' THEN 10
+    WHEN '12' THEN 20
+    WHEN '21' THEN 50
+    WHEN '22' THEN 100
+    WHEN '31' THEN 200
+    WHEN '32' THEN 250
+    WHEN '41' THEN 500
+    WHEN '42' THEN 1000
+    WHEN '51' THEN 2000
+    WHEN '52' THEN 5000
+    WHEN '53' THEN 10000
+    ELSE minNbEffectifsEtablissement
+END
+WHERE trancheEffectifsEtablissement IN ('NN','00','01','02','03','11','12','21','22','31','32','41','42','51','52','53')
 ;
---
-DROP INDEX IF EXISTS idx_tmp_sirene_etablissements_geoloc_siret;
--- CREATE INDEX idx_tmp_sirene_etablissements_geoloc_siret ON tmp_sirene_etablissements_geoloc (siret);
 
+COMMIT;
+SELECT format('[{:.1f}s] ✓ effectifs updated', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print
 
--------------------------------------------------------------------------------
--- Fix
--------------------------------------------------------------------------------
-SELECT 'fix trancheEffectifsEtablissement' as mess;
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 0 WHERE ets.trancheEffectifsEtablissement = 'NN';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 0 WHERE ets.trancheEffectifsEtablissement = '00';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 1 WHERE ets.trancheEffectifsEtablissement = '01';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 3 WHERE ets.trancheEffectifsEtablissement = '02';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 6 WHERE ets.trancheEffectifsEtablissement = '03';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 10 WHERE ets.trancheEffectifsEtablissement = '11';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 20 WHERE ets.trancheEffectifsEtablissement = '12';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 50 WHERE ets.trancheEffectifsEtablissement = '21';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 100 WHERE ets.trancheEffectifsEtablissement = '22';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 200 WHERE ets.trancheEffectifsEtablissement = '31';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 250 WHERE ets.trancheEffectifsEtablissement = '32';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 500 WHERE ets.trancheEffectifsEtablissement = '41';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 1000 WHERE ets.trancheEffectifsEtablissement = '42';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 2000 WHERE ets.trancheEffectifsEtablissement = '51';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 5000 WHERE ets.trancheEffectifsEtablissement = '52';
-UPDATE sirene_etablissements ets SET minNbEffectifsEtablissement = 10000 WHERE ets.trancheEffectifsEtablissement = '53';
--- --
-SELECT 'fix geonames_cityid + geonames_city' as mess;
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> updating geonames city...
+BEGIN TRANSACTION;
+
 UPDATE sirene_etablissements ets
 SET
     geonames_cityid = g.city_id,
     geonames_city   = g.city_name
 FROM geonames_allentries g
 WHERE
-    g.country_code  = 'FR'
-    AND g.feature_code  = 'ADM4'
-    AND g.admin4_code   = ets.codeCommuneEtablissement
+    g.country_code = 'FR'
+    AND g.feature_code = 'ADM4'
+    AND g.admin4_code = CASE
+        WHEN ets.codeCommuneEtablissement BETWEEN '75101' AND '75120' THEN '75056'
+        WHEN ets.codeCommuneEtablissement BETWEEN '13201' AND '13216' THEN '13055'
+        WHEN ets.codeCommuneEtablissement BETWEEN '69381' AND '69389' THEN '69123'
+        ELSE ets.codeCommuneEtablissement
+    END
 ;
 
-SELECT 'fix geonames_longitude + geonames_latitude' as mess;
-UPDATE sirene_etablissements ets
-SET
-    longitude = geoloc.x_longitude,
-    latitude  = geoloc.y_latitude
-FROM tmp_sirene_etablissements_geoloc geoloc
-WHERE geoloc.siret = ets.siret
-;
-
--------------------------------------------------------------------------------
--- export to ./dataset
--------------------------------------------------------------------------------
-SELECT 'export sirene to parquet' as mess;
-
-COPY sirene_nafrev2 TO './dataset/sirene/nafrev2.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY sirene_entreprises TO './dataset/sirene/entreprises.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY sirene_etablissements TO './dataset/sirene/etablissements.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-
-SELECT 'COMMIT' as mess;
 COMMIT;
+SELECT format('[{:.1f}s] ✓ geonames city updated', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print
+
+
+.print ===========================================
+.print == Vue d'export
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> creating view v_sirene_export...
+
+CREATE OR REPLACE VIEW v_sirene_export AS
+    SELECT
+        e.siren,
+        e.siret,
+        COALESCE(
+            NULLIF(TRIM(e.denominationUsuelleEtablissement), ''),
+            NULLIF(TRIM(e.enseigne1Etablissement),           ''),
+            NULLIF(TRIM(ent.denominationUniteLegale),        ''),
+            e.siret
+        )                                        AS name,
+        COALESCE(ent.denominationUniteLegale, '') AS legal_name,
+        e.activitePrincipaleEtablissement         AS ape,
+        sc.section_id,
+        sc.division_id,
+        sc.groupe_id,
+        sc.classe_id,
+        e.etablissementSiege                      AS is_siege,
+        e.dateCreationEtablissement               AS date_creation,
+        e.minNbEffectifsEtablissement             AS nb_effectifs_min,
+        e.departementEtablissement                AS dept,
+        e.codePostalEtablissement                 AS code_postal,
+        e.libelleCommuneEtablissement             AS commune,
+        e.codeCommuneEtablissement                AS code_commune,
+        TRIM(CONCAT_WS(' ',
+            NULLIF(TRIM(e.numeroVoieEtablissement),  ''),
+            NULLIF(TRIM(e.typeVoieEtablissement),    ''),
+            NULLIF(TRIM(e.libelleVoieEtablissement), '')
+        ))                                        AS adresse,
+        e.geonames_cityid,
+        e.geonames_city,
+        ROUND(e.latitude::DOUBLE,  5)             AS latitude,
+        ROUND(e.longitude::DOUBLE, 5)             AS longitude
+    FROM sirene_etablissements e
+    LEFT JOIN  sirene_entreprises  ent ON ent.siren          = e.siren
+    INNER JOIN nafrev2_sous_classes sc  ON sc.sous_classe_id  = e.activitePrincipaleEtablissement
+;
+
+SELECT format('[{:.1f}s] ✓ v_sirene_export view created', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print

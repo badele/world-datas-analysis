@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 import datetime
-import shutil
-import git
 import glob
 import hashlib
 import os
+import shutil
 import subprocess
-import requests
 import zipfile
 
+import git
+import requests
 from tqdm import tqdm
 
 
@@ -19,7 +19,7 @@ def init_download(provider):
 
 
 def init_dataset(provider):
-    shutil.rmtree(f"./dataset/{provider}", ignore_errors=True)
+    # shutil.rmtree(f"./dataset/{provider}", ignore_errors=True)
     os.makedirs(f"./dataset/{provider}", exist_ok=True)
 
 
@@ -145,8 +145,10 @@ def data2duckdb(provider, tables=None):
 
     show_title(f"Exporting {provider} to DuckDB")
 
+    os.makedirs(f"./dataset/{provider}/raw", exist_ok=True)
+
     sql_file = f"./importer/{provider}/_data2duckdb.sql"
-    command = f"duckdb db/wda.duckdb < {sql_file}"
+    command = f"duckdb db/wda.duckdb -f {sql_file}"
     print(f"[{provider}] Executing DuckDB script: {sql_file}", flush=True)
     try:
         subprocess.run(command, shell=True, check=True)
@@ -199,6 +201,60 @@ def downloadFile(url, desc, save_path):
 
 def downloadStream(url, desc):
     return download(url, desc)
+
+
+###############################################################################
+# Download previous dataset release from GitHub
+###############################################################################
+def _get_github_repo():
+    """Return 'owner/repo' from git remote origin, or None if not determinable."""
+    result = subprocess.run(
+        "git remote get-url origin",
+        shell=True,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return None
+    url = result.stdout.strip()
+    # ssh: git@github.com:owner/repo.git
+    if url.startswith("git@github.com:"):
+        return url.removeprefix("git@github.com:").removesuffix(".git")
+    # https: https://github.com/owner/repo.git
+    if "github.com/" in url:
+        return url.split("github.com/", 1)[1].removesuffix(".git")
+    return None
+
+
+def download_last_dataset(provider):
+    tag = f"dataset-{provider}"
+    dest = f"./downloaded/{provider}/last_release"
+
+    show_title(f"Downloading {provider} dataset from GitHub release {tag}")
+
+    repo = _get_github_repo()
+    if not repo:
+        print(f"[{provider}] Cannot determine GitHub repo, skipping last_release download")
+        return
+
+    api_url = f"https://api.github.com/repos/{repo}/releases/tags/{tag}"
+    resp = requests.get(api_url, timeout=30)
+    if resp.status_code == 404:
+        print(f"[{provider}] No GitHub release '{tag}' found, skipping download")
+        return
+    resp.raise_for_status()
+
+    assets = [a for a in resp.json().get("assets", []) if a["name"].endswith(".parquet")]
+    if not assets:
+        print(f"[{provider}] Release '{tag}' has no parquet assets, skipping download")
+        return
+
+    os.makedirs(dest, exist_ok=True)
+    for asset in assets:
+        dest_path = os.path.join(dest, asset["name"])
+        downloadFile(asset["browser_download_url"], asset["name"], dest_path)
+
+    print(f"[{provider}] {len(assets)} parquet file(s) downloaded to {dest}")
 
 
 ###############################################################################

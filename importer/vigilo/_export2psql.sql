@@ -13,7 +13,7 @@ CREATE FOREIGN TABLE duckdb_vigilo_categories (
     color text
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/vigilo/categories.parquet")'
+    TABLE 'read_parquet("/dataset/vigilo/raw/categories.parquet")'
 )
 ;
 
@@ -45,7 +45,7 @@ CREATE FOREIGN TABLE duckdb_vigilo_scopes (
     last_seen_at date
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/vigilo/scopes.parquet")'
+    TABLE 'read_parquet("/dataset/vigilo/raw/scopes.parquet")'
 )
 ;
 
@@ -68,7 +68,7 @@ CREATE FOREIGN TABLE duckdb_vigilo_observations (
     geonames_city text
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/vigilo/observations.parquet/*/*.parquet")'
+    TABLE 'read_parquet("/dataset/vigilo/raw/observations.parquet/*/*.parquet")'
 )
 ;
 -------------------------------------------------------------------------------

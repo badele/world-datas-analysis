@@ -14,7 +14,7 @@ CREATE FOREIGN TABLE duckdb_sirene_nafrev2 (
     description TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/sirene/nafrev2.parquet")'
+    TABLE 'read_parquet("/dataset/sirene/raw/nafrev2.parquet")'
 );
 ;
 
@@ -45,7 +45,7 @@ CREATE FOREIGN TABLE duckdb_sirene_entreprises (
     economieSocialeSolidaireUniteLegale TEXT
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/sirene/entreprises.parquet")'
+    TABLE 'read_parquet("/dataset/sirene/raw/entreprises.parquet")'
 )
 ;
 
@@ -95,7 +95,7 @@ CREATE FOREIGN TABLE duckdb_sirene_etablissements (
     latitude DOUBLE PRECISION
 )
 SERVER duckdb_svr OPTIONS (
-    TABLE 'read_parquet("/dataset/sirene/etablissements.parquet")'
+    TABLE 'read_parquet("/dataset/sirene/raw/etablissements.parquet")'
 )
 ;
 

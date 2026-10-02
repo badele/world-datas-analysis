@@ -6,22 +6,80 @@ title: SIRENE — Section
 import * as d3 from "npm:d3";
 import { tabInput } from "../components/tabs.js";
 import { top20Chart, apeClickableChart } from "../components/sirene-charts.js";
+import { initNafrev2DB } from "../components/nafrev2-db.js";
+import { initSireneStatsDB } from "../components/sirene-stats-db.js";
 ```
 
 ```js
 const sectionId = observable.params.section;
-const sections = FileAttachment("../data/nafrev2-sections.json").json();
-const statsBySection = FileAttachment(
-  "../data/sirene-stats-by-section.json",
-).json();
-const allDivisions = FileAttachment(
-  "../data/sirene-stats-by-division.json",
-).json();
-const allGroupes = FileAttachment("../data/sirene-stats-by-groupe.json").json();
-const allClasses = FileAttachment("../data/sirene-stats-by-classe.json").json();
-const allTopCodesApe = FileAttachment(
-  "../data/sirene-top-codes-ape.json",
-).json();
+const { conn: _naf2conn } = await initNafrev2DB(invalidation);
+const _secResult = await _naf2conn.query(
+  `SELECT section_id, section FROM read_parquet('sections.parquet') ORDER BY section_id`,
+);
+const sections = _secResult
+  .toArray()
+  .map((r) => ({ section_id: r.section_id, section: r.section }));
+const { conn: _statsConn } = await initSireneStatsDB(invalidation);
+const _statsBySecResult = await _statsConn.query(
+  `SELECT * FROM read_parquet('stats-by-section.parquet')`,
+);
+const statsBySection = _statsBySecResult
+  .toArray()
+  .map((r) => ({
+    section_id: r.section_id,
+    section: r.section,
+    nb_etablissements: Number(r.nb_etablissements),
+  }));
+const _allDivResult = await _statsConn.query(
+  `SELECT * FROM read_parquet('stats-by-division.parquet')`,
+);
+const allDivisions = _allDivResult
+  .toArray()
+  .map((r) => ({
+    section_id: r.section_id,
+    division_id: r.division_id,
+    division: r.division,
+    nb_etablissements: Number(r.nb_etablissements),
+  }));
+const _allGrpResult = await _statsConn.query(
+  `SELECT * FROM read_parquet('stats-by-groupe.parquet')`,
+);
+const allGroupes = _allGrpResult
+  .toArray()
+  .map((r) => ({
+    section_id: r.section_id,
+    division_id: r.division_id,
+    groupe_id: r.groupe_id,
+    groupe: r.groupe,
+    nb_etablissements: Number(r.nb_etablissements),
+  }));
+const _allClsResult = await _statsConn.query(
+  `SELECT * FROM read_parquet('stats-by-classe.parquet')`,
+);
+const allClasses = _allClsResult
+  .toArray()
+  .map((r) => ({
+    section_id: r.section_id,
+    division_id: r.division_id,
+    groupe_id: r.groupe_id,
+    classe_id: r.classe_id,
+    classe: r.classe,
+    nb_etablissements: Number(r.nb_etablissements),
+  }));
+const _allApeResult = await _statsConn.query(
+  `SELECT * FROM read_parquet('top-codes-ape.parquet')`,
+);
+const allTopCodesApe = _allApeResult
+  .toArray()
+  .map((r) => ({
+    section_id: r.section_id,
+    division_id: r.division_id,
+    groupe_id: r.groupe_id,
+    classe_id: r.classe_id,
+    sous_classe_id: r.sous_classe_id,
+    sous_classe: r.sous_classe,
+    nb_etablissements: Number(r.nb_etablissements),
+  }));
 ```
 
 ```js

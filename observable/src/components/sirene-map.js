@@ -351,3 +351,134 @@ export function createSireneMap(
 
   return map;
 }
+
+// cityPoints = [{lat, lon, nb, city}] — agrégé par ville, toutes APE confondues
+export function createSireneAggMap(container, cityPoints = []) {
+  const mapEl = document.createElement("div");
+  mapEl.style.cssText =
+    "width:100%;height:60vh;border-radius:6px;overflow:hidden;margin-top:0.75rem;";
+  container.appendChild(mapEl);
+
+  const geojson = {
+    type: "FeatureCollection",
+    features: cityPoints
+      .filter(
+        (p) =>
+          p.lat != null && p.lon != null && isFinite(p.lat) && isFinite(p.lon),
+      )
+      .map((p) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [p.lon, p.lat] },
+        properties: { city: p.city, nb: p.nb },
+      })),
+  };
+
+  const map = new maplibregl.Map({
+    container: mapEl,
+    style: MAP_STYLE,
+    center: [2.35, 46.5],
+    zoom: 5,
+    attributionControl: { compact: true },
+  });
+
+  map.on("load", () => {
+    map.addSource("agg-src", { type: "geojson", data: geojson });
+
+    map.addLayer({
+      id: "agg-heat",
+      type: "heatmap",
+      source: "agg-src",
+      maxzoom: 10,
+      paint: {
+        "heatmap-weight": [
+          "interpolate",
+          ["linear"],
+          ["get", "nb"],
+          0,
+          0.1,
+          100,
+          0.5,
+          1000,
+          1,
+          10000,
+          3,
+          100000,
+          6,
+        ],
+        "heatmap-intensity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          4,
+          0.5,
+          9,
+          2,
+        ],
+        "heatmap-color": [
+          "interpolate",
+          ["linear"],
+          ["heatmap-density"],
+          0,
+          "rgba(33,102,172,0)",
+          0.2,
+          "rgb(103,169,207)",
+          0.5,
+          "rgb(253,219,199)",
+          0.8,
+          "rgb(239,138,98)",
+          1,
+          "rgb(178,24,43)",
+        ],
+        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 25],
+        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 8, 1, 10, 0],
+      },
+    });
+
+    map.addLayer({
+      id: "agg-circles",
+      type: "circle",
+      source: "agg-src",
+      minzoom: 8,
+      paint: {
+        "circle-radius": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          8,
+          ["step", ["get", "nb"], 3, 100, 5, 1000, 8, 10000, 12, 100000, 18],
+          14,
+          ["step", ["get", "nb"], 5, 100, 8, 1000, 13, 10000, 20, 100000, 30],
+        ],
+        "circle-color": "#e53935",
+        "circle-opacity": 0.75,
+        "circle-stroke-width": 1,
+        "circle-stroke-color": "#fff",
+      },
+    });
+
+    const popup = new maplibregl.Popup({
+      closeButton: false,
+      maxWidth: "220px",
+      className: "vigilo-popup",
+    });
+    map.on("mouseenter", "agg-circles", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+      const p = e.features[0].properties;
+      popup
+        .setLngLat(e.lngLat)
+        .setHTML(
+          `<strong>${p.city || "Ville inconnue"}</strong><br>` +
+            `${Number(p.nb).toLocaleString("fr-FR")} établissement${
+              p.nb > 1 ? "s" : ""
+            }`,
+        )
+        .addTo(map);
+    });
+    map.on("mouseleave", "agg-circles", () => {
+      map.getCanvas().style.cursor = "";
+      popup.remove();
+    });
+  });
+
+  return map;
+}

@@ -1523,3 +1523,30 @@ h1 {
   flex-direction: column;
   gap: 0.35rem;
 }
+
+/* ── Loading indicator ──────────────────────────────────────────────── */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.map-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  color: var(--theme-foreground-muted);
+  font-size: 0.875rem;
+}
+
+.map-loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+  opacity: 0.7;
+}

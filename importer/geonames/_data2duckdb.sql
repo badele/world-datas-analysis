@@ -1,4 +1,5 @@
-BEGIN TRANSACTION;
+SET memory_limit = '5GB';
+SET threads = 4;
 
 -- Countries
 DROP TABLE IF EXISTS geonames_countries;
@@ -56,54 +57,19 @@ INSERT INTO geonames_countries
         }
     );
 
-DROP TABLE IF EXISTS geonames_allentries;
-CREATE TABLE geonames_allentries (
-    geonames_fullcode TEXT,
-    id INTEGER,
-    name TEXT,
-    asciiname TEXT,
-    alternatenames TEXT,
-    latitude DOUBLE,
-    longitude DOUBLE,
-    feature_class TEXT,
-    feature_code TEXT,
-    country_code TEXT,
-    cc2 TEXT,
-    admin1_code TEXT,
-    admin2_code TEXT,
-    admin3_code TEXT,
-    admin4_code TEXT,
-    population BIGINT,
-    elevation INTEGER,
-    dem INTEGER,
-    timezone TEXT,
-    modification TEXT,
-    admin1_fullcode TEXT,
-    admin2_fullcode TEXT,
-    admin3_fullcode TEXT,
-    admin4_fullcode TEXT,
-    admin1_id INTEGER,
-    admin2_id INTEGER,
-    admin3_id INTEGER,
-    admin4_id INTEGER,
-    admin1_name TEXT,
-    admin2_name TEXT,
-    admin3_name TEXT,
-    admin4_name TEXT,
-    city_id BIGINT,
-    city_name TEXT
-);
-
-INSERT INTO geonames_allentries
-    SELECT NULL,*,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
-    -- Use an explicit schema because automatic detection mistakes quoted names for headers.
+-------------------------------------------------------------------------------
+-- Load raw entries (feature_class A=admin, P=populated places)
+-------------------------------------------------------------------------------
+DROP TABLE IF EXISTS geonames_raw;
+CREATE TABLE geonames_raw AS
+    SELECT *
     FROM read_csv(
         './downloaded/geonames/allCountries.txt',
         delim='\t',
         header=false,
         quote='',
         columns={
-            'geonameid': 'INTEGER',
+            'id': 'INTEGER',
             'name': 'VARCHAR',
             'asciiname': 'VARCHAR',
             'alternatenames': 'VARCHAR',
@@ -124,101 +90,120 @@ INSERT INTO geonames_allentries
             'modification': 'DATE'
         }
     )
-    WHERE feature_class IN ('A', 'P')
-;
-
--- Encoding problem in this field
-ALTER TABLE geonames_allentries DROP COLUMN alternatenames;
-CREATE INDEX idx_geonames_allentries_lat_lon ON geonames_allentries (latitude,longitude);
+    WHERE feature_class IN ('A', 'P');
 
 -------------------------------------------------------------------------------
--- Compute admin fullcodes
+-- Compute admin fullcodes in one pass
 -------------------------------------------------------------------------------
+DROP TABLE IF EXISTS geonames_with_fullcodes;
+CREATE TABLE geonames_with_fullcodes AS
+SELECT
+    -- geonames_fullcode: identifier for ADM1/ADM2/ADM3/ADM4 records used as JOIN keys
+    CASE feature_code
+        WHEN 'ADM1' THEN country_code || '-' || COALESCE(admin1_code, '')
+        WHEN 'ADM2' THEN country_code || '-' || COALESCE(admin1_code, '') || '-' || COALESCE(admin2_code, '')
+        WHEN 'ADM3' THEN country_code || '-' || COALESCE(admin1_code, '') || '-' || COALESCE(admin2_code, '') || '-' || COALESCE(admin3_code, '')
+        WHEN 'ADM4' THEN country_code || '-' || COALESCE(admin1_code, '') || '-' || COALESCE(admin2_code, '') || '-' || COALESCE(admin3_code, '') || '-' || COALESCE(admin4_code, '')
+        ELSE NULL
+    END AS geonames_fullcode,
+    id,
+    name,
+    asciiname,
+    latitude,
+    longitude,
+    feature_class,
+    feature_code,
+    country_code,
+    cc2,
+    admin1_code,
+    admin2_code,
+    admin3_code,
+    admin4_code,
+    population,
+    elevation,
+    dem,
+    timezone,
+    modification,
+    -- admin fullcodes for JOIN
+    CASE WHEN admin1_code IS NOT NULL THEN country_code || '-' || admin1_code END AS admin1_fullcode,
+    CASE WHEN admin2_code IS NOT NULL THEN country_code || '-' || admin1_code || '-' || admin2_code END AS admin2_fullcode,
+    CASE WHEN admin3_code IS NOT NULL THEN country_code || '-' || admin1_code || '-' || admin2_code || '-' || admin3_code END AS admin3_fullcode,
+    CASE WHEN admin4_code IS NOT NULL THEN country_code || '-' || admin1_code || '-' || admin2_code || '-' || admin3_code || '-' || admin4_code END AS admin4_fullcode,
+FROM geonames_raw;
 
-UPDATE geonames_allentries
-SET admin1_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '')
-WHERE admin1_code IS NOT NULL
-;
-
-UPDATE geonames_allentries
-SET admin2_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '') || '-' ||
-                 COALESCE(admin2_code, '')
-WHERE admin2_code IS NOT NULL
-;
-
-UPDATE geonames_allentries
-SET admin3_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '') || '-' ||
-                 COALESCE(admin2_code, '') || '-' ||
-                 COALESCE(admin3_code, '')
-WHERE admin3_code IS NOT NULL
-;
-
-UPDATE geonames_allentries
-SET admin4_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '') || '-' ||
-                 COALESCE(admin2_code, '') || '-' ||
-                 COALESCE(admin3_code, '') || '-' ||
-                 COALESCE(admin4_code, '')
-WHERE admin4_code IS NOT NULL
-;
+DROP TABLE geonames_raw;
 
 -------------------------------------------------------------------------------
--- Compute geonames fullcodes
+-- Build lookup tables for ADM1–ADM4 (small, indexed in memory by DuckDB)
 -------------------------------------------------------------------------------
-UPDATE geonames_allentries
-SET geonames_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '')
-WHERE feature_code='ADM1'
-;
+DROP TABLE IF EXISTS geonames_adm1_lkp;
+CREATE TABLE geonames_adm1_lkp AS
+    SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM1';
 
-UPDATE geonames_allentries
-SET geonames_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '') || '-' ||
-                 COALESCE(admin2_code, '')
-WHERE feature_code='ADM2'
-;
+DROP TABLE IF EXISTS geonames_adm2_lkp;
+CREATE TABLE geonames_adm2_lkp AS
+    SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM2';
 
-UPDATE geonames_allentries
-SET geonames_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '') || '-' ||
-                 COALESCE(admin2_code, '') || '-' ||
-                 COALESCE(admin3_code, '')
-WHERE feature_code='ADM3'
-;
+DROP TABLE IF EXISTS geonames_adm3_lkp;
+CREATE TABLE geonames_adm3_lkp AS
+    SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM3';
 
-UPDATE geonames_allentries
-SET geonames_fullcode = COALESCE(country_code, '') || '-' ||
-                 COALESCE(admin1_code, '') || '-' ||
-                 COALESCE(admin2_code, '') || '-' ||
-                 COALESCE(admin3_code, '') || '-' ||
-                 COALESCE(admin4_code, '')
-WHERE feature_code='ADM4'
-;
+DROP TABLE IF EXISTS geonames_adm4_lkp;
+CREATE TABLE geonames_adm4_lkp AS
+    SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM4';
 
-UPDATE geonames_allentries ga set admin1_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin1_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin1_fullcode IS NOT NULL;
-UPDATE geonames_allentries ga set admin2_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin2_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin2_fullcode IS NOT NULL;
-UPDATE geonames_allentries ga set admin3_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin3_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin3_fullcode IS NOT NULL;
-UPDATE geonames_allentries ga set admin4_id=(SELECT id FROM geonames_allentries gsearch WHERE ga.admin4_fullcode = gsearch.geonames_fullcode ) WHERE ga.admin4_fullcode IS NOT NULL;
+-------------------------------------------------------------------------------
+-- Final table: resolve admin IDs and names in one hash-join pass
+-------------------------------------------------------------------------------
+DROP TABLE IF EXISTS geonames_allentries;
+CREATE TABLE geonames_allentries AS
+SELECT
+    ga.geonames_fullcode,
+    ga.id,
+    ga.name,
+    ga.asciiname,
+    ga.latitude,
+    ga.longitude,
+    ga.feature_class,
+    ga.feature_code,
+    ga.country_code,
+    ga.cc2,
+    ga.admin1_code,
+    ga.admin2_code,
+    ga.admin3_code,
+    ga.admin4_code,
+    ga.population,
+    ga.elevation,
+    ga.dem,
+    ga.timezone,
+    ga.modification,
+    ga.admin1_fullcode,
+    ga.admin2_fullcode,
+    ga.admin3_fullcode,
+    ga.admin4_fullcode,
+    a1.id   AS admin1_id,
+    a2.id   AS admin2_id,
+    a3.id   AS admin3_id,
+    a4.id   AS admin4_id,
+    a1.name AS admin1_name,
+    a2.name AS admin2_name,
+    a3.name AS admin3_name,
+    a4.name AS admin4_name,
+    COALESCE(a4.id,   a3.id,   a2.id,   a1.id)   AS city_id,
+    COALESCE(a4.name, a3.name, a2.name, a1.name) AS city_name
+FROM geonames_with_fullcodes ga
+LEFT JOIN geonames_adm1_lkp a1 ON ga.admin1_fullcode = a1.geonames_fullcode
+LEFT JOIN geonames_adm2_lkp a2 ON ga.admin2_fullcode = a2.geonames_fullcode
+LEFT JOIN geonames_adm3_lkp a3 ON ga.admin3_fullcode = a3.geonames_fullcode
+LEFT JOIN geonames_adm4_lkp a4 ON ga.admin4_fullcode = a4.geonames_fullcode;
 
-UPDATE geonames_allentries ga set admin1_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin1_id);
-UPDATE geonames_allentries ga set admin2_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin2_id);
-UPDATE geonames_allentries ga set admin3_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin3_id);
-UPDATE geonames_allentries ga set admin4_name=(SELECT name FROM geonames_allentries gsearch WHERE gsearch.id=ga.admin4_id);
+DROP TABLE geonames_with_fullcodes;
+DROP TABLE geonames_adm1_lkp;
+DROP TABLE geonames_adm2_lkp;
+DROP TABLE geonames_adm3_lkp;
+DROP TABLE geonames_adm4_lkp;
 
-UPDATE geonames_allentries ga set city_id=admin4_id  WHERE admin4_name IS NOT NULL AND city_id IS NULL;
-UPDATE geonames_allentries ga set city_id=admin3_id  WHERE admin3_name IS NOT NULL AND city_id IS NULL;
-UPDATE geonames_allentries ga set city_id=admin2_id  WHERE admin2_name IS NOT NULL AND city_id IS NULL;
-UPDATE geonames_allentries ga set city_id=admin1_id  WHERE admin1_name IS NOT NULL AND city_id IS NULL;
+CREATE INDEX idx_geonames_allentries_lat_lon ON geonames_allentries (latitude, longitude);
 
-UPDATE geonames_allentries ga set city_name=admin4_name  WHERE admin4_name IS NOT NULL AND city_name IS NULL;
-UPDATE geonames_allentries ga set city_name=admin3_name  WHERE admin3_name IS NOT NULL AND city_name IS NULL;
-UPDATE geonames_allentries ga set city_name=admin2_name  WHERE admin2_name IS NOT NULL AND city_name IS NULL;
-UPDATE geonames_allentries ga set city_name=admin1_name  WHERE admin1_name IS NOT NULL AND city_name IS NULL;
-
-COMMIT;
-
-COPY geonames_countries TO './dataset/geonames/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY geonames_allentries TO './dataset/geonames/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (country_code));
+COPY geonames_countries TO './dataset/geonames/raw/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY geonames_allentries TO './dataset/geonames/raw/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (country_code));

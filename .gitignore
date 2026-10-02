@@ -1,5 +1,6 @@
 .direnv
 .githooks
+.env
 
 # Grafana
 grafana-store
@@ -31,11 +32,15 @@ fit.log
 .venv
 __pycache__
 
+# Dataset observable parquets (generated, uploaded to GitHub Releases)
+dataset/*/observable/
+
 # Observable
 observable/node_modules
 observable/dist
 observable/src/.observablehq/cache
 observable/src/data/sirene-etabs/
+observable/src/dataset/
 
 # R
 renv

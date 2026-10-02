@@ -3,30 +3,36 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
-  outputs = { nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    { nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system overlays;
-          config = { allowUnfree = true; };
+          config = {
+            allowUnfree = true;
+          };
         };
 
         overlay = (final: prev: { });
         overlays = [ overlay ];
       in
       rec {
-        devShells.default = with pkgs;
+        devShells.default =
+          with pkgs;
           mkShell {
             name = "Default developpement shell";
             packages = [
               deno
-              just
+              # just
               nixpkgs-fmt
               nodePackages.markdownlint-cli
               pre-commit
 
               git
               git-lfs
+              gh
               unzip
 
               # Database
@@ -41,6 +47,10 @@
 
               # requirements
               docker-compose
+
+              # Debugging
+              playwright-mcp
+              chromium
 
             ];
             shellHook = ''
@@ -65,5 +75,6 @@
                 just
             '';
           };
-      });
+      }
+    );
 }
