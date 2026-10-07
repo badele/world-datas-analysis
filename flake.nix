@@ -27,7 +27,7 @@
               deno
               # just
               nixpkgs-fmt
-              nodePackages.markdownlint-cli
+              markdownlint-cli
               pre-commit
 
               git
