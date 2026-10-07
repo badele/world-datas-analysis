@@ -1,0 +1,43 @@
+name: Release dataset parquets
+
+on:
+  workflow_dispatch:
+    inputs:
+      datasets:
+        description: "Datasets à uploader (ex: sirene,geonames,vigilo,nafrev2)"
+        required: true
+        default: "sirene"
+
+permissions:
+  contents: write
+
+env:
+  JUST_VERSION: "1.23.0"
+
+jobs:
+  release:
+    name: Generate and upload observable parquets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch LFS files
+        run: git lfs pull
+
+      - name: Setup just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: ${{ env.JUST_VERSION }}
+
+      - name: Upload to GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: DATAS_LIST="${{ github.event.inputs.datasets }}" just release-github
+
+      - name: Upload to Cloudflare R2
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_R2_ACCESS_KEY_ID: ${{ secrets.CF_R2_ACCESS_KEY_ID }}
+          CF_R2_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_SECRET_ACCESS_KEY }}
+        run: DATAS_LIST="${{ github.event.inputs.datasets }}" just release-cloudflare

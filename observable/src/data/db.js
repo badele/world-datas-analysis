@@ -99,7 +99,7 @@ export async function runDuckDBQuery(name, sql) {
 }
 
 export async function runDuckDBLoader(name, sql) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const db = new Database.Database(":memory:");
     db.all(sql, (err, rows) => {
       db.close();
@@ -107,11 +107,11 @@ export async function runDuckDBLoader(name, sql) {
         process.stderr.write(`\n${"=".repeat(60)}\n`);
         process.stderr.write(`[DUCKDB LOADER ERROR] ${name}: ${err.message}\n`);
         process.stderr.write(`${"=".repeat(60)}\n\n`);
-        process.stdout.write("[]");
+        reject(err);
       } else {
         process.stdout.write(toJSON(rows));
+        resolve();
       }
-      resolve();
     });
   });
 }

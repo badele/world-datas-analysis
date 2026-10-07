@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "observable preview --host 0.0.0.0",
+    "prebuild": "node scripts/check-r2-files.mjs",
     "build": "observable build",
     "postbuild": "mkdir -p dist/_file/data/sirene-etabs && cp src/data/sirene-etabs/*.json dist/_file/data/sirene-etabs/ 2>/dev/null || true",
     "clean": "rm -rf dist"

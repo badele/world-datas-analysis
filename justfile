@@ -1,6 +1,7 @@
 #!/usr/bin/env just -f
 
 set positional-arguments
+set dotenv-load
 
 envname:=`basename $(pwd)`
 dockerimage:='badele/world-datas-analysis:latest'
@@ -126,6 +127,11 @@ docker-show-context-size:
 [group('dataset')]
 @observable-export: requirements-check
     just docker-run ./importer/observable_export.sh
+
+# Generate etab prefix parquets from existing APE parquets (no full pipeline needed)
+[group('dataset')]
+@sirene-etab-parquets:
+    bash importer/sirene/generate_etab_parquets.sh
 
 
 # Delete GitHub Releases for the given datasets (release + tag)
@@ -259,6 +265,16 @@ release-delete:
     docker compose up -d psql
     DATAS_LIST="geonames,vigilo,nafrev2,sirene" just import
     DATAS_LIST="vigilo,nafrev2,sirene" just observable-pages-build
+
+# Build the production site and serve it locally on port 8080 (mirrors CI)
+[group('observable')]
+@observable-prod:
+    DATAS_LIST="${DATAS_LIST:-vigilo,nafrev2,sirene}" just observable-pages-build
+    docker run --rm -p 8080:80 \
+        -v "$(pwd)/observable/dist:/usr/share/nginx/html:ro" \
+        -v "$(pwd)/dataset:/usr/share/nginx/html/dataset:ro" \
+        -v "$(pwd)/observable/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+        docker.io/library/nginx:1.27-alpine
 
 # Remove Observable dist volume and rebuild
 [group('observable')]

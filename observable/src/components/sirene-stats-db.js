@@ -29,7 +29,9 @@ export async function initSireneStatsDB(invalidation = null) {
     const bundles = duckdb.getJsDelivrBundles();
     const bundle = await duckdb.selectBundle(bundles);
     const workerUrl = URL.createObjectURL(
-      new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }),
+      new Blob([`importScripts("${bundle.mainWorker}");`], {
+        type: "text/javascript",
+      }),
     );
     const worker = new Worker(workerUrl);
     const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);

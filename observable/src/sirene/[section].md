@@ -23,63 +23,53 @@ const { conn: _statsConn } = await initSireneStatsDB(invalidation);
 const _statsBySecResult = await _statsConn.query(
   `SELECT * FROM read_parquet('stats-by-section.parquet')`,
 );
-const statsBySection = _statsBySecResult
-  .toArray()
-  .map((r) => ({
-    section_id: r.section_id,
-    section: r.section,
-    nb_etablissements: Number(r.nb_etablissements),
-  }));
+const statsBySection = _statsBySecResult.toArray().map((r) => ({
+  section_id: r.section_id,
+  section: r.section,
+  nb_etablissements: Number(r.nb_etablissements),
+}));
 const _allDivResult = await _statsConn.query(
   `SELECT * FROM read_parquet('stats-by-division.parquet')`,
 );
-const allDivisions = _allDivResult
-  .toArray()
-  .map((r) => ({
-    section_id: r.section_id,
-    division_id: r.division_id,
-    division: r.division,
-    nb_etablissements: Number(r.nb_etablissements),
-  }));
+const allDivisions = _allDivResult.toArray().map((r) => ({
+  section_id: r.section_id,
+  division_id: r.division_id,
+  division: r.division,
+  nb_etablissements: Number(r.nb_etablissements),
+}));
 const _allGrpResult = await _statsConn.query(
   `SELECT * FROM read_parquet('stats-by-groupe.parquet')`,
 );
-const allGroupes = _allGrpResult
-  .toArray()
-  .map((r) => ({
-    section_id: r.section_id,
-    division_id: r.division_id,
-    groupe_id: r.groupe_id,
-    groupe: r.groupe,
-    nb_etablissements: Number(r.nb_etablissements),
-  }));
+const allGroupes = _allGrpResult.toArray().map((r) => ({
+  section_id: r.section_id,
+  division_id: r.division_id,
+  groupe_id: r.groupe_id,
+  groupe: r.groupe,
+  nb_etablissements: Number(r.nb_etablissements),
+}));
 const _allClsResult = await _statsConn.query(
   `SELECT * FROM read_parquet('stats-by-classe.parquet')`,
 );
-const allClasses = _allClsResult
-  .toArray()
-  .map((r) => ({
-    section_id: r.section_id,
-    division_id: r.division_id,
-    groupe_id: r.groupe_id,
-    classe_id: r.classe_id,
-    classe: r.classe,
-    nb_etablissements: Number(r.nb_etablissements),
-  }));
+const allClasses = _allClsResult.toArray().map((r) => ({
+  section_id: r.section_id,
+  division_id: r.division_id,
+  groupe_id: r.groupe_id,
+  classe_id: r.classe_id,
+  classe: r.classe,
+  nb_etablissements: Number(r.nb_etablissements),
+}));
 const _allApeResult = await _statsConn.query(
   `SELECT * FROM read_parquet('top-codes-ape.parquet')`,
 );
-const allTopCodesApe = _allApeResult
-  .toArray()
-  .map((r) => ({
-    section_id: r.section_id,
-    division_id: r.division_id,
-    groupe_id: r.groupe_id,
-    classe_id: r.classe_id,
-    sous_classe_id: r.sous_classe_id,
-    sous_classe: r.sous_classe,
-    nb_etablissements: Number(r.nb_etablissements),
-  }));
+const allTopCodesApe = _allApeResult.toArray().map((r) => ({
+  section_id: r.section_id,
+  division_id: r.division_id,
+  groupe_id: r.groupe_id,
+  classe_id: r.classe_id,
+  sous_classe_id: r.sous_classe_id,
+  sous_classe: r.sous_classe,
+  nb_etablissements: Number(r.nb_etablissements),
+}));
 ```
 
 ```js

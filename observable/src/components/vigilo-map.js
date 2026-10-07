@@ -2,7 +2,7 @@ import * as maplibregl from "npm:maplibre-gl";
 import { showPopup } from "./popup.js";
 
 maplibregl.setWorkerUrl(
-  "https://unpkg.com/maplibre-gl/dist/maplibre-gl-worker.mjs",
+  "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl-worker.mjs",
 );
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";

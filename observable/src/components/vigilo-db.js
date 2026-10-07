@@ -23,13 +23,22 @@ export async function initVigiloDB(baseUrl, invalidation = null) {
     const bundles = duckdb.getJsDelivrBundles();
     const bundle = await duckdb.selectBundle(bundles);
     const workerUrl = URL.createObjectURL(
-      new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }),
+      new Blob([`importScripts("${bundle.mainWorker}");`], {
+        type: "text/javascript",
+      }),
     );
     const worker = new Worker(workerUrl);
     const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);
     await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-    for (const f of ["observations.parquet", "scopes.parquet", "categories.parquet"]) {
-      await db.registerFileBuffer(f, await fetchBuffer(vigiloParquetUrl(f, baseUrl)));
+    for (const f of [
+      "observations.parquet",
+      "scopes.parquet",
+      "categories.parquet",
+    ]) {
+      await db.registerFileBuffer(
+        f,
+        await fetchBuffer(vigiloParquetUrl(f, baseUrl)),
+      );
     }
     const conn = await db.connect();
     return { db, conn };

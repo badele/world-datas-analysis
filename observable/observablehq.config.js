@@ -56,11 +56,11 @@ export default {
       datasets: ["sirene"],
       open: false,
       pages: [
-        { name: "Recherche par APE", path: "/sirene" },
         {
           name: "Rechercher des établissements",
           path: "/sirene/etablissements",
         },
+        { name: "Recherche par APE", path: "/sirene" },
       ],
     },
   ].filter(

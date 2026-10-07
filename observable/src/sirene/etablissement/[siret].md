@@ -5,7 +5,7 @@ title: Fiche établissement SIRENE
 ```js
 import * as maplibregl from "npm:maplibre-gl";
 maplibregl.setWorkerUrl(
-  "https://unpkg.com/maplibre-gl/dist/maplibre-gl-worker.mjs",
+  "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl-worker.mjs",
 );
 ```
 

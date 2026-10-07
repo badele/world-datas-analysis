@@ -1,7 +1,13 @@
 import * as duckdb from "npm:@duckdb/duckdb-wasm";
 
 const R2_BASE = "https://pub-6526c18d68154746a16baf2f76a38544.r2.dev/nafrev2";
-const NAFREV2_FILES = ["sections", "divisions", "groupes", "classes", "sous_classes"];
+const NAFREV2_FILES = [
+  "sections",
+  "divisions",
+  "groupes",
+  "classes",
+  "sous_classes",
+];
 
 const _parquetCache = new Map();
 
@@ -22,7 +28,9 @@ export async function initNafrev2DB(invalidation = null) {
     const bundles = duckdb.getJsDelivrBundles();
     const bundle = await duckdb.selectBundle(bundles);
     const workerUrl = URL.createObjectURL(
-      new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }),
+      new Blob([`importScripts("${bundle.mainWorker}");`], {
+        type: "text/javascript",
+      }),
     );
     const worker = new Worker(workerUrl);
     const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);

@@ -211,3 +211,50 @@ CREATE OR REPLACE VIEW v_sirene_export AS
 
 SELECT format('[{:.1f}s] ✓ v_sirene_export view created', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
 .print
+
+.print ===========================================
+.print == Export observable etablissements (partitioned by name prefix)
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> exporting observable etab parquets by name prefix...
+
+SET threads=1;
+COPY (
+    SELECT
+        latitude,
+        longitude,
+        name,
+        adresse,
+        siret,
+        nb_effectifs_min,
+        is_siege,
+        CAST(date_creation AS VARCHAR) AS date_creation,
+        legal_name,
+        dept,
+        ape,
+        LEFT(LOWER(TRIM(COALESCE(name, ''))), 2) AS pfx
+    FROM v_sirene_export
+    WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+) TO './dataset/sirene/observable/etab/'
+(FORMAT PARQUET, PARTITION_BY (pfx));
+RESET threads;
+
+SELECT format('[{:.1f}s] ✓ observable etab parquets exported', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print
+
+.print ===========================================
+.print == Export etab global stats
+.print ===========================================
+SET VARIABLE tstart = epoch_ms(now());
+.print >>> exporting etab-stats.parquet...
+
+COPY (
+    SELECT
+        COUNT(*)                          AS nb_etablissements,
+        COUNT(DISTINCT LEFT(siret, 9))    AS nb_siren
+    FROM v_sirene_export
+    WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+) TO './dataset/sirene/observable/etab-stats.parquet' (FORMAT PARQUET);
+
+SELECT format('[{:.1f}s] ✓ etab-stats.parquet exported', (epoch_ms(now()) - getvariable('tstart')) / 1000.0);
+.print

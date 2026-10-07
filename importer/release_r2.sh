@@ -16,7 +16,7 @@
 set -e
 
 R2_BUCKET="world-datas-analysis"
-R2_PARALLEL="${R2_PARALLEL:-16}"
+R2_PARALLEL="${R2_PARALLEL:-8}"
 
 if [ -z "$CF_ACCOUNT_ID" ] || [ -z "$CF_R2_ACCESS_KEY_ID" ] || [ -z "$CF_R2_SECRET_ACCESS_KEY" ]; then
     echo "[release-r2] ERROR: missing credentials — set CF_ACCOUNT_ID, CF_R2_ACCESS_KEY_ID, CF_R2_SECRET_ACCESS_KEY"

@@ -16,7 +16,7 @@
 set -e
 
 R2_BUCKET="world-datas-analysis"
-R2_PARALLEL="${R2_PARALLEL:-16}"
+R2_PARALLEL="${R2_PARALLEL:-8}"
 
 if [ -z "$CF_ACCOUNT_ID" ] || [ -z "$CF_R2_ACCESS_KEY_ID" ] || [ -z "$CF_R2_SECRET_ACCESS_KEY" ]; then
     echo "[release-r2] ERROR: missing credentials — set CF_ACCOUNT_ID, CF_R2_ACCESS_KEY_ID, CF_R2_SECRET_ACCESS_KEY"
@@ -44,8 +44,32 @@ export AWS_SECRET_ACCESS_KEY="$CF_R2_SECRET_ACCESS_KEY"
 export R2_ENDPOINT R2_BUCKET
 
 for dataset in $datasets; do
-    declare -A local_keys
+    declare -A local_keys  # r2_key → local_file_size
+    declare -A r2_sizes    # r2_key → r2_object_size
+
+    # Quick local-hash check — skip entirely if parquets unchanged since last sync
+    sync_cache="dataset/${dataset}/.r2-sync-hash"
+    current_hash=$(find "dataset/${dataset}" \( -name "*.parquet" \) -printf '%s %T@\n' 2>/dev/null | sort | sha256sum | cut -d' ' -f1)
+    if [ -f "$sync_cache" ] && [ "$(cat "$sync_cache" 2>/dev/null)" = "$current_hash" ]; then
+        echo "[release-r2] ${dataset}: parquets unchanged since last sync, skipping"
+        continue
+    fi
+
+    # Fetch current R2 state once — used for both skip-upload and stale-delete
+    echo "[release-r2] ${dataset}: listing R2 objects..."
+    while IFS= read -r line; do
+        [ -z "$line" ] && continue
+        r2_size=$(echo "$line" | awk '{print $3}')
+        r2_key=$(echo "$line"  | awk '{print $4}')
+        r2_sizes["$r2_key"]=$r2_size
+    done < <(
+        aws s3 ls "s3://${R2_BUCKET}/${dataset}/" \
+            --endpoint-url "$R2_ENDPOINT" \
+            --recursive
+    )
+
     task_file=$(mktemp)
+    skipped=0
     uploaded=0
 
     for subdir in raw observable; do
@@ -56,24 +80,34 @@ for dataset in $datasets; do
             rel=$(realpath --relative-to="dataset/${dataset}" "$f")
             flat=$(echo "$rel" | sed 's|/|__|g')
             r2_key="${dataset}/$(echo "$flat" | sed 's|=|\.|g')"
+            local_size=$(wc -c <"$f" | tr -d ' ')
+            local_keys["$r2_key"]=$local_size
+
+            # Skip upload if R2 already has the same size
+            if [ "${r2_sizes[$r2_key]+_}" ] && [ "${r2_sizes[$r2_key]}" -eq "$local_size" ]; then
+                skipped=$((skipped + 1))
+                continue
+            fi
+
             printf '%s\0%s\0' "$f" "$r2_key" >>"$task_file"
-            echo "[release-r2]   ${rel} → ${r2_key}"
-            local_keys["$r2_key"]=1
             uploaded=$((uploaded + 1))
         done < <(find "$src_dir" -name "*.parquet" | sort)
     done
 
-    if [ "$uploaded" -eq 0 ]; then
+    if [ "$skipped" -gt 0 ]; then
+        echo "[release-r2] ${dataset}: $skipped file(s) unchanged, skipped"
+    fi
+
+    if [ "$uploaded" -eq 0 ] && [ "$skipped" -eq 0 ]; then
         echo "[release-r2] ${dataset}: no raw/ or observable/ directory found, skipping"
-    else
-        echo "[release-r2] ${dataset}: uploading $uploaded files (parallel=${R2_PARALLEL})..."
+    elif [ "$uploaded" -gt 0 ]; then
+        echo "[release-r2] ${dataset}: uploading $uploaded new/changed file(s) (parallel=${R2_PARALLEL})..."
         progress_file=$(mktemp)
         export PROGRESS_FILE="$progress_file"
 
-        # Background process: display counter updated every 0.2s
         (
             while true; do
-                done=$(wc -l < "$progress_file" 2>/dev/null | tr -d ' ')
+                done=$(wc -l <"$progress_file" 2>/dev/null | tr -d ' ')
                 printf "\r[release-r2]   %d / %d" "$done" "$uploaded"
                 [ "$done" -ge "$uploaded" ] && break
                 sleep 0.2
@@ -91,28 +125,38 @@ for dataset in $datasets; do
     fi
     rm -f "$task_file"
 
-    # Delete R2 keys that no longer exist locally
+    # Delete R2 keys that no longer exist locally (batch DeleteObjects, 1000/req)
     echo "[release-r2] ${dataset}: checking for stale R2 files..."
-    deleted=0
-    while IFS= read -r r2_key; do
-        [ -z "$r2_key" ] && continue
+    stale_keys=()
+    for r2_key in "${!r2_sizes[@]}"; do
         if [ -z "${local_keys[$r2_key]+_}" ]; then
-            aws s3 rm "s3://${R2_BUCKET}/${r2_key}" \
-                --endpoint-url "$R2_ENDPOINT" --quiet
-            echo "[release-r2]   deleted stale: ${r2_key}"
-            deleted=$((deleted + 1))
+            stale_keys+=("$r2_key")
         fi
-    done < <(
-        aws s3 ls "s3://${R2_BUCKET}/${dataset}/" \
-            --endpoint-url "$R2_ENDPOINT" \
-            --recursive |
-            awk '{print $4}'
-    )
+    done
+
+    deleted=${#stale_keys[@]}
     if [ "$deleted" -gt 0 ]; then
+        echo "[release-r2] ${dataset}: deleting $deleted stale file(s) in batches of 1000..."
+        i=0
+        while [ $i -lt $deleted ]; do
+            batch=("${stale_keys[@]:$i:1000}")
+            json=$(printf '{"Key":"%s"},' "${batch[@]}")
+            json="{\"Objects\":[${json%,}],\"Quiet\":true}"
+            aws s3api delete-objects \
+                --bucket "$R2_BUCKET" \
+                --endpoint-url "$R2_ENDPOINT" \
+                --delete "$json" \
+                --output text > /dev/null
+            i=$((i + 1000))
+            echo "[release-r2]   deleted $((i < deleted ? i : deleted)) / $deleted"
+        done
         echo "[release-r2] ${dataset}: $deleted stale file(s) deleted"
     else
         echo "[release-r2] ${dataset}: no stale files"
     fi
 
-    unset local_keys
+    # Save hash so next run skips if nothing changed
+    echo "$current_hash" > "$sync_cache"
+
+    unset local_keys r2_sizes
 done

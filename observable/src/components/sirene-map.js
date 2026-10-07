@@ -1,8 +1,9 @@
 import * as maplibregl from "npm:maplibre-gl";
 import { createMultiSelect } from "./wda-multiselect.js";
+import { showPopup } from "./popup.js";
 
 maplibregl.setWorkerUrl(
-  "https://unpkg.com/maplibre-gl/dist/maplibre-gl-worker.mjs",
+  "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl-worker.mjs",
 );
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
@@ -106,6 +107,8 @@ export function createSireneMap(
   etabs = [],
   { onEtabSelect, title } = {},
 ) {
+  let currentEtabs = etabs;
+
   // ── Controls ──────────────────────────────────────────────────────────
   const controlsEl = document.createElement("div");
   controlsEl.className = "sirene-map-controls";
@@ -142,7 +145,7 @@ export function createSireneMap(
   });
 
   map.on("load", () => {
-    const initialGeoJSON = buildGeoJSON(etabs, activeSetFrom([]));
+    const initialGeoJSON = buildGeoJSON(currentEtabs, activeSetFrom([]));
     map.addSource("sirene-src", {
       type: "geojson",
       data: initialGeoJSON,
@@ -291,10 +294,92 @@ export function createSireneMap(
       hoverPopup.remove();
     });
 
-    // ── Click → panneau détail inline ────────────────────────────────
+    // ── Click → popup détail établissement ───────────────────────────
     map.on("click", "sirene-points", (e) => {
       e.originalEvent.stopPropagation();
       const p = e.features[0].properties;
+      const siren = p.siret ? String(p.siret).slice(0, 9) : null;
+      const dateCreation = p.date_creation
+        ? new Date(p.date_creation).toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : null;
+      const rows = [
+        p.legal_name && p.legal_name !== p.name
+          ? { label: "Raison sociale", value: p.legal_name, copyValue: false }
+          : null,
+        siren
+          ? {
+              label: "SIREN",
+              value: siren,
+              copyValue: siren,
+              links: [
+                {
+                  label: "data.gouv",
+                  href: `https://annuaire-entreprises.data.gouv.fr/entreprise/${siren}`,
+                },
+                {
+                  label: "pappers",
+                  href: `https://www.pappers.fr/entreprise/${siren}`,
+                },
+              ],
+            }
+          : null,
+        p.siret
+          ? {
+              label: "SIRET",
+              value: p.siret,
+              copyValue: p.siret,
+              links: [
+                {
+                  label: "data.gouv",
+                  href: `https://annuaire-entreprises.data.gouv.fr/etablissement/${p.siret}`,
+                },
+                {
+                  label: "inpi",
+                  href: `https://data.inpi.fr/entreprises/${siren}?q=${p.siret}`,
+                },
+              ],
+            }
+          : null,
+        {
+          label: "Code APE",
+          value: p.ape,
+          copyValue: false,
+          links: p.ape
+            ? [
+                {
+                  label: "Rechercher",
+                  href: `/sirene?ape=${encodeURIComponent(p.ape)}`,
+                },
+              ]
+            : [],
+        },
+        {
+          label: "Effectifs",
+          value: effectifsLabel(p.effectifs_min),
+          copyValue: false,
+        },
+        p.address
+          ? { label: "Adresse", value: p.address, copyValue: false }
+          : null,
+        p.dept
+          ? { label: "Département", value: p.dept, copyValue: false }
+          : null,
+        dateCreation
+          ? { label: "Création", value: dateCreation, copyValue: false }
+          : null,
+        p.is_siege
+          ? { label: "Siège social", value: "Oui", copyValue: false }
+          : null,
+      ].filter(Boolean);
+      showPopup(e.originalEvent, {
+        title: p.name,
+        rows,
+        href: p.siret ? `/sirene/etablissement/${p.siret}` : null,
+      });
       if (onEtabSelect) onEtabSelect(p);
     });
 
@@ -302,7 +387,10 @@ export function createSireneMap(
 
     // ── Multiselect filter ────────────────────────────────────────────
     multiselect.addEventListener("input", () => {
-      const geojson = buildGeoJSON(etabs, activeSetFrom(multiselect.value));
+      const geojson = buildGeoJSON(
+        currentEtabs,
+        activeSetFrom(multiselect.value),
+      );
       if (!map.getSource("sirene-src")) return;
       map.getSource("sirene-src").setData(geojson);
       updateHeatmap(geojson.features.length);
@@ -349,7 +437,20 @@ export function createSireneMap(
     ]);
   }
 
-  return map;
+  function update(newEtabs, newTitle) {
+    currentEtabs = newEtabs;
+    if (newTitle !== undefined) titleEl.textContent = newTitle;
+    map.resize(); // recalculate canvas size in case container was hidden (display:none → visible)
+    if (!map.getSource("sirene-src")) return; // will use currentEtabs when map loads
+    const geojson = buildGeoJSON(
+      currentEtabs,
+      activeSetFrom(multiselect.value ?? []),
+    );
+    map.getSource("sirene-src").setData(geojson);
+    updateHeatmap(geojson.features.length);
+  }
+
+  return { map, remove: () => map.remove(), update };
 }
 
 // cityPoints = [{lat, lon, nb, city}] — agrégé par ville, toutes APE confondues
