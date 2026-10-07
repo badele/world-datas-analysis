@@ -28,7 +28,7 @@ if ! command -v gh &>/dev/null; then
     exit 1
 fi
 
-REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "")
+REPO=${GITHUB_REPOSITORY:-$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "")}
 if [ -z "$REPO" ]; then
     echo "[release-download] ERROR: not in a GitHub repository or gh not authenticated"
     exit 1

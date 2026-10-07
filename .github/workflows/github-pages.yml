@@ -55,6 +55,7 @@ jobs:
       - name: Build site
         env:
           WDA_PUBLIC_DATASET_URL: https://pub-6526c18d68154746a16baf2f76a38544.r2.dev
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: just pages-build
 
       - name: Show PostgreSQL logs on failure
