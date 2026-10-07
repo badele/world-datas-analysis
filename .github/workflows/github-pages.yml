@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  JUST_VERSION: "1.23.0"
+  JUST_VERSION: "1.51.0"
 
 jobs:
   test:
