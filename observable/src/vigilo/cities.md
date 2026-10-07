@@ -5,13 +5,63 @@ title: Vigilo — Toutes les villes
 ```js
 import { createVigiloMap } from "../components/vigilo-map.js";
 import { createMultiSelect } from "../components/wda-multiselect.js";
+import { initVigiloDB } from "../components/vigilo-db.js";
 import * as Plot from "npm:@observablehq/plot";
 ```
 
 ```js
-const allObs = FileAttachment("../data/vigilo-observations.json").json();
-const scopes = FileAttachment("../data/vigilo-scopes.json").json();
-const stats = FileAttachment("../data/vigilo-stats.json").json();
+const _vigiBase = "https://pub-6526c18d68154746a16baf2f76a38544.r2.dev/vigilo";
+const { db, conn } = await initVigiloDB(_vigiBase, invalidation);
+
+const _obsResult = await conn.query(`
+  SELECT o.scopeid, o.token, o.ts,
+         ROUND(o.latitude::DOUBLE, 6) AS latitude,
+         ROUND(o.longitude::DOUBLE, 6) AS longitude,
+         o.address, o.catid,
+         c.name AS category, c.color,
+         o.geonames_city
+  FROM read_parquet('observations.parquet') o
+  LEFT JOIN read_parquet('categories.parquet') c ON c.id = o.catid
+  WHERE o.latitude IS NOT NULL AND o.longitude IS NOT NULL
+`);
+const allObs = _obsResult.toArray().map((r) => ({
+  scopeid: r.scopeid,
+  token: r.token,
+  ts: r.ts !== null ? Number(r.ts) : null,
+  latitude: r.latitude !== null ? Number(r.latitude) : null,
+  longitude: r.longitude !== null ? Number(r.longitude) : null,
+  address: r.address,
+  catid: r.catid !== null ? Number(r.catid) : null,
+  category: r.category,
+  color: r.color,
+  geonames_city: r.geonames_city,
+}));
+
+const _scopesResult = await conn.query(`
+  SELECT id, display_name, is_active
+  FROM read_parquet('scopes.parquet')
+  ORDER BY display_name
+`);
+const scopes = _scopesResult.toArray().map((r) => ({
+  id: r.id,
+  display_name: r.display_name,
+  is_active: r.is_active,
+}));
+
+const _statsResult = await conn.query(`
+  SELECT s.id, s.display_name, s.is_active,
+         COUNT(o.token)::INTEGER AS count
+  FROM read_parquet('scopes.parquet') s
+  LEFT JOIN read_parquet('observations.parquet') o ON o.scopeid = s.id
+  GROUP BY s.id, s.display_name, s.is_active
+  ORDER BY count DESC
+`);
+const stats = _statsResult.toArray().map((r) => ({
+  id: r.id,
+  display_name: r.display_name,
+  is_active: r.is_active,
+  count: Number(r.count),
+}));
 ```
 
 <div class="page-header">

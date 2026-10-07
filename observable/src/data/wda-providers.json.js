@@ -1,12 +1,2 @@
-import { query, runLoader } from "./db.js";
-
-await runLoader("wda-providers", (client) =>
-  query(
-    client,
-    `
-  SELECT provider, description, website, nb_datasets, nb_observations
-  FROM wda_providers
-  ORDER BY provider
-`,
-  ),
-);
+// wda_providers is a PostgreSQL metadata table with no parquet equivalent.
+process.stdout.write("[]");

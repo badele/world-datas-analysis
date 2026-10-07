@@ -1,8 +1,9 @@
 import * as maplibregl from "npm:maplibre-gl";
 import { createMultiSelect } from "./wda-multiselect.js";
+import { showPopup } from "./popup.js";
 
 maplibregl.setWorkerUrl(
-  "https://unpkg.com/maplibre-gl/dist/maplibre-gl-worker.mjs",
+  "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl-worker.mjs",
 );
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
@@ -106,6 +107,8 @@ export function createSireneMap(
   etabs = [],
   { onEtabSelect, title } = {},
 ) {
+  let currentEtabs = etabs;
+
   // ── Controls ──────────────────────────────────────────────────────────
   const controlsEl = document.createElement("div");
   controlsEl.className = "sirene-map-controls";
@@ -142,7 +145,7 @@ export function createSireneMap(
   });
 
   map.on("load", () => {
-    const initialGeoJSON = buildGeoJSON(etabs, activeSetFrom([]));
+    const initialGeoJSON = buildGeoJSON(currentEtabs, activeSetFrom([]));
     map.addSource("sirene-src", {
       type: "geojson",
       data: initialGeoJSON,
@@ -291,10 +294,92 @@ export function createSireneMap(
       hoverPopup.remove();
     });
 
-    // ── Click → panneau détail inline ────────────────────────────────
+    // ── Click → popup détail établissement ───────────────────────────
     map.on("click", "sirene-points", (e) => {
       e.originalEvent.stopPropagation();
       const p = e.features[0].properties;
+      const siren = p.siret ? String(p.siret).slice(0, 9) : null;
+      const dateCreation = p.date_creation
+        ? new Date(p.date_creation).toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : null;
+      const rows = [
+        p.legal_name && p.legal_name !== p.name
+          ? { label: "Raison sociale", value: p.legal_name, copyValue: false }
+          : null,
+        siren
+          ? {
+              label: "SIREN",
+              value: siren,
+              copyValue: siren,
+              links: [
+                {
+                  label: "data.gouv",
+                  href: `https://annuaire-entreprises.data.gouv.fr/entreprise/${siren}`,
+                },
+                {
+                  label: "pappers",
+                  href: `https://www.pappers.fr/entreprise/${siren}`,
+                },
+              ],
+            }
+          : null,
+        p.siret
+          ? {
+              label: "SIRET",
+              value: p.siret,
+              copyValue: p.siret,
+              links: [
+                {
+                  label: "data.gouv",
+                  href: `https://annuaire-entreprises.data.gouv.fr/etablissement/${p.siret}`,
+                },
+                {
+                  label: "inpi",
+                  href: `https://data.inpi.fr/entreprises/${siren}?q=${p.siret}`,
+                },
+              ],
+            }
+          : null,
+        {
+          label: "Code APE",
+          value: p.ape,
+          copyValue: false,
+          links: p.ape
+            ? [
+                {
+                  label: "Rechercher",
+                  href: `/sirene?ape=${encodeURIComponent(p.ape)}`,
+                },
+              ]
+            : [],
+        },
+        {
+          label: "Effectifs",
+          value: effectifsLabel(p.effectifs_min),
+          copyValue: false,
+        },
+        p.address
+          ? { label: "Adresse", value: p.address, copyValue: false }
+          : null,
+        p.dept
+          ? { label: "Département", value: p.dept, copyValue: false }
+          : null,
+        dateCreation
+          ? { label: "Création", value: dateCreation, copyValue: false }
+          : null,
+        p.is_siege
+          ? { label: "Siège social", value: "Oui", copyValue: false }
+          : null,
+      ].filter(Boolean);
+      showPopup(e.originalEvent, {
+        title: p.name,
+        rows,
+        href: p.siret ? `/sirene/etablissement/${p.siret}` : null,
+      });
       if (onEtabSelect) onEtabSelect(p);
     });
 
@@ -302,7 +387,10 @@ export function createSireneMap(
 
     // ── Multiselect filter ────────────────────────────────────────────
     multiselect.addEventListener("input", () => {
-      const geojson = buildGeoJSON(etabs, activeSetFrom(multiselect.value));
+      const geojson = buildGeoJSON(
+        currentEtabs,
+        activeSetFrom(multiselect.value),
+      );
       if (!map.getSource("sirene-src")) return;
       map.getSource("sirene-src").setData(geojson);
       updateHeatmap(geojson.features.length);
@@ -348,6 +436,150 @@ export function createSireneMap(
       25,
     ]);
   }
+
+  function update(newEtabs, newTitle) {
+    currentEtabs = newEtabs;
+    if (newTitle !== undefined) titleEl.textContent = newTitle;
+    map.resize(); // recalculate canvas size in case container was hidden (display:none → visible)
+    if (!map.getSource("sirene-src")) return; // will use currentEtabs when map loads
+    const geojson = buildGeoJSON(
+      currentEtabs,
+      activeSetFrom(multiselect.value ?? []),
+    );
+    map.getSource("sirene-src").setData(geojson);
+    updateHeatmap(geojson.features.length);
+  }
+
+  return { map, remove: () => map.remove(), update };
+}
+
+// cityPoints = [{lat, lon, nb, city}] — agrégé par ville, toutes APE confondues
+export function createSireneAggMap(container, cityPoints = []) {
+  const mapEl = document.createElement("div");
+  mapEl.style.cssText =
+    "width:100%;height:60vh;border-radius:6px;overflow:hidden;margin-top:0.75rem;";
+  container.appendChild(mapEl);
+
+  const geojson = {
+    type: "FeatureCollection",
+    features: cityPoints
+      .filter(
+        (p) =>
+          p.lat != null && p.lon != null && isFinite(p.lat) && isFinite(p.lon),
+      )
+      .map((p) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [p.lon, p.lat] },
+        properties: { city: p.city, nb: p.nb },
+      })),
+  };
+
+  const map = new maplibregl.Map({
+    container: mapEl,
+    style: MAP_STYLE,
+    center: [2.35, 46.5],
+    zoom: 5,
+    attributionControl: { compact: true },
+  });
+
+  map.on("load", () => {
+    map.addSource("agg-src", { type: "geojson", data: geojson });
+
+    map.addLayer({
+      id: "agg-heat",
+      type: "heatmap",
+      source: "agg-src",
+      maxzoom: 10,
+      paint: {
+        "heatmap-weight": [
+          "interpolate",
+          ["linear"],
+          ["get", "nb"],
+          0,
+          0.1,
+          100,
+          0.5,
+          1000,
+          1,
+          10000,
+          3,
+          100000,
+          6,
+        ],
+        "heatmap-intensity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          4,
+          0.5,
+          9,
+          2,
+        ],
+        "heatmap-color": [
+          "interpolate",
+          ["linear"],
+          ["heatmap-density"],
+          0,
+          "rgba(33,102,172,0)",
+          0.2,
+          "rgb(103,169,207)",
+          0.5,
+          "rgb(253,219,199)",
+          0.8,
+          "rgb(239,138,98)",
+          1,
+          "rgb(178,24,43)",
+        ],
+        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 25],
+        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 8, 1, 10, 0],
+      },
+    });
+
+    map.addLayer({
+      id: "agg-circles",
+      type: "circle",
+      source: "agg-src",
+      minzoom: 8,
+      paint: {
+        "circle-radius": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          8,
+          ["step", ["get", "nb"], 3, 100, 5, 1000, 8, 10000, 12, 100000, 18],
+          14,
+          ["step", ["get", "nb"], 5, 100, 8, 1000, 13, 10000, 20, 100000, 30],
+        ],
+        "circle-color": "#e53935",
+        "circle-opacity": 0.75,
+        "circle-stroke-width": 1,
+        "circle-stroke-color": "#fff",
+      },
+    });
+
+    const popup = new maplibregl.Popup({
+      closeButton: false,
+      maxWidth: "220px",
+      className: "vigilo-popup",
+    });
+    map.on("mouseenter", "agg-circles", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+      const p = e.features[0].properties;
+      popup
+        .setLngLat(e.lngLat)
+        .setHTML(
+          `<strong>${p.city || "Ville inconnue"}</strong><br>` +
+            `${Number(p.nb).toLocaleString("fr-FR")} établissement${
+              p.nb > 1 ? "s" : ""
+            }`,
+        )
+        .addTo(map);
+    });
+    map.on("mouseleave", "agg-circles", () => {
+      map.getCanvas().style.cursor = "";
+      popup.remove();
+    });
+  });
 
   return map;
 }

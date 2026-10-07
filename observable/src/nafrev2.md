@@ -6,10 +6,37 @@ title: NAF Rév. 2 — Nomenclature d'activités
 import * as Inputs from "npm:@observablehq/inputs";
 import * as d3 from "npm:d3";
 import { showPopup } from "./components/popup.js";
+import { initNafrev2DB } from "./components/nafrev2-db.js";
 ```
 
 ```js
-const hierarchy = FileAttachment("data/nafrev2-hierarchy.json").json();
+const { db, conn } = await initNafrev2DB(invalidation);
+
+const _hierarchyResult = await conn.query(`
+  SELECT ns.section_id, ns.section,
+         nd.division_id, nd.division,
+         ng.groupe_id, ng.groupe,
+         nc.classe_id, nc.classe,
+         nsc.sous_classe_id, nsc.sous_classe
+  FROM read_parquet('sous_classes.parquet') nsc
+  JOIN read_parquet('classes.parquet') nc  ON nsc.classe_id   = nc.classe_id
+  JOIN read_parquet('groupes.parquet') ng  ON nsc.groupe_id   = ng.groupe_id
+  JOIN read_parquet('divisions.parquet') nd ON nsc.division_id = nd.division_id
+  JOIN read_parquet('sections.parquet') ns  ON nsc.section_id  = ns.section_id
+  ORDER BY nsc.sous_classe_id
+`);
+const hierarchy = _hierarchyResult.toArray().map((r) => ({
+  section_id: r.section_id,
+  section: r.section,
+  division_id: r.division_id,
+  division: r.division,
+  groupe_id: r.groupe_id,
+  groupe: r.groupe,
+  classe_id: r.classe_id,
+  classe: r.classe,
+  sous_classe_id: r.sous_classe_id,
+  sous_classe: r.sous_classe,
+}));
 ```
 
 ```js

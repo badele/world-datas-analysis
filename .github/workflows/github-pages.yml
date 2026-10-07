@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  JUST_VERSION: "1.23.0"
+  JUST_VERSION: "1.51.0"
 
 jobs:
   test:
@@ -53,6 +53,9 @@ jobs:
           just-version: ${{ env.JUST_VERSION }}
 
       - name: Build site
+        env:
+          WDA_PUBLIC_DATASET_URL: https://pub-6526c18d68154746a16baf2f76a38544.r2.dev
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: just pages-build
 
       - name: Show PostgreSQL logs on failure

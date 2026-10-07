@@ -1,4 +1,4 @@
-import { createClient, query } from "./src/data/db.js";
+import Database from "duckdb";
 
 const datasList = (process.env.DATAS_LIST ?? "")
   .split(",")
@@ -6,22 +6,30 @@ const datasList = (process.env.DATAS_LIST ?? "")
   .filter(Boolean);
 
 async function* scopePaths() {
-  const client = createClient();
-  await client.connect();
-  const scopes = await query(
-    client,
-    `SELECT id AS scopeid FROM vigilo_scopes ORDER BY id`,
-  );
-  await client.end();
-  for (const { scopeid } of scopes) {
-    yield `/vigilo/${scopeid}`;
-  }
+  const { parquetPath } = await import("./src/data/db.js");
+  const parquet = parquetPath("vigilo", "scopes.parquet");
+  const scopes = await new Promise((resolve, reject) => {
+    const db = new Database.Database(":memory:");
+    db.all(
+      `SELECT id FROM read_parquet('${parquet}') ORDER BY id`,
+      (err, rows) => {
+        db.close();
+        err ? reject(err) : resolve(rows);
+      },
+    );
+  }).catch(() => []);
+  for (const { id } of scopes) yield `/vigilo/${id}`;
 }
 
 export default {
   title: "World Data Analysis",
   root: "src",
   base: process.env.GITHUB_ACTIONS ? "/world-datas-analysis" : "/",
+  define: {
+    "process.env.WDA_PUBLIC_DATASET_URL": JSON.stringify(
+      process.env.WDA_PUBLIC_DATASET_URL ?? "",
+    ),
+  },
   dynamicPaths: async function* () {
     yield* scopePaths();
   },
@@ -47,7 +55,13 @@ export default {
       name: "SIRENE",
       datasets: ["sirene"],
       open: false,
-      pages: [{ name: "Vue d'ensemble", path: "/sirene" }],
+      pages: [
+        {
+          name: "Rechercher des établissements",
+          path: "/sirene/etablissements",
+        },
+        { name: "Recherche par APE", path: "/sirene" },
+      ],
     },
   ].filter(
     (p) =>

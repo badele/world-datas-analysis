@@ -118,11 +118,11 @@ DROP TABLE IF EXISTS tmp_nafrev2_all_levels CASCADE;
 -------------------------------------------------------------------------------
 SELECT 'export nafrev2 to parquet' as mess;
 
-COPY nafrev2_sections TO './dataset/nafrev2/sections.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY nafrev2_divisions TO './dataset/nafrev2/divisions.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY nafrev2_groupes TO './dataset/nafrev2/groupes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY nafrev2_classes TO './dataset/nafrev2/classes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY nafrev2_sous_classes TO './dataset/nafrev2/sous_classes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY nafrev2_sections TO './dataset/nafrev2/raw/sections.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY nafrev2_divisions TO './dataset/nafrev2/raw/divisions.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY nafrev2_groupes TO './dataset/nafrev2/raw/groupes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY nafrev2_classes TO './dataset/nafrev2/raw/classes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+COPY nafrev2_sous_classes TO './dataset/nafrev2/raw/sous_classes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 
 SELECT 'COMMIT' as mess;
 COMMIT;

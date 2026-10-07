@@ -74,5 +74,18 @@ def update():
     """
     Updates the dataset for the provider.
     """
+    import subprocess
     wdalib.init_dataset(PROVIDER)
     wdalib.data2duckdb(PROVIDER)
+    subprocess.run(
+        ["bash", f"./importer/{PROVIDER}/export_raw_sections.sh"],
+        check=True,
+    )
+    subprocess.run(
+        ["bash", f"./importer/{PROVIDER}/optimize_parquet_export.sh"],
+        check=True,
+    )
+    subprocess.run(
+        ["bash", f"./importer/{PROVIDER}/export_stats.sh"],
+        check=True,
+    )

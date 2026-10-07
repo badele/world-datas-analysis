@@ -43,7 +43,7 @@ export function showPopup(eventOrCoords, { title, rows, href = null }) {
     </div>
     <div class="wda-popup-body">
       ${rows
-        .map(({ label, id, value, copyValue }) => {
+        .map(({ label, id, value, copyValue, links }) => {
           const cv =
             copyValue === false
               ? null
@@ -51,12 +51,26 @@ export function showPopup(eventOrCoords, { title, rows, href = null }) {
                 (id != null
                   ? String(id) + (value ? " — " + value : "")
                   : String(value ?? ""));
+          const linksHtml = (links ?? [])
+            .map(
+              (l) =>
+                `<a href="${esc(
+                  l.href,
+                )}" target="_blank" class="wda-popup-extlink">${esc(
+                  l.label,
+                )}</a>`,
+            )
+            .join("");
           return `
             <div class="wda-popup-row">
               <span class="wda-popup-label">${esc(label)}</span>
               <span class="wda-popup-value">${
                 id != null ? `<strong>${esc(String(id))}</strong> ` : ""
-              }${esc(value ?? "")}</span>
+              }${esc(value ?? "")}${
+                linksHtml
+                  ? `<span class="wda-popup-links">${linksHtml}</span>`
+                  : ""
+              }</span>
               ${
                 cv != null
                   ? `<button class="wda-popup-copy" data-copy="${esc(

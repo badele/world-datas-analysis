@@ -1137,6 +1137,28 @@ h1 {
 .wda-popup-link:hover {
   text-decoration: underline;
 }
+.wda-popup-links {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.wda-popup-extlink {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 3px;
+  text-decoration: none;
+  background: var(--theme-foreground-faintest);
+  color: var(--theme-foreground-muted);
+  border: 1px solid var(--theme-foreground-faintest);
+  white-space: nowrap;
+}
+.wda-popup-extlink:hover {
+  background: var(--theme-foreground-fainter);
+  color: var(--theme-foreground);
+}
 
 /* ── Bar chart (unified — replaces wda-ape-chart) ───────────────────── */
 .wda-bar-chart,
@@ -1522,4 +1544,31 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+/* ── Loading indicator ──────────────────────────────────────────────── */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.map-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  color: var(--theme-foreground-muted);
+  font-size: 0.875rem;
+}
+
+.map-loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+  opacity: 0.7;
 }

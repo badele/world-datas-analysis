@@ -5,13 +5,13 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const src = process.env.WDA_PUBLIC_DATASET_URL
-  ? `${process.env.WDA_PUBLIC_DATASET_URL}/sirene/observable__stats-by-section.parquet`
+  ? `${process.env.WDA_PUBLIC_DATASET_URL}/sirene/observable__etab-stats.parquet`
   : path.resolve(
       __dirname,
-      "../../../dataset/sirene/observable/stats-by-section.parquet",
+      "../../../dataset/sirene/observable/etab-stats.parquet",
     );
 
 await runDuckDBLoader(
-  "sirene-stats-by-section",
+  "sirene-etab-stats",
   `SELECT * FROM read_parquet('${src}')`,
 );
