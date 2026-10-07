@@ -31,8 +31,8 @@ const DATASETS = [
       "Signalements liés à la pratique du vélo et des déplacements piétons, collectés par des collectifs cyclistes locaux via l'application Vigilo.",
     theme: "Mobilité",
     source: "vigilo.city",
-    exploreUrl: "/vigilo",
-    datasetUrl: "/dataset/vigilo",
+    exploreUrl: "vigilo",
+    datasetUrl: "dataset/vigilo",
     keyStats: [
       { label: "Signalements", value: fmtN(v.total_obs) },
       {
@@ -50,8 +50,8 @@ const DATASETS = [
       "Registre officiel des entreprises et établissements français géré par l'INSEE. Enrichi avec les coordonnées géographiques GeoNames.",
     theme: "Économie",
     source: "INSEE / data.gouv.fr",
-    exploreUrl: "/sirene",
-    datasetUrl: "/dataset/sirene",
+    exploreUrl: "sirene",
+    datasetUrl: "dataset/sirene",
     keyStats: [
       { label: "Établissements", value: fmtN(s.total_etablissements) },
       { label: "Sections NAF", value: fmtN(s.total_sections) },
@@ -65,8 +65,8 @@ const DATASETS = [
       "Référentiel hiérarchique des activités économiques françaises publié par l'INSEE, en vigueur depuis 2008. Structuré en 5 niveaux hiérarchiques.",
     theme: "Référentiel",
     source: "INSEE",
-    exploreUrl: "/nafrev2",
-    datasetUrl: "/dataset/nafrev2",
+    exploreUrl: "nafrev2",
+    datasetUrl: "dataset/nafrev2",
     keyStats: [
       { label: "Codes APE", value: fmtN(n.total_sous_classes) },
       { label: "Sections", value: fmtN(n.total_sections) },
