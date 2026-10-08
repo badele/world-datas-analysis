@@ -103,7 +103,7 @@ const topCodesApe = allTopCodesApe
 ```
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › <a href="/sirene">SIRENE</a> › Section ${sectionId}</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › <a href="sirene">SIRENE</a> › Section ${sectionId}</div>
   <h1>${sectionLabel}</h1>
   <p class="page-subtitle">Section ${sectionId} — ${totalEtablissements.toLocaleString("fr-FR")} établissements SIRENE répartis sur ${divisions.length} division(s).</p>
 </div>
@@ -302,14 +302,14 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="/nafrev2">NAF Rév. 2</a>.
+  Source : <a href="dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="nafrev2">NAF Rév. 2</a>.
 </div>
 
 <div class="see-also">
   <h3>Voir aussi</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/sirene">← Toutes les sections SIRENE</a>
-    <a class="see-also-link" href="/nafrev2">📋 Référentiel NAF — section ${sectionId}</a>
-    <a class="see-also-link" href="/dataset/sirene">🏢 Dataset SIRENE</a>
+    <a class="see-also-link" href="sirene">← Toutes les sections SIRENE</a>
+    <a class="see-also-link" href="nafrev2">📋 Référentiel NAF — section ${sectionId}</a>
+    <a class="see-also-link" href="dataset/sirene">🏢 Dataset SIRENE</a>
   </div>
 </div>

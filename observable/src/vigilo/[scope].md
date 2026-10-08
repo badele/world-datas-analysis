@@ -122,7 +122,7 @@ const cities = [
 ```
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › <a href="/vigilo">Vigilo</a> › ${scopeLabel}</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › <a href="vigilo">Vigilo</a> › ${scopeLabel}</div>
   <h1>${scopeLabel}</h1>
   <p class="page-subtitle">Signalements citoyens liés aux déplacements vélo et piétons — ${observations.length.toLocaleString("fr-FR")} observations. Zoomez pour passer de la heatmap de densité aux points individuels.</p>
 </div>
@@ -156,7 +156,7 @@ const cities = [
   </div>
   <div class="meta-item">
     <div class="meta-label">Source</div>
-    <div class="meta-value"><a href="/dataset/vigilo">Dataset Vigilo</a> (<a href="https://vigilo.city" target="_blank">vigilo.city</a>)</div>
+    <div class="meta-value"><a href="dataset/vigilo">Dataset Vigilo</a> (<a href="https://vigilo.city" target="_blank">vigilo.city</a>)</div>
   </div>
 </div>
 </div>
@@ -457,13 +457,13 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
+  Source : <a href="dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
 </div>
 
 <div class="see-also">
   <h3>Voir aussi</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/vigilo">📊 Vue d'ensemble toutes instances</a>
-    <a class="see-also-link" href="/vigilo/cities">🗺 Carte de toutes les villes</a>
+    <a class="see-also-link" href="vigilo">📊 Vue d'ensemble toutes instances</a>
+    <a class="see-also-link" href="vigilo/cities">🗺 Carte de toutes les villes</a>
   </div>
 </div>

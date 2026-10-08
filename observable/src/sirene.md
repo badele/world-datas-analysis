@@ -32,7 +32,7 @@ const totalEtablissements = d3.sum(statsBySection, (d) => +d.nb_etablissements);
 ```
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › SIRENE</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › SIRENE</div>
   <h1>SIRENE — Recherche par APE</h1>
   <p class="page-subtitle">Répartition des ${totalEtablissements.toLocaleString("fr-FR")} établissements du registre SIRENE selon la nomenclature NAF Rév. 2.</p>
 </div>
@@ -584,7 +584,7 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="/nafrev2">NAF Rév. 2</a>.
+  Source : <a href="dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="nafrev2">NAF Rév. 2</a>.
 </div>
 
 ```js
@@ -592,11 +592,11 @@ display(
   html`<div class="see-also">
     <h3>Voir aussi</h3>
     <div class="see-also-links">
-      <a class="see-also-link" href="/sirene/etablissements"
+      <a class="see-also-link" href="sirene/etablissements"
         >Rechercher des établissements</a
       >
-      <a class="see-also-link" href="/nafrev2">Référentiel NAF Rév. 2</a>
-      <a class="see-also-link" href="/dataset/sirene">Dataset SIRENE</a>
+      <a class="see-also-link" href="nafrev2">Référentiel NAF Rév. 2</a>
+      <a class="see-also-link" href="dataset/sirene">Dataset SIRENE</a>
     </div>
   </div>`,
 );

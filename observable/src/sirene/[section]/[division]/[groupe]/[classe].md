@@ -93,10 +93,10 @@ const codesApe = allCodesApe
 display(
   html`<div class="page-header">
     <div class="breadcrumb">
-      <a href="/">Accueil</a> › <a href="/sirene">SIRENE</a> ›
-      <a href="/sirene/${sectionId}">Section ${sectionId}</a> ›
-      <a href="/sirene/${sectionId}/${divisionId}">Division ${divisionId}</a> ›
-      <a href="/sirene/${sectionId}/${divisionId}/${groupeId}"
+      <a href="./">Accueil</a> › <a href="sirene">SIRENE</a> ›
+      <a href="sirene/${sectionId}">Section ${sectionId}</a> ›
+      <a href="sirene/${sectionId}/${divisionId}">Division ${divisionId}</a> ›
+      <a href="sirene/${sectionId}/${divisionId}/${groupeId}"
         >Groupe ${groupeId}</a
       >
       › Classe ${classeId}
@@ -139,7 +139,7 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="/nafrev2">NAF Rév. 2</a>.
+  Source : <a href="dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="nafrev2">NAF Rév. 2</a>.
 </div>
 
 ```js
@@ -149,13 +149,13 @@ display(
     <div class="see-also-links">
       <a
         class="see-also-link"
-        href="/sirene/${sectionId}/${divisionId}/${groupeId}"
+        href="sirene/${sectionId}/${divisionId}/${groupeId}"
         >← Groupe ${groupeId} — ${groupeLabel}</a
       >
-      <a class="see-also-link" href="/nafrev2"
+      <a class="see-also-link" href="nafrev2"
         >📋 Référentiel NAF — classe ${classeId}</a
       >
-      <a class="see-also-link" href="/dataset/sirene">🏢 Dataset SIRENE</a>
+      <a class="see-also-link" href="dataset/sirene">🏢 Dataset SIRENE</a>
     </div>
   </div>`,
 );

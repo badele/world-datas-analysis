@@ -65,7 +65,7 @@ const stats = _statsResult.toArray().map((r) => ({
 ```
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › <a href="/vigilo">Vigilo</a> › Toutes les villes</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › <a href="vigilo">Vigilo</a> › Toutes les villes</div>
   <h1>Carte des signalements Vigilo</h1>
   <p class="page-subtitle">Visualisation de l'ensemble des signalements citoyens sur le territoire français. Zoomez pour passer de la heatmap de densité aux points individuels.</p>
 </div>
@@ -97,7 +97,7 @@ const stats = _statsResult.toArray().map((r) => ({
   </div>
   <div class="meta-item">
     <div class="meta-label">Source</div>
-    <div class="meta-value"><a href="/dataset/vigilo">Dataset Vigilo</a> (<a href="https://vigilo.city" target="_blank">vigilo.city</a>)</div>
+    <div class="meta-value"><a href="dataset/vigilo">Dataset Vigilo</a> (<a href="https://vigilo.city" target="_blank">vigilo.city</a>)</div>
   </div>
 </div>
 </div>
@@ -113,7 +113,7 @@ for (const s of stats
   display(
     html`<div class="meta-item">
       <div class="meta-label">
-        <a href="/vigilo/${s.id}">${s.display_name}</a>
+        <a href="vigilo/${s.id}">${s.display_name}</a>
       </div>
       <div class="meta-value">
         ${Number(s.count).toLocaleString("fr-FR")} signalements
@@ -201,13 +201,13 @@ invalidation.then(() => map.remove());
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
+  Source : <a href="dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
 </div>
 
 <div class="see-also">
   <h3>Voir aussi</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/vigilo">📊 Vue d'ensemble par instance</a>
-    <a class="see-also-link" href="/">← Retour à l'accueil</a>
+    <a class="see-also-link" href="vigilo">📊 Vue d'ensemble par instance</a>
+    <a class="see-also-link" href="./">← Retour à l'accueil</a>
   </div>
 </div>

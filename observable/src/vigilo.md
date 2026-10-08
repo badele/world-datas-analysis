@@ -3,7 +3,7 @@ title: Vigilo — Vue globale
 ---
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › Vigilo</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › Vigilo</div>
   <h1>Signalements Vigilo</h1>
   <p class="page-subtitle">
     Répartition des signalements citoyens liés à la pratique du vélo et des déplacements piétons,
@@ -59,7 +59,7 @@ pills.innerHTML = `
       .sort((a, b) => b.count - a.count)
       .map(
         (d) =>
-          `<a class="instance-pill" href="/vigilo/${d.id}">${
+          `<a class="instance-pill" href="vigilo/${d.id}">${
             d.display_name
           }<span class="instance-pill-count">${Number(d.count).toLocaleString(
             "fr-FR",
@@ -70,7 +70,7 @@ pills.innerHTML = `
       .sort((a, b) => b.count - a.count)
       .map(
         (d) =>
-          `<a class="instance-pill instance-pill--inactive" href="/vigilo/${
+          `<a class="instance-pill instance-pill--inactive" href="vigilo/${
             d.id
           }" title="Instance inactive">${
             d.display_name
@@ -488,13 +488,13 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
+  Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
 </div>
 
 <div class="see-also">
   <h3>Voir aussi</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/vigilo/cities">🗺 Carte de toutes les villes</a>
-    <a class="see-also-link" href="/">← Retour à l'accueil</a>
+    <a class="see-also-link" href="vigilo/cities">🗺 Carte de toutes les villes</a>
+    <a class="see-also-link" href="./">← Retour à l'accueil</a>
   </div>
 </div>
