@@ -15,58 +15,10 @@ title: Vigilo — Vue globale
 </div>
 
 ```js
-import { initVigiloDB } from "./components/vigilo-db.js";
-```
-
-```js
-const _vigiBase = "https://pub-6526c18d68154746a16baf2f76a38544.r2.dev/vigilo";
-const { db, conn } = await initVigiloDB(_vigiBase, invalidation);
-
-const _statsResult = await conn.query(`
-  SELECT s.id, s.display_name, s.is_active,
-         COUNT(o.token)::INTEGER AS count,
-         MIN(o.ts) AS first_ts, MAX(o.ts) AS last_ts,
-         (SELECT COUNT(*)::INTEGER FROM read_parquet('scopes.parquet')) AS total_scopes,
-         (SELECT COUNT(*)::INTEGER FROM read_parquet('scopes.parquet') WHERE is_active = true) AS active_scopes,
-         (SELECT COUNT(*)::INTEGER FROM read_parquet('observations.parquet')) AS grand_total_obs
-  FROM read_parquet('scopes.parquet') s
-  LEFT JOIN read_parquet('observations.parquet') o ON o.scopeid = s.id
-  GROUP BY s.id, s.display_name, s.is_active
-  HAVING COUNT(o.token) > 200
-  ORDER BY count DESC
-`);
-const stats = _statsResult.toArray().map((r) => ({
-  id: r.id,
-  display_name: r.display_name,
-  is_active: r.is_active,
-  count: Number(r.count),
-  first_ts: r.first_ts !== null ? Number(r.first_ts) : null,
-  last_ts: r.last_ts !== null ? Number(r.last_ts) : null,
-  total_scopes: Number(r.total_scopes),
-  active_scopes: Number(r.active_scopes),
-  grand_total_obs: Number(r.grand_total_obs),
-}));
-
-const _catResult = await conn.query(`
-  SELECT s.id AS scope_id, s.display_name AS scope_name,
-         c.name AS category, c.color, COUNT(*)::INTEGER AS count
-  FROM read_parquet('observations.parquet') o
-  JOIN read_parquet('scopes.parquet') s ON s.id = o.scopeid
-  JOIN read_parquet('categories.parquet') c ON c.id = o.catid
-  WHERE s.id IN (
-    SELECT scopeid FROM read_parquet('observations.parquet')
-    GROUP BY scopeid HAVING COUNT(*) > 200
-  )
-  GROUP BY s.id, s.display_name, c.name, c.color
-  ORDER BY s.display_name, c.name
-`);
-const statsByCategory = _catResult.toArray().map((r) => ({
-  scope_id: r.scope_id,
-  scope_name: r.scope_name,
-  category: r.category,
-  color: r.color,
-  count: Number(r.count),
-}));
+const [stats, statsByCategory] = await Promise.all([
+  FileAttachment("data/vigilo-stats.json").json(),
+  FileAttachment("data/vigilo-stats-by-category.json").json(),
+]);
 ```
 
 ```js
