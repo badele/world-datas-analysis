@@ -41,7 +41,7 @@ const _state = (() => {
 ```
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › <a href="/sirene">SIRENE</a> › Établissements</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › <a href="sirene">SIRENE</a> › Établissements</div>
   <h1>SIRENE — Recherche d'établissements</h1>
   <p class="page-subtitle">Recherchez des établissements par nom ou raison sociale parmi les ${(_stats.nb_etablissements ?? 0).toLocaleString("fr-FR")} établissements géolocalisés du registre SIRENE.</p>
 </div>
@@ -376,7 +376,7 @@ const _mapEtab = (() => {
               }${addr}</td>
               <td>${
                 ape
-                  ? `<a href="/sirene?ape=${encodeURIComponent(
+                  ? `<a href="sirene?ape=${encodeURIComponent(
                       ape,
                     )}" class="etab-source-link">${ape}</a>`
                   : ""
@@ -420,7 +420,7 @@ const _mapEtab = (() => {
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="/nafrev2">NAF Rév. 2</a>.
+  Source : <a href="dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="nafrev2">NAF Rév. 2</a>.
 </div>
 
 ```js
@@ -428,9 +428,9 @@ display(
   html`<div class="see-also">
     <h3>Voir aussi</h3>
     <div class="see-also-links">
-      <a class="see-also-link" href="/sirene">Nomenclature APE</a>
-      <a class="see-also-link" href="/nafrev2">Référentiel NAF Rév. 2</a>
-      <a class="see-also-link" href="/dataset/sirene">Dataset SIRENE</a>
+      <a class="see-also-link" href="sirene">Nomenclature APE</a>
+      <a class="see-also-link" href="nafrev2">Référentiel NAF Rév. 2</a>
+      <a class="see-also-link" href="dataset/sirene">Dataset SIRENE</a>
     </div>
   </div>`,
 );

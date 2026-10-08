@@ -3,7 +3,7 @@ title: Dataset — NAF Rév. 2
 ---
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › Datasets › NAF Rév. 2</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › Datasets › NAF Rév. 2</div>
   <h1>Dataset NAF Rév. 2</h1>
   <p class="page-subtitle">Nomenclature française des activités économiques, référentiel hiérarchique publié par l'INSEE.</p>
 </div>
@@ -48,7 +48,7 @@ display(
 <div class="see-also">
   <h3>Explorer les données</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/nafrev2">📊 Explorer la hiérarchie NAF Rév. 2</a>
-    <a class="see-also-link" href="/dataset/sirene">🏢 Dataset SIRENE (utilise les codes APE)</a>
+    <a class="see-also-link" href="nafrev2">📊 Explorer la hiérarchie NAF Rév. 2</a>
+    <a class="see-also-link" href="dataset/sirene">🏢 Dataset SIRENE (utilise les codes APE)</a>
   </div>
 </div>

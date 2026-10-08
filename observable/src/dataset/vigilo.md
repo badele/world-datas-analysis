@@ -3,7 +3,7 @@ title: Dataset — Vigilo
 ---
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › Datasets › Vigilo</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › Datasets › Vigilo</div>
   <h1>Dataset Vigilo</h1>
   <p class="page-subtitle">Signalements citoyens liés aux déplacements vélo et piétons, collectés via l'application Vigilo.</p>
 </div>
@@ -48,7 +48,7 @@ display(
 <div class="see-also">
   <h3>Explorer les données</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/vigilo">📊 Vue d'ensemble par instance</a>
-    <a class="see-also-link" href="/vigilo/cities">🗺 Carte de toutes les villes</a>
+    <a class="see-also-link" href="vigilo">📊 Vue d'ensemble par instance</a>
+    <a class="see-also-link" href="vigilo/cities">🗺 Carte de toutes les villes</a>
   </div>
 </div>

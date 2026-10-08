@@ -64,7 +64,7 @@ if (etab) {
   display(
     html`<div class="page-header">
       <div class="breadcrumb">
-        <a href="/">Accueil</a> › <a href="/sirene">SIRENE</a> › ${apePath
+        <a href="./">Accueil</a> › <a href="sirene">SIRENE</a> › ${apePath
           ? html`<a href="${apePath}">APE ${etab.ape_code}</a> ›`
           : ""} Fiche établissement
       </div>
@@ -259,7 +259,7 @@ if (etab) {
       : null;
   display(
     html`<div class="source-note">
-      Source : <a href="/dataset/sirene">Dataset SIRENE</a> — INSEE.
+      Source : <a href="dataset/sirene">Dataset SIRENE</a> — INSEE.
     </div>`,
   );
   display(
@@ -271,7 +271,7 @@ if (etab) {
               >← APE ${etab.ape_code} — ${etab.ape_label ?? ""}</a
             >`
           : ""}
-        <a class="see-also-link" href="/sirene">🏢 Vue d'ensemble SIRENE</a>
+        <a class="see-also-link" href="sirene">🏢 Vue d'ensemble SIRENE</a>
       </div>
     </div>`,
   );

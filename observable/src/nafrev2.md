@@ -48,7 +48,7 @@ const nbSousClasses = hierarchy.length;
 ```
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="/">Accueil</a> › NAF Rév. 2</div>
+  <div class="breadcrumb"><a href="./">Accueil</a> › NAF Rév. 2</div>
   <h1>NAF Rév. 2 — Nomenclature d'activités françaises</h1>
   <p class="page-subtitle">Référentiel hiérarchique des activités économiques publié par l'INSEE, en vigueur depuis 2008.</p>
 </div>
@@ -355,13 +355,13 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/nafrev2">Dataset NAF Rév. 2</a> — nomenclature publiée par l'<a href="https://www.insee.fr/fr/information/2120875" target="_blank">INSEE</a>.
+  Source : <a href="dataset/nafrev2">Dataset NAF Rév. 2</a> — nomenclature publiée par l'<a href="https://www.insee.fr/fr/information/2120875" target="_blank">INSEE</a>.
 </div>
 
 <div class="see-also">
   <h3>Voir aussi</h3>
   <div class="see-also-links">
-    <a class="see-also-link" href="/sirene">🏢 Établissements SIRENE par secteur NAF</a>
-    <a class="see-also-link" href="/dataset/nafrev2">📋 Dataset NAF Rév. 2</a>
+    <a class="see-also-link" href="sirene">🏢 Établissements SIRENE par secteur NAF</a>
+    <a class="see-also-link" href="dataset/nafrev2">📋 Dataset NAF Rév. 2</a>
   </div>
 </div>

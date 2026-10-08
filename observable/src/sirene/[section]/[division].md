@@ -114,8 +114,8 @@ const codesApe = allCodesApe
 display(
   html`<div class="page-header">
     <div class="breadcrumb">
-      <a href="/">Accueil</a> › <a href="/sirene">SIRENE</a> ›
-      <a href="/sirene/${sectionId}">Section ${sectionId}</a> › Division
+      <a href="./">Accueil</a> › <a href="sirene">SIRENE</a> ›
+      <a href="sirene/${sectionId}">Section ${sectionId}</a> › Division
       ${divisionId}
     </div>
     <h1>${divisionLabel}</h1>
@@ -313,7 +313,7 @@ display(
 ```
 
 <div class="source-note">
-  Source : <a href="/dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="/nafrev2">NAF Rév. 2</a>.
+  Source : <a href="dataset/sirene">Dataset SIRENE</a> — registre national des entreprises géré par l'<a href="https://www.sirene.fr" target="_blank">INSEE</a>. Codes d'activité : <a href="nafrev2">NAF Rév. 2</a>.
 </div>
 
 ```js
@@ -321,13 +321,13 @@ display(
   html`<div class="see-also">
     <h3>Voir aussi</h3>
     <div class="see-also-links">
-      <a class="see-also-link" href="/sirene/${sectionId}"
+      <a class="see-also-link" href="sirene/${sectionId}"
         >← Section ${sectionId} — ${sectionLabel}</a
       >
-      <a class="see-also-link" href="/nafrev2"
+      <a class="see-also-link" href="nafrev2"
         >📋 Référentiel NAF — division ${divisionId}</a
       >
-      <a class="see-also-link" href="/dataset/sirene">🏢 Dataset SIRENE</a>
+      <a class="see-also-link" href="dataset/sirene">🏢 Dataset SIRENE</a>
     </div>
   </div>`,
 );
