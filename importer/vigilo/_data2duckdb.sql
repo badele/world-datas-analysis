@@ -1,421 +1,199 @@
 BEGIN TRANSACTION;
 
 -------------------------------------------------------------------------------
--- Import
+-- Categories
 -------------------------------------------------------------------------------
--- categories
-CREATE OR REPLACE TABLE vigilo_categories (
-    id BIGINT,
-    name TEXT,
-    name_en TEXT,
-    color TEXT
-)
-;
+CREATE OR REPLACE TABLE vigilo_categories AS
+    SELECT catid AS id, catname AS name, catname_en_US AS name_en, catcolor AS color
+    FROM read_json('./downloaded/vigilo/categories.json');
 
-INSERT INTO vigilo_categories
-    SELECT catid,catname,catname_en_US,catcolor
-    FROM read_json('./downloaded/vigilo/categories.json')
-;
+-------------------------------------------------------------------------------
+-- Scopes actifs (depuis l'API Vigilo)
+-------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE vigilo_scopes_new AS
+    SELECT
+        scope                                   AS id,
+        name,
+        display_name,
+        NULL::TEXT                              AS iso,
+        'France'                                AS country,
+        department,
+        TRY_CAST(coordinate_lat_min AS DOUBLE)  AS lat_min,
+        TRY_CAST(coordinate_lat_max AS DOUBLE)  AS lat_max,
+        TRY_CAST(coordinate_lon_min AS DOUBLE)  AS lon_min,
+        TRY_CAST(coordinate_lon_max AS DOUBLE)  AS lon_max,
+        map_center_string,
+        TRY_CAST(map_zoom AS BIGINT)            AS map_zoom,
+        api_path,
+        map_url,
+        nominatim_urlbase,
+        contact_email,
+        tweet_content,
+        twitter,
+        backend_version,
+        NULL::TEXT                              AS geonames_admin_filter,
+        NULL::BIGINT                            AS geonames_countryid,
+        version,
+        "count"                                 AS check_count,
+        issues_time,
+        TRY_CAST("last" AS DATE)                AS last_check_date,
+        ok                                      AS check_ok
+    FROM read_json('./downloaded/vigilo/scopes.json');
 
--- scopes from current download (active)
-CREATE OR REPLACE TABLE vigilo_scopes_new (
-    id TEXT,
-    name TEXT,
-    display_name TEXT,
-    iso TEXT,
-    country TEXT,
-    department BIGINT,
-    lat_min DOUBLE,
-    lat_max DOUBLE,
-    lon_min DOUBLE,
-    lon_max DOUBLE,
-    map_center_string TEXT,
-    map_zoom BIGINT,
-    api_path TEXT,
-    map_url TEXT,
-    nominatim_urlbase TEXT,
-    contact_email TEXT,
-    tweet_content TEXT,
-    twitter TEXT,
-    backend_version TEXT,
-    geonames_admin_filter TEXT,
-    geonames_countryid BIGINT
-)
-;
-
-INSERT INTO vigilo_scopes_new
-    SELECT scope,
-    name,
-    display_name,
-    NULL,
-    country,
-    department,
-    coordinate_lat_min,
-    coordinate_lat_max,
-    coordinate_lon_min,
-    coordinate_lon_max,
-    map_center_string,
-    map_zoom,api_path,
-    map_url,
-    nominatim_urlbase,
-    contact_email,
-    tweet_content,
-    twitter,
-    backend_version,
-    NULL,
-    NULL
-    FROM read_json('./downloaded/vigilo/scopes.json')
-;
-
--- historical scopes: previous release parquet downloaded by download_last_dataset()
--- always exists (created empty with correct schema if no release available)
--- Explicit column list to handle schema evolution (old releases lack is_active, first_seen_at, etc.)
-CREATE OR REPLACE TABLE vigilo_scopes_historical (
-    id TEXT, name TEXT, display_name TEXT, iso TEXT, country TEXT, department BIGINT,
+-------------------------------------------------------------------------------
+-- Scopes fusionnés : actifs (API) + inactifs (parquet existant)
+-------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE vigilo_scopes (
+    id TEXT, name TEXT, display_name TEXT, iso TEXT, country TEXT, department TEXT,
     lat_min DOUBLE, lat_max DOUBLE, lon_min DOUBLE, lon_max DOUBLE,
     map_center_string TEXT, map_zoom BIGINT, api_path TEXT, map_url TEXT,
     nominatim_urlbase TEXT, contact_email TEXT, tweet_content TEXT, twitter TEXT,
     backend_version TEXT, geonames_admin_filter TEXT, geonames_countryid BIGINT,
-    is_active BOOLEAN, first_seen_at DATE, last_seen_at DATE, nb_observations BIGINT
+    is_active BOOLEAN, first_seen_at DATE, last_seen_at DATE, nb_observations BIGINT,
+    version TEXT, check_count BIGINT, issues_time DOUBLE, last_check_date DATE, check_ok BOOLEAN
 );
 
-INSERT INTO vigilo_scopes_historical
+-- Scopes actifs : préserve first_seen_at depuis le parquet existant si connu
+INSERT INTO vigilo_scopes BY NAME
     SELECT
-        id, name, display_name, iso, country, department,
-        lat_min, lat_max, lon_min, lon_max,
-        map_center_string, map_zoom, api_path, map_url,
-        nominatim_urlbase, contact_email, tweet_content, twitter,
-        backend_version, geonames_admin_filter, geonames_countryid,
-        NULL::BOOLEAN AS is_active,
-        NULL::DATE    AS first_seen_at,
-        NULL::DATE    AS last_seen_at,
-        NULL::BIGINT  AS nb_observations
-    FROM read_parquet('./downloaded/vigilo/last_release/scopes.parquet')
-;
+        n.*,
+        true                                        AS is_active,
+        COALESCE(
+            (SELECT first_seen_at
+             FROM read_parquet('./dataset/vigilo/raw/scopes.parquet')
+             WHERE id = n.id LIMIT 1),
+            CURRENT_DATE
+        )                                           AS first_seen_at,
+        CURRENT_DATE                                AS last_seen_at,
+        0::BIGINT                                   AS nb_observations
+    FROM vigilo_scopes_new n;
 
--- merged scopes: active (current download) + inactive (historical only)
-CREATE OR REPLACE TABLE vigilo_scopes (
-    id TEXT,
-    name TEXT,
-    display_name TEXT,
-    iso TEXT,
-    country TEXT,
-    department BIGINT,
-    lat_min DOUBLE,
-    lat_max DOUBLE,
-    lon_min DOUBLE,
-    lon_max DOUBLE,
-    map_center_string TEXT,
-    map_zoom BIGINT,
-    api_path TEXT,
-    map_url TEXT,
-    nominatim_urlbase TEXT,
-    contact_email TEXT,
-    tweet_content TEXT,
-    twitter TEXT,
-    backend_version TEXT,
-    geonames_admin_filter TEXT,
-    geonames_countryid BIGINT,
-    is_active BOOLEAN,
-    first_seen_at DATE,
-    last_seen_at DATE,
-    nb_observations BIGINT
-)
-;
+-- Scopes inactifs : présents dans le parquet existant mais absents du dernier download
+-- On force is_active = false quel que soit leur statut précédent (gère la première disparition)
+INSERT INTO vigilo_scopes BY NAME
+    SELECT * REPLACE (false AS is_active)
+    FROM read_parquet('./dataset/vigilo/raw/scopes.parquet')
+    WHERE id NOT IN (SELECT id FROM vigilo_scopes_new);
 
--- Active scopes: preserve first_seen_at from history when already known
-INSERT INTO vigilo_scopes
-    SELECT
-        n.id,
-        n.name,
-        n.display_name,
-        n.iso,
-        n.country,
-        n.department,
-        n.lat_min,
-        n.lat_max,
-        n.lon_min,
-        n.lon_max,
-        n.map_center_string,
-        n.map_zoom,
-        n.api_path,
-        n.map_url,
-        n.nominatim_urlbase,
-        n.contact_email,
-        n.tweet_content,
-        n.twitter,
-        n.backend_version,
-        n.geonames_admin_filter,
-        n.geonames_countryid,
-        true AS is_active,
-        COALESCE(h.first_seen_at, CURRENT_DATE) AS first_seen_at,
-        CURRENT_DATE AS last_seen_at,
-        COALESCE(h.nb_observations, 0) AS nb_observations
-    FROM vigilo_scopes_new n
-    LEFT JOIN vigilo_scopes_historical h ON h.id = n.id
-;
-
--- Inactive scopes: previously known but absent from current download
--- nb_observations preserved from last_release (includes orphan scopes already enriched there)
-INSERT INTO vigilo_scopes
-    SELECT
-        h.id, h.name, h.display_name, h.iso, h.country, h.department,
-        h.lat_min, h.lat_max, h.lon_min, h.lon_max,
-        h.map_center_string, h.map_zoom, h.api_path, h.map_url,
-        h.nominatim_urlbase, h.contact_email, h.tweet_content, h.twitter,
-        h.backend_version, h.geonames_admin_filter, h.geonames_countryid,
-        false AS is_active,
-        h.first_seen_at,
-        h.last_seen_at,
-        COALESCE(h.nb_observations, 0) AS nb_observations
-    FROM vigilo_scopes_historical h
-    WHERE h.id NOT IN (SELECT id FROM vigilo_scopes_new)
-;
-
--- observations
+-------------------------------------------------------------------------------
+-- Observations actives (depuis les JSON téléchargés)
+-------------------------------------------------------------------------------
 CREATE OR REPLACE TABLE vigilo_observations (
-    scopeid TEXT,
-    token TEXT,
-    ts BIGINT,
-    latitude DOUBLE,
-    longitude DOUBLE,
-    address TEXT,
-    "comment" TEXT,
-    explanation TEXT,
-    catid BIGINT,
-    approved BIGINT,
-    cityname TEXT,
-    geonames_districtid BIGINT,
-    geonames_district TEXT,
-    geonames_cityid BIGINT,
-    geonames_city TEXT
-)
-;
+    scopeid TEXT, token TEXT, ts BIGINT, latitude DOUBLE, longitude DOUBLE,
+    address TEXT, "comment" TEXT, explanation TEXT, catid BIGINT, approved BIGINT,
+    cityname TEXT, geonames_districtid BIGINT, geonames_district TEXT,
+    geonames_cityid BIGINT, geonames_city TEXT
+);
 
 INSERT INTO vigilo_observations
-    SELECT regexp_extract(filename,'.*([0-9][0-9]_.*)\..*',1),
+    SELECT
+        regexp_extract(filename, '.*observations_(.*)\.json', 1) AS scopeid,
         token,
-        "time",
-        coordinates_lat,
-        coordinates_lon,
+        "time"          AS ts,
+        coordinates_lat AS latitude,
+        coordinates_lon AS longitude,
         address,
         "comment",
         explanation,
-        categorie,
+        categorie       AS catid,
         approved,
         cityname,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-    FROM read_json('./downloaded/vigilo/observations_*.json',filename = true)
-;
--- historical observations: inactive scopes not covered by fresh JSON download
+        NULL::BIGINT    AS geonames_districtid,
+        NULL::TEXT      AS geonames_district,
+        NULL::BIGINT    AS geonames_cityid,
+        NULL::TEXT      AS geonames_city
+    FROM read_json('./downloaded/vigilo/observations_*.json', filename=true);
+
+-- Observations des scopes inactifs (depuis le parquet existant)
 INSERT INTO vigilo_observations
-    SELECT * FROM read_parquet('./downloaded/vigilo/last_release/observations.parquet')
-    WHERE scopeid NOT IN (SELECT DISTINCT scopeid FROM vigilo_observations)
-;
-DROP INDEX IF EXISTS idx_vigilo_observations_lat_lon;
-CREATE INDEX idx_vigilo_observations_lat_lon ON vigilo_observations (latitude,longitude);
+    SELECT scopeid, token, ts, latitude, longitude, address, "comment", explanation,
+           catid, approved, cityname, geonames_districtid, geonames_district,
+           geonames_cityid, geonames_city
+    FROM read_parquet('./dataset/vigilo/raw/observations.parquet')
+    WHERE scopeid NOT IN (SELECT DISTINCT scopeid FROM vigilo_observations);
 
 -------------------------------------------------------------------------------
--- Fix
+-- Enrichissement geonames
 -------------------------------------------------------------------------------
--- Find geoname ISO code
 UPDATE vigilo_scopes vs
-    SET iso = (
-        SELECT iso
-        FROM geonames_countries gc
-        WHERE vs.country = gc.country
-    )
-;
+    SET iso = (SELECT iso FROM geonames_countries gc WHERE vs.country = gc.country LIMIT 1);
 
 UPDATE vigilo_scopes vs
-    SET geonames_countryid = (
-        SELECT geonameid
-        FROM geonames_countries gc
-        WHERE vs.iso = gc.iso
-    )
-;
--- Define filter for getting a city values (used in SQL query)
+    SET geonames_countryid = (SELECT geonameid FROM geonames_countries gc WHERE vs.iso = gc.iso LIMIT 1);
+
 UPDATE vigilo_scopes SET geonames_admin_filter = 'ADM4' WHERE iso = 'FR';
-
--- clean²
-UPDATE vigilo_observations set cityname=trim(cityname);
--- DELETE FROM vigilo_observations WHERE cityname = 'undefined';
--- DELETE FROM vigilo_observations WHERE cityname IS NULL;
--- DELETE FROM vigilo_observations WHERE cityname = 'Ille-et-Vilaine';
-
--- UPDATE vigilo_observations SET cityname = 'Noyal-sur-Vilaine' WHERE cityname = 'Noyal-Sur-Vilaine';
--- UPDATE vigilo_observations SET cityname = 'Saint-Marcellin' WHERE cityname = 'Saint Marcellin';
--- UPDATE vigilo_observations SET cityname = 'Servon-sur-Vilaine' WHERE cityname = 'Servon-Sur-Vilaine';
--- UPDATE vigilo_observations SET cityname = 'Hœnheim' WHERE cityname = 'Hoenheim';
--- UPDATE vigilo_observations SET cityname = 'Brest' WHERE cityname = '29200 brest';
--- UPDATE vigilo_observations SET cityname = 'Brest' WHERE cityname = 'Brest.';
--- UPDATE vigilo_observations SET cityname = 'Saint-Aubin-de-Médoc' WHERE cityname = 'Saint-Aubin de Médoc';
--- UPDATE vigilo_observations SET cityname = 'Saint-Sauveur' WHERE cityname = 'Saint Sauveur';
--- UPDATE vigilo_observations SET cityname = 'La Teste-de-Buch' WHERE cityname = 'La Teste de Buch';
--- UPDATE vigilo_observations SET cityname = 'L''Isle-d''Abeau' WHERE cityname = 'L''Isle-dAbeau';
--- UPDATE vigilo_observations SET cityname = 'Lattes' WHERE cityname = 'Boirargues';
--- UPDATE vigilo_observations SET cityname = 'Saint-Vérand' WHERE cityname = 'Saint Vérand';
-
--- DELETE FROM vigilo_observations WHERE cityname IN (SELECT  cityname FROM vigilo_observations WHERE geonames_cityid IS NULL GROUP BY cityname having count()=1);
--- DELETE FROM vigilo_observations WHERE cityname IN ('Heonheim');
-
--- find geoname cityid
--- UPDATE vigilo_observations vo
---     SET geonames_cityid =  (
---         SELECT gc.id
---         FROM vigilo_observations vo1 LEFT JOIN vigilo_scopes vs ON vo1.scopeid = vs.id
---         LEFT JOIN geonames_allentries gc ON vs.iso = gc.country_code AND gc.feature_class='A' AND gc.feature_code=vs.geonames_admin_filter AND vo1.cityname = gc.name
---         WHERE vo1.token = vo.token
---     )
--- ;
 
 UPDATE vigilo_observations AS vo
 SET geonames_districtid = (
-    SELECT g.id
-    FROM geonames_latlon_cache AS g
-    WHERE g.latlon = vo.latitude || '-' || vo.longitude
+    SELECT g.id FROM geonames_latlon_cache AS g
+    WHERE g.latlon = vo.latitude || '-' || vo.longitude LIMIT 1
 )
 WHERE EXISTS (
-    SELECT 1
-    FROM geonames_latlon_cache AS g
+    SELECT 1 FROM geonames_latlon_cache AS g
     WHERE g.latlon = vo.latitude || '-' || vo.longitude
 );
 
 UPDATE vigilo_observations vo
 SET geonames_districtid = (
-    SELECT id
-    FROM geonames_allentries
-    WHERE feature_class = 'P' and latitude > vo.latitude - 0.001 and latitude < vo.latitude + 0.001 and longitude > vo.longitude - 0.001 and longitude < vo.longitude + 0.001
-    ORDER BY sqrt( power((latitude - vo.latitude), 2) + power((longitude - vo.longitude), 2) ) ASC
+    SELECT id FROM geonames_allentries
+    WHERE feature_class = 'P'
+      AND latitude BETWEEN vo.latitude - 0.05 AND vo.latitude + 0.05
+      AND longitude BETWEEN vo.longitude - 0.05 AND vo.longitude + 0.05
+    ORDER BY sqrt(power(latitude - vo.latitude, 2) + power(longitude - vo.longitude, 2))
     LIMIT 1
 )
-WHERE geonames_districtid IS NULL
-;
+WHERE geonames_districtid IS NULL;
 
 UPDATE vigilo_observations vo
-SET geonames_districtid = (
-    SELECT id
-    FROM geonames_allentries
-    WHERE feature_class = 'P' and latitude > vo.latitude - 0.005 and latitude < vo.latitude + 0.005 and longitude > vo.longitude - 0.005 and longitude < vo.longitude + 0.005
-    ORDER BY sqrt( power((latitude - vo.latitude), 2) + power((longitude - vo.longitude), 2) ) ASC
-    LIMIT 1
-)
-WHERE geonames_districtid IS NULL
-;
-
-UPDATE vigilo_observations vo
-SET geonames_districtid = (
-    SELECT id
-    FROM geonames_allentries
-    WHERE feature_class = 'P' and latitude > vo.latitude - 0.01 and latitude < vo.latitude + 0.01 and longitude > vo.longitude - 0.01 and longitude < vo.longitude + 0.01
-    ORDER BY sqrt( power((latitude - vo.latitude), 2) + power((longitude - vo.longitude), 2) ) ASC
-    LIMIT 1
-)
-WHERE geonames_districtid IS NULL
-;
-
-UPDATE vigilo_observations vo
-SET geonames_districtid = (
-    SELECT id
-    FROM geonames_allentries
-    WHERE feature_class = 'P' and latitude > vo.latitude - 0.05 and latitude < vo.latitude + 0.05 and longitude > vo.longitude - 0.05 and longitude < vo.longitude + 0.05
-    ORDER BY sqrt( power((latitude - vo.latitude), 2) + power((longitude - vo.longitude), 2) ) ASC
-    LIMIT 1
-)
-WHERE geonames_districtid IS NULL
-;
-
-UPDATE vigilo_observations vo
-SET geonames_district = (
-    SELECT name
-    FROM geonames_allentries
-    WHERE id = vo.geonames_districtid
-)
+SET geonames_district = (SELECT name      FROM geonames_allentries WHERE id = vo.geonames_districtid LIMIT 1)
 WHERE geonames_districtid IS NOT NULL;
 
 UPDATE vigilo_observations vo
-SET geonames_cityid = (
-    SELECT city_id
-    FROM geonames_allentries
-    WHERE id = vo.geonames_districtid
-)
+SET geonames_cityid   = (SELECT city_id   FROM geonames_allentries WHERE id = vo.geonames_districtid LIMIT 1)
 WHERE geonames_districtid IS NOT NULL;
 
 UPDATE vigilo_observations vo
-SET geonames_city = (
-    SELECT city_name
-    FROM geonames_allentries
-    WHERE id = vo.geonames_districtid
-)
+SET geonames_city     = (SELECT city_name FROM geonames_allentries WHERE id = vo.geonames_districtid LIMIT 1)
 WHERE geonames_districtid IS NOT NULL;
 
 INSERT INTO geonames_latlon_cache
-    SELECT geonames_districtid,latitude || '-' || longitude as latlon FROM vigilo_observations WHERE latlon NOT IN (SELECT latlon FROM geonames_latlon_cache)
-;
-COPY geonames_latlon_cache TO './dataset/geonames/raw/latlon_cache.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+    SELECT geonames_districtid, latitude || '-' || longitude AS latlon
+    FROM vigilo_observations
+    WHERE geonames_districtid IS NOT NULL
+      AND (latitude || '-' || longitude) NOT IN (SELECT latlon FROM geonames_latlon_cache);
+
+COPY geonames_latlon_cache TO './dataset/geonames/raw/latlon_cache.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
 -------------------------------------------------------------------------------
--- Orphan scopes: scopeids in vigilo_observations but absent from active scopes
--- (e.g. scopes removed from the Vigilo API but with historical observations)
--- Stats (nb_observations, first_seen_at, last_seen_at) are filled by the UPDATE below.
+-- Mise à jour des stats des scopes
 -------------------------------------------------------------------------------
-INSERT INTO vigilo_scopes
-    SELECT
-        o.scopeid                           AS id,
-        COALESCE(h.name, o.scopeid)         AS name,
-        COALESCE(h.display_name, o.scopeid) AS display_name,
-        h.iso, h.country, h.department,
-        h.lat_min, h.lat_max, h.lon_min, h.lon_max,
-        h.map_center_string, h.map_zoom, h.api_path, h.map_url,
-        h.nominatim_urlbase, h.contact_email, h.tweet_content, h.twitter,
-        h.backend_version, h.geonames_admin_filter, h.geonames_countryid,
-        false   AS is_active,
-        NULL    AS first_seen_at,
-        NULL    AS last_seen_at,
-        0       AS nb_observations
-    FROM (SELECT DISTINCT scopeid FROM vigilo_observations) o
-    LEFT JOIN vigilo_scopes_historical h ON h.id = o.scopeid
-    WHERE o.scopeid NOT IN (SELECT id FROM vigilo_scopes)
-;
-
--- Update stats for all scopes from vigilo_observations (fresh + historical)
 UPDATE vigilo_scopes vs
-SET
-    nb_observations = stats.nb_observations,
+SET nb_observations = stats.nb_observations,
     first_seen_at   = stats.first_seen_at,
     last_seen_at    = stats.last_seen_at
 FROM (
-    SELECT
-        scopeid                     AS id,
-        COUNT(*)                    AS nb_observations,
-        MIN(to_timestamp(ts)::DATE)     AS first_seen_at,
-        MAX(to_timestamp(ts)::DATE)     AS last_seen_at
+    SELECT scopeid AS id,
+           COUNT(*)                          AS nb_observations,
+           MIN(to_timestamp(ts::DOUBLE)::DATE) AS first_seen_at,
+           MAX(to_timestamp(ts::DOUBLE)::DATE) AS last_seen_at
     FROM vigilo_observations
     GROUP BY scopeid
 ) stats
-WHERE vs.id = stats.id
-;
+WHERE vs.id = stats.id;
 
--- Fallback: scopes with no metadata get their id as display name
 UPDATE vigilo_scopes SET name = id, display_name = id WHERE name IS NULL;
 
 -------------------------------------------------------------------------------
--- Cleanup temporary tables
+-- Nettoyage
 -------------------------------------------------------------------------------
 DROP TABLE IF EXISTS vigilo_scopes_new;
-DROP TABLE IF EXISTS vigilo_scopes_historical;
 
 -------------------------------------------------------------------------------
--- export to ./dataset
+-- Export parquets
 -------------------------------------------------------------------------------
-COPY vigilo_categories TO './dataset/vigilo/raw/categories.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', ROW_GROUP_SIZE 4096);
-COPY vigilo_scopes TO './dataset/vigilo/raw/scopes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', ROW_GROUP_SIZE 4096);
-
+COPY vigilo_categories TO './dataset/vigilo/raw/categories.parquet' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 4096);
+COPY vigilo_scopes     TO './dataset/vigilo/raw/scopes.parquet'     (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 4096);
 COPY (SELECT * FROM vigilo_observations ORDER BY scopeid)
-TO './dataset/vigilo/raw/observations.parquet'
-(FORMAT 'parquet', COMPRESSION 'zstd', ROW_GROUP_SIZE 4096);
+                       TO './dataset/vigilo/raw/observations.parquet' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 4096);
 
 COMMIT;

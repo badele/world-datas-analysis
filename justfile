@@ -7,6 +7,7 @@ envname:=`basename $(pwd)`
 dockerimage:='badele/world-datas-analysis:latest'
 dockerimage_push:='badele/world-datas-analysis:latest'
 observabledir:='observable'
+WDA_PUBLIC_DATASET_URL := env("WDA_PUBLIC_DATASET_URL", "https://pub-6526c18d68154746a16baf2f76a38544.r2.dev")
 
 # This help
 @help:
@@ -76,7 +77,7 @@ docker-show-context-size:
 # Run the wda docker image
 [group('docker')]
 @docker-run CMD="": docker-build
-    docker run --net host -i --rm -e DATAS_LIST="$DATAS_LIST" -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
+    docker run --net host -i --rm -e DATAS_LIST="$DATAS_LIST" -e WDA_PUBLIC_DATASET_URL="{{ WDA_PUBLIC_DATASET_URL }}" -v $(pwd):/wda -v $(pwd)/dataset:/var/lib/postgresql/data/dataset -w /wda {{ dockerimage }} {{ CMD }}
 
 ###############################################################################
 # DB

@@ -56,7 +56,7 @@ for dataset in $datasets; do
 
     echo "[release-download] ${dataset}: syncing from ${tag}..."
     python3 - "$manifest_local" "$dataset" "$FORCE" "$DL_TMP" "$REPO" "$tag" << 'PYEOF'
-import sys, json, os, subprocess
+import sys, json, os, shutil, subprocess
 
 manifest_path, dataset, force, dl_tmp, repo, tag = sys.argv[1:]
 force = force == "1"
@@ -79,7 +79,7 @@ for asset_name, rel_path in manifest.items():
         print(f"[release-download]   ERROR downloading {asset_name}: {result.stderr.strip()}")
         continue
     downloaded = os.path.join(dl_tmp, asset_name)
-    os.rename(downloaded, target)
+    shutil.move(downloaded, target)
     print(f"[release-download]   {asset_name} → {target}")
 PYEOF
 
