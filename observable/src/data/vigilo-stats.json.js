@@ -5,7 +5,7 @@ const obs = parquetPath("vigilo", "observations.parquet");
 
 await runDuckDBLoader(
   "vigilo-stats",
-  `SELECT s.id, s.display_name, s.is_active,
+  `SELECT s.id, s.display_name, s.iso, s.is_active,
           COUNT(o.token)::INTEGER AS count,
           MIN(o.ts) AS first_ts, MAX(o.ts) AS last_ts,
           (SELECT COUNT(*)::INTEGER FROM read_parquet(${JSON.stringify(
@@ -19,7 +19,7 @@ await runDuckDBLoader(
           )})) AS grand_total_obs
    FROM read_parquet(${JSON.stringify(scopes)}) s
    LEFT JOIN read_parquet(${JSON.stringify(obs)}) o ON o.scopeid = s.id
-   GROUP BY s.id, s.display_name, s.is_active
+   GROUP BY s.id, s.display_name, s.iso, s.is_active
    HAVING COUNT(o.token) > 200
    ORDER BY count DESC`,
 );

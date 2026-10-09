@@ -151,8 +151,20 @@ const fig3 = Plot.plot({
       y: "display_name",
       fill: "status",
       r: 5,
+      channels: {
+        Instance: "display_name",
+        Date: (d) => fmtDate(d.x),
+        Statut: "status",
+      },
       tip: {
-        format: { y: false, x: (d) => fmtDate(d.x) },
+        format: {
+          Instance: true,
+          Date: true,
+          Statut: true,
+          x: false,
+          y: false,
+          fill: false,
+        },
         fill: theme.surface,
         stroke: theme.border,
       },
@@ -249,17 +261,27 @@ const scopeOrder = [...totalsPerScope.entries()]
   .sort((a, b) => b.total - a.total)
   .map((d) => d.name);
 
-// Ordre graphe 2 : par % des 2 premières catégories décroissant
-const TOP2_CATS = [categoryOrder[0], categoryOrder[1]];
+// Ordre graphe 2 : tri multi-clé par % de chaque catégorie dans l'ordre CATEGORY_ORDER
 const scopeOrder2 = [...totalsPerScope.entries()]
   .map(([name, rows]) => {
     const total = rows.reduce((s, r) => s + r.count, 0);
-    const top2 = rows
-      .filter((r) => TOP2_CATS.includes(r.category))
-      .reduce((s, r) => s + r.count, 0);
-    return { name, top2Pct: total > 0 ? top2 / total : 0 };
+    const pct = Object.fromEntries(
+      categoryOrder.map((cat) => {
+        const n = rows
+          .filter((r) => r.category === cat)
+          .reduce((s, r) => s + r.count, 0);
+        return [cat, total > 0 ? n / total : 0];
+      }),
+    );
+    return { name, pct };
   })
-  .sort((a, b) => b.top2Pct - a.top2Pct)
+  .sort((a, b) => {
+    for (const cat of categoryOrder) {
+      const diff = b.pct[cat] - a.pct[cat];
+      if (Math.abs(diff) > 1e-10) return diff;
+    }
+    return 0;
+  })
   .map((d) => d.name);
 
 const barOpts = {
@@ -464,7 +486,15 @@ display(
     stats
       .filter((d) => d.count > 0)
       .map((d) => ({
-        Instance: d.display_name,
+        Instance: {
+          href: `https://vigilo.city/fr/villes/${(d.display_name + "-" + d.iso)
+            .normalize("NFD")
+            .replace(/[̀-ͯ]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")}`,
+          text: d.display_name,
+        },
         Statut: d.is_active ? "Actif" : "Inactif",
         Signalements: Number(d.count),
         "Première obs.": fmt(d.first_ts),
@@ -473,7 +503,22 @@ display(
     {
       sort: "Signalements",
       reverse: true,
+      columns: [
+        "Instance",
+        "Statut",
+        "Signalements",
+        "Première obs.",
+        "Dernière obs.",
+      ],
+      width: { Instance: 220 },
       format: {
+        Instance: ({ href, text }) =>
+          Object.assign(document.createElement("a"), {
+            href,
+            target: "_blank",
+            textContent: text,
+            style: "white-space: nowrap",
+          }),
         Statut: (v) => {
           const span = document.createElement("span");
           span.textContent = v;

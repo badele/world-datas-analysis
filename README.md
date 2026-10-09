@@ -98,13 +98,6 @@ just update             # Convert to Parquet (DuckDB)
 just import             # Load into PostgreSQL
 ```
 
-To process a specific dataset:
-
-```bash
-DATAS_LIST=sirene just update
-DATAS_LIST=sirene just import
-```
-
 > **Note:** `DATAS_LIST` accepts multiple comma-separated dataset names:
 >
 > ```bash
@@ -112,7 +105,60 @@ DATAS_LIST=sirene just import
 > DATAS_LIST=geonames,vigilo,nafrev2,sirene just import
 > ```
 
-Available datasets: `geonames`, `vigilo`, `sirene`, `nafrev2`
+### Per-dataset workflows
+
+Each dataset has two workflows: **update** (full refresh from source → publish to R2) and **import** (consume published Parquet files from R2).
+
+#### GeoNames
+
+```bash
+# Full update (download from geonames.org, convert, publish)
+DATAS_LIST=geonames just download
+DATAS_LIST=geonames just update
+DATAS_LIST=geonames just release
+
+# Import only (download Parquet from R2, load into DuckDB)
+DATAS_LIST=geonames just import
+```
+
+#### Vigilo
+
+```bash
+# Full update (download from Vigilo API, convert, publish)
+DATAS_LIST=vigilo just download
+DATAS_LIST=vigilo just update
+DATAS_LIST=vigilo just release
+
+# Import only (download Parquet from R2, load into DuckDB)
+DATAS_LIST=vigilo just import
+```
+
+#### NAF Rev. 2
+
+```bash
+# Full update (download from INSEE, convert, publish)
+DATAS_LIST=nafrev2 just download
+DATAS_LIST=nafrev2 just update
+DATAS_LIST=nafrev2 just release
+
+# Import only (download Parquet from R2, load into DuckDB)
+DATAS_LIST=nafrev2 just import
+```
+
+#### SIRENE
+
+```bash
+# Full update (download from data.gouv.fr ~4 GB, convert, publish)
+DATAS_LIST=sirene just download
+DATAS_LIST=sirene just update
+DATAS_LIST=sirene just release
+
+# Import only (download Parquet from R2, load into DuckDB)
+DATAS_LIST=sirene just import
+just sirene-etab-parquets   # generate Observable etab/ parquets from APE parquets
+```
+
+> **Note:** SIRENE download is ~4 GB. `just sirene-etab-parquets` must be run after import to generate the per-letter establishment parquets used by the Observable interface.
 
 ---
 
