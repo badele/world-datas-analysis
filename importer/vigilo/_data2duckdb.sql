@@ -60,7 +60,7 @@ INSERT INTO vigilo_scopes BY NAME
         true                                        AS is_active,
         COALESCE(
             (SELECT first_seen_at
-             FROM read_parquet('./dataset/vigilo/raw/scopes.parquet')
+             FROM read_parquet('./downloaded/vigilo/from_r2/raw/scopes.parquet')
              WHERE id = n.id LIMIT 1),
             CURRENT_DATE
         )                                           AS first_seen_at,
@@ -72,7 +72,7 @@ INSERT INTO vigilo_scopes BY NAME
 -- On force is_active = false quel que soit leur statut précédent (gère la première disparition)
 INSERT INTO vigilo_scopes BY NAME
     SELECT * REPLACE (false AS is_active)
-    FROM read_parquet('./dataset/vigilo/raw/scopes.parquet')
+    FROM read_parquet('./downloaded/vigilo/from_r2/raw/scopes.parquet')
     WHERE id NOT IN (SELECT id FROM vigilo_scopes_new);
 
 -------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ INSERT INTO vigilo_observations
     SELECT scopeid, token, ts, latitude, longitude, address, "comment", explanation,
            catid, approved, cityname, geonames_districtid, geonames_district,
            geonames_cityid, geonames_city
-    FROM read_parquet('./dataset/vigilo/raw/observations.parquet')
+    FROM read_parquet('./downloaded/vigilo/from_r2/raw/observations.parquet')
     WHERE scopeid NOT IN (SELECT DISTINCT scopeid FROM vigilo_observations);
 
 -------------------------------------------------------------------------------
