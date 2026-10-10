@@ -3,14 +3,12 @@
 import datetime
 import glob
 import hashlib
+import json
 import os
 import shutil
 import subprocess
 import zipfile
 
-import git
-import requests
-from tqdm import tqdm
 
 
 def init_download(provider):
@@ -117,6 +115,8 @@ def isFolderOutdated(folder, hours):
 # Clone or pull repository
 ###############################################################################
 def pull(provider, repo_url):
+    import git
+
     clone_dir = f"./downloaded/{provider}"
 
     print(f"Sync {provider} repository ...")
@@ -168,6 +168,9 @@ def data2duckdb(provider, tables=None):
 
 
 def download(url, desc="", save_path=""):
+    import requests
+    from tqdm import tqdm
+
     # Init stream downloader
     response = requests.get(url, stream=True)
     response.raise_for_status()
@@ -227,6 +230,8 @@ def _get_github_repo():
 
 
 def download_last_dataset(provider):
+    import requests
+
     tag = f"dataset-{provider}"
     dest = f"./downloaded/{provider}/last_release"
 
@@ -264,3 +269,165 @@ def unzipFile(filename, destination):
     with zipfile.ZipFile(filename, "r") as zip_ref:
         zip_ref.extractall(destination)
         os.remove(filename)
+
+
+###############################################################################
+# Cloudflare R2 upload / download
+#
+# Naming convention in R2: {dataset}/{subdir}__{path separators → __}{= → .}
+# Example: dataset/vigilo, file raw/scopes.parquet → vigilo/raw__scopes.parquet
+#
+# uploadToR2  — runs locally (hors Docker), needs R2 credentials
+# downloadFromR2 — runs inside Docker, uses the public R2 URL
+###############################################################################
+
+_R2_BUCKET = "world-datas-analysis"
+
+
+def uploadToR2(dataset: str) -> None:
+    import boto3
+
+    account_id = os.environ.get("CF_ACCOUNT_ID")
+    access_key = os.environ.get("CF_R2_ACCESS_KEY_ID")
+    secret_key = os.environ.get("CF_R2_SECRET_ACCESS_KEY")
+
+    if not account_id or not access_key or not secret_key:
+        raise RuntimeError(
+            "[uploadToR2] Missing credentials: "
+            "CF_ACCOUNT_ID, CF_R2_ACCESS_KEY_ID, CF_R2_SECRET_ACCESS_KEY"
+        )
+
+    files = []
+    for subdir in ["raw", "observable"]:
+        src_dir = f"dataset/{dataset}/{subdir}"
+        if not os.path.isdir(src_dir):
+            continue
+        for root, _, filenames in os.walk(src_dir):
+            for fn in sorted(filenames):
+                if fn.endswith(".parquet"):
+                    files.append(os.path.join(root, fn))
+    files.sort()
+
+    if not files:
+        print(f"[uploadToR2] {dataset}: no parquet files found in raw/ or observable/")
+        return
+
+    endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
+    client = boto3.client(
+        "s3",
+        endpoint_url=endpoint_url,
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+    )
+
+    sync_cache = f"dataset/{dataset}/.r2-sync-hash"
+    hash_input = "\n".join(
+        f"{os.path.getsize(f):.0f} {os.path.getmtime(f):.6f}" for f in files
+    )
+    current_hash = hashlib.sha256(hash_input.encode()).hexdigest()
+    if os.path.exists(sync_cache):
+        with open(sync_cache) as f:
+            if f.read().strip() == current_hash:
+                print(f"[uploadToR2] {dataset}: parquets unchanged since last sync, skipping")
+                return
+
+    r2_sizes = {}
+    paginator = client.get_paginator("list_objects_v2")
+    for page in paginator.paginate(Bucket=_R2_BUCKET, Prefix=f"{dataset}/"):
+        for obj in page.get("Contents", []):
+            r2_sizes[obj["Key"]] = obj["Size"]
+
+    manifest = {}
+    local_keys = set()
+    uploaded = 0
+    skipped = 0
+
+    for f in files:
+        rel = os.path.relpath(f, f"dataset/{dataset}")
+        flat = rel.replace("/", "__").replace("=", ".")
+        r2_key = f"{dataset}/{flat}"
+        local_keys.add(r2_key)
+        manifest[flat] = rel
+
+        local_size = os.path.getsize(f)
+        if r2_key in r2_sizes and r2_sizes[r2_key] == local_size:
+            skipped += 1
+            continue
+
+        with open(f, "rb") as fp:
+            client.put_object(Bucket=_R2_BUCKET, Key=r2_key, Body=fp.read())
+        uploaded += 1
+
+    manifest_key = f"{dataset}/manifest-{dataset}.json"
+    client.put_object(
+        Bucket=_R2_BUCKET,
+        Key=manifest_key,
+        Body=json.dumps(manifest).encode(),
+        ContentType="application/json",
+    )
+    local_keys.add(manifest_key)
+    print(f"[uploadToR2] {dataset}: manifest uploaded ({len(manifest)} file(s) listed)")
+
+    if skipped:
+        print(f"[uploadToR2] {dataset}: {skipped} file(s) unchanged, skipped")
+    if uploaded:
+        print(f"[uploadToR2] {dataset}: {uploaded} file(s) uploaded")
+
+    stale = [k for k in r2_sizes if k not in local_keys]
+    if stale:
+        for i in range(0, len(stale), 1000):
+            batch = stale[i : i + 1000]
+            client.delete_objects(
+                Bucket=_R2_BUCKET,
+                Delete={"Objects": [{"Key": k} for k in batch], "Quiet": True},
+            )
+        print(f"[uploadToR2] {dataset}: {len(stale)} stale file(s) deleted")
+    else:
+        print(f"[uploadToR2] {dataset}: no stale files")
+
+    with open(sync_cache, "w") as f:
+        f.write(current_hash)
+
+
+def downloadFromR2(dataset: str, subdir: str = "raw") -> None:
+    import requests
+
+    base_url = os.environ.get("WDA_PUBLIC_DATASET_URL", "").rstrip("/")
+    if not base_url:
+        raise RuntimeError("[downloadFromR2] WDA_PUBLIC_DATASET_URL is not set")
+
+    manifest_url = f"{base_url}/{dataset}/manifest-{dataset}.json"
+    resp = requests.get(manifest_url, timeout=30)
+    if resp.status_code == 404:
+        print(
+            f"[downloadFromR2] {dataset}: no manifest found at {manifest_url}, "
+            "skipping (run 'just release' first)"
+        )
+        return
+    resp.raise_for_status()
+    manifest = resp.json()
+
+    prefix = f"{subdir}/"
+    dest_base = f"./downloaded/{dataset}/from_r2"
+    downloaded_count = 0
+
+    for flat_name, rel_path in manifest.items():
+        if not rel_path.startswith(prefix):
+            continue
+
+        file_url = f"{base_url}/{dataset}/{flat_name}"
+        dest_path = os.path.join(dest_base, rel_path)
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+
+        file_resp = requests.get(file_url, timeout=60, stream=True)
+        file_resp.raise_for_status()
+        with open(dest_path, "wb") as f:
+            for chunk in file_resp.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        downloaded_count += 1
+
+    print(
+        f"[downloadFromR2] {dataset}/{subdir}: "
+        f"{downloaded_count} file(s) downloaded to {dest_base}"
+    )

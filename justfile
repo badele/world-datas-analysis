@@ -270,6 +270,7 @@ release-delete:
 # Build the production site and serve it locally on port 8080 (mirrors CI)
 [group('observable')]
 @observable-prod:
+    echo "You can access the production site at http://localhost:8080"
     DATAS_LIST="${DATAS_LIST:-vigilo,nafrev2,sirene}" just observable-pages-build
     docker run --rm -p 8080:80 \
         -v "$(pwd)/observable/dist:/usr/share/nginx/html:ro" \
