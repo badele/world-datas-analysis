@@ -6,7 +6,7 @@ on:
       - "Dockerfile"
       - "requirements.txt"
 env:
-  JUST_VERSION: "1.23.0"
+  JUST_VERSION: "1.51.0"
 
 jobs:
   push_to_registry:
