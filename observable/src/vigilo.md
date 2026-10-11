@@ -6,9 +6,10 @@ title: Vigilo — Vue globale
   <div class="breadcrumb"><a href="./">Accueil</a> › Vigilo</div>
   <h1>Signalements Vigilo</h1>
   <p class="page-subtitle">
-    Répartition des signalements citoyens liés à la pratique du vélo et des déplacements piétons,
-    par instance Vigilo. L’application <a href="https://vigilo.city" target="_blank">Vigilo</a>
-    a été créée par Quentin Hess suite au mouvement
+    Répartition des signalements citoyens liés à la pratique du vélo et des déplacements piétons, par instance Vigilo.
+  </p>
+  <p class="page-meta">
+    Par <a href="https://vigilo.city" target="_blank">Vigilo</a>, créée par Quentin Hess suite au mouvement
     <a href="https://lemouvement.info/2018/11/11/montpellier-manif-citoyenne-1200-cyclistes-en-colere/" target="_blank">#JeSuisUnDesDeux</a>
     à Montpellier.
   </p>
@@ -86,19 +87,16 @@ display(pills);
 
 ## Périodes d'activité et signalements par instance
 
-Pour étudier les incivilités urbaines liées aux mobilités douces, nous disposons
-d'un panel de **${totalScopes} instances** Vigilo représentant
-**${grandTotalObs.toLocaleString("fr-FR")} signalements**. Seules les instances
-comptant plus de **200 observations** sont incluses dans les graphiques
-(**${stats.length} instances** et **${total.toLocaleString("fr-FR")}
-signalements** sélectionnés). Bien que le mouvement `#JeSuisUnDesDeux` ait
-démarré en 2018 et que l'application Vigilo soit sortie en 2019, les
-signalements peuvent avoir été saisis rétrospectivement, Vigilo se basant sur la
-date de prise de photo plutôt que sur la date de saisie.
+Les graphiques portent sur les **${stats.length} instances** comptant plus de 200 observations
+(**${total.toLocaleString("fr-FR")} signalements** sur ${grandTotalObs.toLocaleString("fr-FR")}).
 
-<div class="chart-description">
-Chronologie des instances : date du premier et dernier signalement enregistré.
+<div class="wda-note">
+Les signalements antérieurs à 2019 peuvent être rétrospectifs : Vigilo se base sur la date de prise de photo, pas la date de saisie.
 </div>
+
+<div class="wda-chart-block" id="chart-chronologie-des-instances">
+<p class="wda-chart-title">Chronologie des instances</p>
+<p class="wda-chart-subtitle">Date du premier et dernier signalement enregistré pour chaque instance active.</p>
 
 ```js
 // Graphe 3 — période d'activité par instance
@@ -174,9 +172,14 @@ const fig3 = Plot.plot({
 display(applyThemeToLegend(fig3));
 ```
 
-<div class="chart-description">
-Nombre de signallements par instances.
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
 </div>
+
+Le volume de signalements varie fortement d'une instance à l'autre, reflétant des différences d'ancienneté et d'adoption locale.
+
+<div class="wda-chart-block" id="chart-signalements-par-instance">
+<p class="wda-chart-title">Signalements par instance</p>
+<p class="wda-chart-subtitle">Nombre total de signalements enregistrés pour chaque instance (instances &gt; 200 observations).</p>
 
 ```js
 import * as Plot from "npm:@observablehq/plot";
@@ -402,14 +405,20 @@ display(
 );
 ```
 
-## Analyse des incivilités
-
-<div class="chart-description">
-Répartition globale de l'ensemble des signalements, toutes instances confondues.
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
 </div>
 
+## Analyse des incivilités
+
+Répartition des types d'incivilités signalées, globalement et par instance.
+
+<div class="wda-note">Les catégories représentant moins de 2 % du total toutes instances confondues sont regroupées dans « Autres ».</div>
+
+<div class="wda-chart-block" id="chart-repartition-globale-des-signalements">
+<p class="wda-chart-title">Répartition globale des signalements</p>
+<p class="wda-chart-subtitle">Distribution des catégories d'incivilités, toutes instances confondues.</p>
+
 ```js
-// figA — répartition globale par catégorie
 display(
   Plot.plot({
     style: plotStyle,
@@ -459,19 +468,21 @@ display(
     ],
   }),
 );
+```
 
-// Répartition par instance (fig2 construit dans le bloc précédent)
-display(
-  html`<h3 style="margin-top:2rem;margin-bottom:.5rem">
-      Répartition par instance
-    </h3>
-    <p class="chart-description" style="margin-bottom:1rem">
-      Distribution des catégories pour chaque instance (100% empilé), classées
-      par proportion des deux premières catégories.
-    </p>`,
-);
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
+</div>
+
+<div class="wda-chart-block" id="chart-repartition-par-instance">
+<p class="wda-chart-title">Répartition par instance</p>
+<p class="wda-chart-subtitle">Distribution des catégories pour chaque instance (100% empilé), classées par proportion des deux premières catégories.</p>
+
+```js
 display(applyThemeToLegend(fig2));
 ```
+
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
+</div>
 
 ## Détail par instance
 
@@ -532,9 +543,10 @@ display(
 );
 ```
 
-<div class="source-note">
-  Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
-</div>
+```js
+import { initChartActions } from "./components/wda-chart-actions.js";
+initChartActions();
+```
 
 <div class="see-also">
   <h3>Voir aussi</h3>

@@ -36,6 +36,7 @@ export default {
   theme: ["air", "midnight"],
   pages: [
     { name: "Accueil", path: "/" },
+    { name: "Démo style OWID", path: "/demo-owid" },
     {
       name: "Vigilo",
       datasets: ["vigilo"],
