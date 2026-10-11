@@ -24,7 +24,7 @@ export const theme = {
 };
 
 export const plotStyle = {
-  background: theme.bg,
+  background: "transparent",
   color: theme.text,
   fontFamily: theme.fontFamily,
   fontSize: "12px",

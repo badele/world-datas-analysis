@@ -124,7 +124,8 @@ const cities = [
 <div class="page-header">
   <div class="breadcrumb"><a href="./">Accueil</a> › <a href="vigilo">Vigilo</a> › ${scopeLabel}</div>
   <h1>${scopeLabel}</h1>
-  <p class="page-subtitle">Signalements citoyens liés aux déplacements vélo et piétons — ${observations.length.toLocaleString("fr-FR")} observations. Zoomez pour passer de la heatmap de densité aux points individuels.</p>
+  <p class="page-subtitle">Signalements citoyens liés aux déplacements vélo et piétons — ${observations.length.toLocaleString("fr-FR")} observations.</p>
+  <p class="page-meta">Zoomez sur la carte pour passer de la heatmap de densité aux points individuels.</p>
 </div>
 
 ## Vue d'ensemble
@@ -161,8 +162,9 @@ const cities = [
 </div>
 </div>
 
-<div class="card">
-<h3>Comparaison à la moyenne nationale</h3>
+<div class="wda-chart-block" id="chart-comparaison-a-la-moyenne-nationale">
+<p class="wda-chart-title">Comparaison à la moyenne nationale</p>
+<p class="wda-chart-subtitle">Part de chaque catégorie — instance vs moyenne de toutes les instances actives.</p>
 
 ```js
 const natMap = new Map();
@@ -245,6 +247,7 @@ display(
 );
 ```
 
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
 </div>
 
 </div>
@@ -297,9 +300,9 @@ const map = createVigiloMap(mapDiv, filtered, {
 invalidation.then(() => map.remove());
 ```
 
-## Évolution temporelle
-
-<div class="chart-description">Nombre de signalements par mois. Permet de voir si l'activité de l'instance est stable, en croissance ou saisonnière.</div>
+<div class="wda-chart-block" id="chart-evolution-mensuelle-des-signalements">
+<p class="wda-chart-title">Évolution mensuelle des signalements</p>
+<p class="wda-chart-subtitle">Nombre de signalements déposés par mois. Permet de voir si l'activité de l'instance est stable, en croissance ou saisonnière.</p>
 
 ```js
 const byMonth = d3
@@ -351,9 +354,12 @@ display(
 );
 ```
 
-## Top adresses
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
+</div>
 
-<div class="chart-description">Les 10 lieux les plus souvent signalés dans l'instance.</div>
+<div class="wda-chart-block" id="chart-top-10-adresses-signalees">
+<p class="wda-chart-title">Top 10 adresses signalées</p>
+<p class="wda-chart-subtitle">Les lieux les plus fréquemment mentionnés dans cette instance.</p>
 
 ```js
 const topAddresses = d3
@@ -392,9 +398,12 @@ display(
 );
 ```
 
-## Activité par jour et heure
+<p class="wda-chart-source">Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.</p>
+</div>
 
-<div class="chart-description">Densité des signalements selon le jour de la semaine et l'heure de dépôt.</div>
+<div class="wda-chart-block" id="chart-activite-par-jour-et-heure">
+<p class="wda-chart-title">Activité par jour et heure</p>
+<p class="wda-chart-subtitle">Densité des signalements selon le jour de la semaine et l'heure de dépôt.</p>
 
 ```js
 const DAYS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
@@ -456,9 +465,15 @@ display(
 );
 ```
 
-<div class="source-note">
+<p class="wda-chart-source">
   Source : <a href="dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
+</p>
 </div>
+
+```js
+import { initChartActions } from "../components/wda-chart-actions.js";
+initChartActions();
+```
 
 <div class="see-also">
   <h3>Voir aussi</h3>
