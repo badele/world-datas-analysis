@@ -136,6 +136,12 @@ const fig3 = Plot.plot({
     legend: true,
   },
   marks: [
+    Plot.gridX({
+      interval: "year",
+      stroke: theme.border,
+      strokeOpacity: 0.2,
+      strokeWidth: 0.75,
+    }),
     Plot.link(statsWithDates, {
       x1: "first_date",
       x2: "last_date",
@@ -393,10 +399,12 @@ display(
       }),
       Plot.text(stats, {
         y: "display_name",
-        x: (d) => Number(d.count) / 2,
+        x: (d) => Number(d.count),
         text: (d) => Number(d.count).toLocaleString("fr-FR"),
-        textAnchor: "middle",
-        fill: "black",
+        textAnchor: "start",
+        dx: 6,
+        fill: theme.text,
+        fontSize: 11,
         fontWeight: "bold",
       }),
       Plot.ruleX([0]),
