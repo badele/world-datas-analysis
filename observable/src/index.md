@@ -96,18 +96,18 @@ const DATASETS = [
 <div class="hero">
   <h1>World Data Analysis</h1>
   <p>Exploration de données ouvertes françaises et mondiales : mobilité urbaine, activité économique, géographie. Des données fiables, des visualisations claires.</p>
-  <div class="hero-stats">
-    <div>
-      <div class="hero-stat-value">${totalObs.toLocaleString("fr-FR")}</div>
-      <div class="hero-stat-label">Entrées indexées</div>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-value">${totalObs.toLocaleString("fr-FR")}</div>
+      <div class="stat-label">Entrées indexées</div>
     </div>
-    <div>
-      <div class="hero-stat-value">${DATASETS.length}</div>
-      <div class="hero-stat-label">Datasets</div>
+    <div class="stat-card">
+      <div class="stat-value">${DATASETS.length}</div>
+      <div class="stat-label">Datasets</div>
     </div>
-    <div>
-      <div class="hero-stat-value">3</div>
-      <div class="hero-stat-label">Sources</div>
+    <div class="stat-card">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Sources</div>
     </div>
   </div>
 </div>
