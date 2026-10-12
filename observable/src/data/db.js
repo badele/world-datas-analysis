@@ -23,13 +23,13 @@ export const toJSON = (v) =>
 
 // Returns parquet URL for a given provider and file (relative to raw/).
 // Priority: local path > R2 > GitHub releases
-export function parquetPath(provider, file) {
+export function parquetPath(provider, file, subdir = "raw") {
   if (process.env.WDA_DATASET_PATH) {
     return path
-      .join(process.env.WDA_DATASET_PATH, provider, "raw", file)
+      .join(process.env.WDA_DATASET_PATH, provider, subdir, file)
       .replace(/\\/g, "/");
   }
-  const flatName = `raw__${file.replace(/\//g, "__")}`;
+  const flatName = `${subdir}__${file.replace(/\//g, "__")}`;
   if (process.env.WDA_PUBLIC_DATASET_URL) {
     return `${process.env.WDA_PUBLIC_DATASET_URL}/${provider}/${flatName}`;
   }
@@ -81,6 +81,49 @@ export function sireneParquets(sections = null) {
     : "https://github.com/badele/world-datas-analysis/releases/download/dataset-sirene";
   const urls = secs.map((s) => `${base}/raw__section_id.${s}__data_0.parquet`);
   return JSON.stringify(urls);
+}
+
+// Returns { src, ccExpr } for querying allentries parquet partitions.
+// - src: SQL-ready expression for read_parquet(...)
+// - ccExpr: SQL expression that resolves to the country_code value
+//
+// Locally, hive_partitioning=true reconstructs country_code from the path.
+// Remotely, flat-named R2 files (country_code.FR) can't be parsed by DuckDB
+// hive partitioning, so we extract country_code via regexp on the filename.
+export async function allentriesParquets() {
+  if (process.env.WDA_DATASET_PATH) {
+    const glob = path
+      .join(
+        process.env.WDA_DATASET_PATH,
+        "geonames",
+        "raw",
+        "allentries.parquet",
+        "**",
+        "*.parquet",
+      )
+      .replace(/\\/g, "/");
+    return { src: `'${glob}', hive_partitioning=true`, ccExpr: "country_code" };
+  }
+  const base = process.env.WDA_PUBLIC_DATASET_URL
+    ? `${process.env.WDA_PUBLIC_DATASET_URL}/geonames`
+    : "https://github.com/badele/world-datas-analysis/releases/download/dataset-geonames";
+  const manifestUrl = process.env.WDA_PUBLIC_DATASET_URL
+    ? `${process.env.WDA_PUBLIC_DATASET_URL}/geonames/manifest-geonames.json`
+    : null;
+  if (manifestUrl) {
+    const manifest = await fetch(manifestUrl)
+      .then((r) => r.json())
+      .catch(() => ({}));
+    const urls = Object.keys(manifest)
+      .filter((k) => k.startsWith("raw__allentries.parquet__"))
+      .map((k) => `${base}/${k}`);
+    if (urls.length) {
+      // flat-name format: raw__allentries.parquet__country_code.FR__data_0.parquet
+      const ccExpr = `regexp_extract(filename, 'country_code\\.([A-Z]+)__', 1)`;
+      return { src: `${JSON.stringify(urls)}, filename=true`, ccExpr };
+    }
+  }
+  return null;
 }
 
 export async function runDuckDBQuery(name, sql) {

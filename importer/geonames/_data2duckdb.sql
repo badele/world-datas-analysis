@@ -1,9 +1,13 @@
+.mode box
+
 SET memory_limit = '5GB';
 SET threads = 4;
+PRAGMA enable_progress_bar;
+
+BEGIN TRANSACTION;
 
 -- Countries
-DROP TABLE IF EXISTS geonames_countries;
-CREATE TABLE geonames_countries (
+CREATE OR REPLACE TABLE geonames_countries (
     iso TEXT,
     iso3 TEXT,
     iso_numeric INTEGER,
@@ -60,8 +64,7 @@ INSERT INTO geonames_countries
 -------------------------------------------------------------------------------
 -- Load raw entries (feature_class A=admin, P=populated places)
 -------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geonames_raw;
-CREATE TABLE geonames_raw AS
+CREATE OR REPLACE TABLE geonames_raw AS
     SELECT *
     FROM read_csv(
         './downloaded/geonames/allCountries.txt',
@@ -95,8 +98,7 @@ CREATE TABLE geonames_raw AS
 -------------------------------------------------------------------------------
 -- Compute admin fullcodes in one pass
 -------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geonames_with_fullcodes;
-CREATE TABLE geonames_with_fullcodes AS
+CREATE OR REPLACE TABLE geonames_with_fullcodes AS
 SELECT
     -- geonames_fullcode: identifier for ADM1/ADM2/ADM3/ADM4 records used as JOIN keys
     CASE feature_code
@@ -136,27 +138,22 @@ DROP TABLE geonames_raw;
 -------------------------------------------------------------------------------
 -- Build lookup tables for ADM1–ADM4 (small, indexed in memory by DuckDB)
 -------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geonames_adm1_lkp;
-CREATE TABLE geonames_adm1_lkp AS
+CREATE OR REPLACE TABLE geonames_adm1_lkp AS
     SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM1';
 
-DROP TABLE IF EXISTS geonames_adm2_lkp;
-CREATE TABLE geonames_adm2_lkp AS
+CREATE OR REPLACE TABLE geonames_adm2_lkp AS
     SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM2';
 
-DROP TABLE IF EXISTS geonames_adm3_lkp;
-CREATE TABLE geonames_adm3_lkp AS
+CREATE OR REPLACE TABLE geonames_adm3_lkp AS
     SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM3';
 
-DROP TABLE IF EXISTS geonames_adm4_lkp;
-CREATE TABLE geonames_adm4_lkp AS
+CREATE OR REPLACE TABLE geonames_adm4_lkp AS
     SELECT id, name, geonames_fullcode FROM geonames_with_fullcodes WHERE feature_code = 'ADM4';
 
 -------------------------------------------------------------------------------
 -- Final table: resolve admin IDs and names in one hash-join pass
 -------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geonames_allentries;
-CREATE TABLE geonames_allentries AS
+CREATE OR REPLACE TABLE geonames_allentries AS
 SELECT
     ga.geonames_fullcode,
     ga.id,
@@ -206,4 +203,36 @@ DROP TABLE geonames_adm4_lkp;
 CREATE INDEX idx_geonames_allentries_lat_lon ON geonames_allentries (latitude, longitude);
 
 COPY geonames_countries TO './dataset/geonames/raw/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
-COPY geonames_allentries TO './dataset/geonames/raw/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (country_code));
+COPY geonames_allentries TO './dataset/geonames/raw/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (country_code), OVERWRITE_OR_IGNORE TRUE);
+
+-- Pre-aggregated summary parquets: read by the observable dataloader as 3 small
+-- R2 requests instead of fanning out across 388 country partitions.
+COPY (
+    SELECT
+        COUNT(*)                                                      AS total_entries,
+        COUNT(DISTINCT country_code)                                  AS total_countries,
+        SUM(CASE WHEN feature_class = 'P' THEN 1 ELSE 0 END)         AS populated_places,
+        SUM(CASE WHEN feature_class = 'A' THEN 1 ELSE 0 END)         AS admin_entries,
+        SUM(CASE WHEN feature_class = 'P' AND population > 0
+                 THEN population ELSE 0 END)                         AS total_population
+    FROM geonames_allentries
+) TO './dataset/geonames/observable/allentries-stats.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
+COPY (
+    SELECT feature_code, COUNT(*) AS count
+    FROM geonames_allentries
+    WHERE feature_class = 'P'
+    GROUP BY feature_code
+    ORDER BY count DESC
+    LIMIT 15
+) TO './dataset/geonames/observable/allentries-feature-codes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
+COPY (
+    SELECT name, country_code, population, latitude, longitude
+    FROM geonames_allentries
+    WHERE feature_code = 'PPLC'
+      AND latitude IS NOT NULL AND longitude IS NOT NULL
+    ORDER BY population DESC NULLS LAST
+) TO './dataset/geonames/observable/allentries-capitals.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
+COMMIT;

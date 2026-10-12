@@ -19,6 +19,7 @@ def init_download(provider):
 def init_dataset(provider):
     # shutil.rmtree(f"./dataset/{provider}", ignore_errors=True)
     os.makedirs(f"./dataset/{provider}", exist_ok=True)
+    os.makedirs(f"./dataset/{provider}/observable", exist_ok=True)
 
 
 def show_title(title):

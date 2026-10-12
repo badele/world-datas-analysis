@@ -4,6 +4,44 @@ const ICON_FULLSCREEN = `<svg xmlns="http://www.w3.org/2000/svg" width="14" heig
 
 const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#aaa" stroke-width="1.5"/><ellipse cx="10" cy="10" rx="4" ry="8.5" fill="none" stroke="#aaa" stroke-width="1"/><line x1="1.5" y1="10" x2="18.5" y2="10" stroke="#aaa" stroke-width="1"/><text x="23" y="14" font-family="sans-serif" font-size="11" font-weight="700" fill="#aaa" letter-spacing="1">WDA</text></svg>`;
 
+function extractSwatches(block) {
+  const container = block.querySelector('[class*="-swatches"]');
+  if (!container) return [];
+  const swatches = [];
+  for (const item of container.querySelectorAll('[class*="-swatch"]')) {
+    const svg = item.querySelector("svg[fill]");
+    if (!svg) continue;
+    const color = svg.getAttribute("fill");
+    const clone = item.cloneNode(true);
+    clone.querySelectorAll("svg, style").forEach((el) => el.remove());
+    const label = clone.textContent.trim();
+    if (color && label) swatches.push({ color, label });
+  }
+  return swatches;
+}
+
+function layoutSwatches(swatches, availableW) {
+  if (!swatches.length) return { height: 0, rows: [] };
+  const tmp = document.createElement("canvas").getContext("2d");
+  tmp.font = "11px sans-serif";
+  const swatchSize = 12,
+    gap = 4,
+    itemPad = 16;
+  const rows = [[]];
+  let cx = 0;
+  for (const s of swatches) {
+    const tw = tmp.measureText(s.label).width;
+    const iw = swatchSize + gap + tw + itemPad;
+    if (rows[rows.length - 1].length > 0 && cx + iw > availableW) {
+      rows.push([]);
+      cx = 0;
+    }
+    rows[rows.length - 1].push({ ...s, iw });
+    cx += iw;
+  }
+  return { height: rows.length * 20 + 8, rows };
+}
+
 function loadImage(url) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -12,7 +50,13 @@ function loadImage(url) {
   });
 }
 
-async function composeAndDownload(contentW, contentH, drawContent, block) {
+async function composeAndDownload(
+  contentW,
+  contentH,
+  drawContent,
+  block,
+  swatches = [],
+) {
   const titleText =
     block.querySelector(".wda-chart-title")?.textContent?.trim() || "";
   const subtitleText =
@@ -28,7 +72,10 @@ async function composeAndDownload(contentW, contentH, drawContent, block) {
   const gapH = titleH || subtitleH ? 10 : 0;
   const sourceH = sourceText ? 28 : 0;
   const totalW = contentW + pad * 2;
-  const totalH = pad + titleH + subtitleH + gapH + contentH + sourceH + pad;
+  const swatchLayout = layoutSwatches(swatches, contentW);
+  const swatchH = swatchLayout.height;
+  const totalH =
+    pad + titleH + subtitleH + gapH + swatchH + contentH + sourceH + pad;
 
   const logoUrl = URL.createObjectURL(
     new Blob([LOGO_SVG], { type: "image/svg+xml" }),
@@ -58,6 +105,23 @@ async function composeAndDownload(contentW, contentH, drawContent, block) {
     y += subtitleH;
   }
   y += gapH;
+
+  if (swatchLayout.rows.length > 0 && swatchH > 0) {
+    let sy = y + 2;
+    for (const row of swatchLayout.rows) {
+      let sx = pad;
+      for (const { color, label, iw } of row) {
+        ctx.fillStyle = color;
+        ctx.fillRect(sx, sy, 12, 12);
+        ctx.font = "11px sans-serif";
+        ctx.fillStyle = "#e0e0e0";
+        ctx.fillText(label, sx + 16, sy + 10);
+        sx += iw;
+      }
+      sy += 20;
+    }
+    y += swatchH;
+  }
 
   drawContent(ctx, pad, y, contentW, contentH);
 
@@ -90,24 +154,61 @@ async function composeAndDownload(contentW, contentH, drawContent, block) {
 }
 
 async function downloadChart(block) {
-  // SVG chart
-  const svg = [...block.querySelectorAll("svg")].find(
+  const swatches = extractSwatches(block);
+
+  // SVG chart — pick the largest by area to avoid selecting small legend ramps
+  const allSvgs = [...block.querySelectorAll("svg")].filter(
     (s) => parseInt(s.getAttribute("width") || "0") > 100,
   );
-  if (svg) {
+  if (allSvgs.length) {
+    const svgArea = (s) =>
+      (s.viewBox?.baseVal?.width || s.clientWidth || 0) *
+      (s.viewBox?.baseVal?.height || s.clientHeight || 0);
+    allSvgs.sort((a, b) => svgArea(b) - svgArea(a));
+    const svg = allSvgs[0];
     const svgW = svg.viewBox?.baseVal?.width || svg.clientWidth || 640;
     const svgH = svg.viewBox?.baseVal?.height || svg.clientHeight || 400;
+
     const serializer = new XMLSerializer();
     const svgUrl = URL.createObjectURL(
       new Blob([serializer.serializeToString(svg)], { type: "image/svg+xml" }),
     );
     const chartImg = await loadImage(svgUrl);
     URL.revokeObjectURL(svgUrl);
+
+    // Capture color ramp legend (e.g. choropleth scale) if present
+    const rampSvg = block.querySelector('svg[class*="-ramp"]');
+    let rampImg = null,
+      rampW = 0,
+      rampH = 0;
+    if (rampSvg) {
+      rampW = rampSvg.viewBox?.baseVal?.width || rampSvg.clientWidth || 240;
+      rampH = rampSvg.viewBox?.baseVal?.height || rampSvg.clientHeight || 50;
+      // Replace currentColor with light color so text/ticks render on dark background
+      const rampSvgStr = serializer
+        .serializeToString(rampSvg)
+        .replaceAll("currentColor", "#e0e0e0");
+      const rampUrl = URL.createObjectURL(
+        new Blob([rampSvgStr], { type: "image/svg+xml" }),
+      );
+      rampImg = await loadImage(rampUrl);
+      URL.revokeObjectURL(rampUrl);
+    }
+
+    const extraH = rampImg ? rampH + 8 : 0;
     await composeAndDownload(
       svgW,
-      svgH,
-      (ctx, x, y, w, h) => ctx.drawImage(chartImg, x, y, w, h),
+      svgH + extraH,
+      (ctx, x, y, w, h) => {
+        if (rampImg) {
+          ctx.drawImage(rampImg, x, y, rampW, rampH);
+          ctx.drawImage(chartImg, x, y + rampH + 8, w, h - rampH - 8);
+        } else {
+          ctx.drawImage(chartImg, x, y, w, h);
+        }
+      },
       block,
+      swatches,
     );
     return;
   }
@@ -128,13 +229,47 @@ async function downloadChart(block) {
     const rect = mapCanvas.getBoundingClientRect();
     const dataUrl = mapCanvas.toDataURL();
     const mapImg = await loadImage(dataUrl);
+
+    const legendData = mapEl?._wdaLegend;
+    const legendH = legendData ? 38 : 0;
+
     await composeAndDownload(
       rect.width,
-      rect.height,
-      (ctx, x, y, cw, ch) => ctx.drawImage(mapImg, x, y, cw, ch),
+      rect.height + legendH,
+      (ctx, x, y, cw, ch) => {
+        if (legendData) {
+          drawMapLegend(ctx, x, y, cw, legendData);
+          ctx.drawImage(mapImg, x, y + legendH, cw, ch - legendH);
+        } else {
+          ctx.drawImage(mapImg, x, y, cw, ch);
+        }
+      },
       block,
+      swatches,
     );
   }
+}
+
+function drawMapLegend(ctx, x, y, w, { label, ticks, colors }) {
+  const barW = Math.min(240, w);
+
+  ctx.font = "11px sans-serif";
+  ctx.fillStyle = "#aaaaaa";
+  ctx.fillText(label, x, y + 11);
+
+  const grad = ctx.createLinearGradient(x, 0, x + barW, 0);
+  colors.forEach((c, i) => grad.addColorStop(i / (colors.length - 1), c));
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.roundRect(x, y + 14, barW, 10, 2);
+  ctx.fill();
+
+  ctx.font = "10px sans-serif";
+  ctx.fillStyle = "#aaaaaa";
+  ticks.forEach((t, i) => {
+    const tx = x + (i / (ticks.length - 1)) * barW;
+    ctx.fillText(t, tx, y + 36);
+  });
 }
 
 function shareChart(block) {

@@ -1,28 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*
 
-import sys
 import wdalib
 
-provider = "geonames"
-repo_url = "https://download.geonames.org/export"
+PROVIDER = "geonames"
+REPO_URL = "https://download.geonames.org/export"
 
 
 def download_countries():
-    filename = f"./downloaded/{provider}/countryInfo.txt"
-
+    """Downloads the GeoNames country info file."""
+    filename = f"./downloaded/{PROVIDER}/countryInfo.txt"
     wdalib.downloadFile(
-        f"{repo_url}/dump/countryInfo.txt",
+        f"{REPO_URL}/dump/countryInfo.txt",
         "countryInfo",
         filename,
     )
 
 
 def download_allentries():
-    filename = f"./downloaded/{provider}/allCountries.zip"
-
+    """Downloads and unzips the GeoNames allCountries archive."""
+    filename = f"./downloaded/{PROVIDER}/allCountries.zip"
     wdalib.downloadFile(
-        f"{repo_url}/dump/allCountries.zip",
+        f"{REPO_URL}/dump/allCountries.zip",
         "allCountries",
         filename,
     )
@@ -30,22 +29,23 @@ def download_allentries():
     print("=== Uncompressing allCountries.zip ===")
     wdalib.unzipFile(
         filename,
-        f"./downloaded/{provider}",
+        f"./downloaded/{PROVIDER}",
     )
 
 
 def download():
-    if not wdalib.isFolderOutdated(f"./downloaded/{provider}", 7 * 24):
+    """Downloads all required files if the folder is outdated."""
+    if not wdalib.isFolderOutdated(f"./downloaded/{PROVIDER}", 7 * 24):
         return
 
-    wdalib.init_download(provider)
-    wdalib.show_title(f"Download {provider}")
+    wdalib.init_download(PROVIDER)
+    wdalib.show_title(f"Download {PROVIDER}")
 
     download_countries()
     download_allentries()
 
 
 def update():
-    wdalib.init_dataset(provider)
-
-    wdalib.data2duckdb(provider)
+    """Updates the dataset for the provider."""
+    wdalib.init_dataset(PROVIDER)
+    wdalib.data2duckdb(PROVIDER)
