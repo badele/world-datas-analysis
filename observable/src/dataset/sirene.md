@@ -3,47 +3,32 @@ title: Dataset — SIRENE
 ---
 
 <div class="page-header">
-  <div class="breadcrumb"><a href="./">Accueil</a> › Datasets › SIRENE</div>
+  <div class="breadcrumb"><a href="../">Accueil</a> › Datasets › SIRENE</div>
   <h1>Dataset SIRENE</h1>
   <p class="page-subtitle">Registre national des entreprises et établissements français, géré par l'INSEE.</p>
 </div>
 
-```js
-const datasets = await FileAttachment("../data/wda-datasets.json").json();
-const meta = datasets.find((d) => d.provider === "sirene");
-
-display(
-  html`<div class="card">
-    <h3>Informations</h3>
-    <div class="meta-row">
-      <div class="meta-item">
-        <div class="meta-label">Description</div>
-        <div class="meta-value">${meta.description}</div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">Source officielle</div>
-        <div class="meta-value">
-          <a href="${meta.source}" target="_blank">${meta.website}</a>
-        </div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">Observations</div>
-        <div class="meta-value">
-          ${meta.nb_observations.toLocaleString("fr-FR")}
-        </div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">Variables</div>
-        <div class="meta-value">${meta.nb_variables}</div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">Périmètres (${meta.wda_scope})</div>
-        <div class="meta-value">${meta.nb_scopes.toLocaleString("fr-FR")}</div>
-      </div>
+<div class="card">
+  <h3>Informations</h3>
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">Description</div>
+      <div class="meta-value">Registre national des entreprises et établissements français, géré par l'INSEE.</div>
     </div>
-  </div>`,
-);
-```
+    <div class="meta-item">
+      <div class="meta-label">Source officielle</div>
+      <div class="meta-value"><a href="https://www.insee.fr/fr/information/3591226" target="_blank">insee.fr — SIRENE</a></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Licence</div>
+      <div class="meta-value">Open Data — Licence Ouverte / Open Licence</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Couverture</div>
+      <div class="meta-value">France entière (~12 millions d'établissements)</div>
+    </div>
+  </div>
+</div>
 
 <div class="see-also">
   <h3>Explorer les données</h3>

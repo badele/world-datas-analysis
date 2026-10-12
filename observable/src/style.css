@@ -84,16 +84,25 @@ figure {
   margin-bottom: 0.4rem;
 }
 
+/* When inside a block that has a map, float the bar over the map */
+.wda-chart-block:has(.vigilo-map) .wda-chart-actions {
+  position: absolute;
+  bottom: 2.75rem;
+  right: 0.75rem;
+  margin: 0;
+  z-index: 10;
+}
+
 .wda-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 26px;
   height: 26px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(26, 26, 46, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 5px;
-  color: #666;
+  color: #aaa;
   cursor: pointer;
   transition:
     background 0.15s,
@@ -102,8 +111,8 @@ figure {
 }
 
 .wda-action-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: #aaa;
+  background: rgba(26, 26, 46, 0.95);
+  color: #e0e0e0;
 }
 
 .wda-chart-block:fullscreen {
@@ -126,6 +135,12 @@ figure {
   width: 100% !important;
   height: 100% !important;
   min-height: 0;
+}
+
+.wda-chart-block:fullscreen .vigilo-map {
+  flex: 1;
+  min-height: 0;
+  height: auto !important;
 }
 
 /* ── Map popup dark style ─────────────────────────────────────────────── */
