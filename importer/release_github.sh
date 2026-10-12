@@ -106,7 +106,7 @@ for dataset in $datasets; do
                 echo "," >> "$manifest_file"
             fi
             printf '  "%s": "%s"' "$github_name" "$rel" >> "$manifest_file"
-        done < <(find "$upload_dir" -name "*.parquet" | sort)
+        done < <(find "$upload_dir" -name "*.parquet" -type f | sort)
     done
     echo "" >> "$manifest_file"
     echo "}" >> "$manifest_file"

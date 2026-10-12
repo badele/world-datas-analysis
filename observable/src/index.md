@@ -12,6 +12,7 @@ const statsById = Object.fromEntries(stats.map((d) => [d.id, d]));
 const v = statsById.vigilo ?? {};
 const s = statsById.sirene ?? {};
 const n = statsById.nafrev2 ?? {};
+const g = statsById.geonames ?? {};
 
 const fmtN = (x) => (x != null ? Number(x).toLocaleString("fr-FR") : "—");
 const fmtDate = (ts) =>
@@ -20,7 +21,8 @@ const fmtDate = (ts) =>
 const totalObs =
   (v.total_obs ?? 0) +
   (s.total_etablissements ?? 0) +
-  (n.total_sous_classes ?? 0);
+  (n.total_sous_classes ?? 0) +
+  (g.total_countries ?? 0);
 
 const DATASETS = [
   {
@@ -71,6 +73,21 @@ const DATASETS = [
       { label: "Codes APE", value: fmtN(n.total_sous_classes) },
       { label: "Sections", value: fmtN(n.total_sections) },
       { label: "Divisions", value: fmtN(n.total_divisions) },
+    ],
+  },
+  {
+    id: "geonames",
+    icon: "🌍",
+    title: "GeoNames — Référentiel géographique mondial",
+    description:
+      "Base de données mondiale des pays et entités géographiques, publiée sous licence CC BY 4.0. Utilisée comme référentiel de géolocalisation pour relier les autres datasets du projet.",
+    theme: "Référentiel",
+    source: "GeoNames.org",
+    exploreUrl: "geonames",
+    datasetUrl: "dataset/geonames",
+    keyStats: [
+      { label: "Pays / territoires", value: fmtN(g.total_countries) },
+      { label: "Continents", value: fmtN(g.total_continents) },
     ],
   },
 ];

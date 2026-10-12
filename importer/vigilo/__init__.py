@@ -131,5 +131,8 @@ def download():
 
 def update():
     wdalib.show_title(f"Update {provider}")
+
+    wdalib.downloadFromR2("geonames", subdir="raw")
     wdalib.downloadFromR2(provider, subdir="raw")
+
     wdalib.data2duckdb(provider)

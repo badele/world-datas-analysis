@@ -1,5 +1,7 @@
 import { parquetPath, sireneParquets, runDuckDBQuery, toJSON } from "./db.js";
 
+const geonamesCountries = parquetPath("geonames", "countries.parquet");
+
 const vigiloObs = parquetPath("vigilo", "observations.parquet");
 const vigiloScopes = parquetPath("vigilo", "scopes.parquet");
 const sireneEts = sireneParquets();
@@ -55,6 +57,17 @@ const [nafrev2 = {}] = await runDuckDBQuery(
 `,
 );
 
+const [geonames = {}] = await runDuckDBQuery(
+  "datasets-stats-geonames",
+  `
+  SELECT
+    COUNT(*)                                      AS total_countries,
+    COUNT(DISTINCT continent)                     AS total_continents,
+    SUM(population)                               AS total_population
+  FROM read_parquet('${geonamesCountries}')
+`,
+);
+
 process.stdout.write(
   toJSON([
     {
@@ -76,6 +89,12 @@ process.stdout.write(
       total_groupes: Number(nafrev2.total_groupes ?? 0),
       total_classes: Number(nafrev2.total_classes ?? 0),
       total_sous_classes: Number(nafrev2.total_sous_classes ?? 0),
+    },
+    {
+      id: "geonames",
+      total_countries: Number(geonames.total_countries ?? 0),
+      total_continents: Number(geonames.total_continents ?? 0),
+      total_population: Number(geonames.total_population ?? 0),
     },
   ]),
 );

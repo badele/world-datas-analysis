@@ -46,6 +46,15 @@ export default {
       ],
     },
     {
+      name: "GeoNames",
+      datasets: ["geonames"],
+      open: false,
+      pages: [
+        { name: "Explorer les pays", path: "/geonames" },
+        { name: "Lieux géographiques", path: "/geonames-allentries" },
+      ],
+    },
+    {
       name: "NAF Rév. 2",
       datasets: ["nafrev2"],
       open: false,
