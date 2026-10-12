@@ -205,4 +205,34 @@ CREATE INDEX idx_geonames_allentries_lat_lon ON geonames_allentries (latitude, l
 COPY geonames_countries TO './dataset/geonames/raw/countries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
 COPY geonames_allentries TO './dataset/geonames/raw/allentries.parquet' (FORMAT 'parquet', COMPRESSION 'zstd', PARTITION_BY (country_code), OVERWRITE_OR_IGNORE TRUE);
 
+-- Pre-aggregated summary parquets: read by the observable dataloader as 3 small
+-- R2 requests instead of fanning out across 388 country partitions.
+COPY (
+    SELECT
+        COUNT(*)                                                      AS total_entries,
+        COUNT(DISTINCT country_code)                                  AS total_countries,
+        SUM(CASE WHEN feature_class = 'P' THEN 1 ELSE 0 END)         AS populated_places,
+        SUM(CASE WHEN feature_class = 'A' THEN 1 ELSE 0 END)         AS admin_entries,
+        SUM(CASE WHEN feature_class = 'P' AND population > 0
+                 THEN population ELSE 0 END)                         AS total_population
+    FROM geonames_allentries
+) TO './dataset/geonames/observable/allentries-stats.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
+COPY (
+    SELECT feature_code, COUNT(*) AS count
+    FROM geonames_allentries
+    WHERE feature_class = 'P'
+    GROUP BY feature_code
+    ORDER BY count DESC
+    LIMIT 15
+) TO './dataset/geonames/observable/allentries-feature-codes.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
+COPY (
+    SELECT name, country_code, population, latitude, longitude
+    FROM geonames_allentries
+    WHERE feature_code = 'PPLC'
+      AND latitude IS NOT NULL AND longitude IS NOT NULL
+    ORDER BY population DESC NULLS LAST
+) TO './dataset/geonames/observable/allentries-capitals.parquet' (FORMAT 'parquet', COMPRESSION 'zstd');
+
 COMMIT;

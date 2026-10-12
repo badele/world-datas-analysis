@@ -23,13 +23,13 @@ export const toJSON = (v) =>
 
 // Returns parquet URL for a given provider and file (relative to raw/).
 // Priority: local path > R2 > GitHub releases
-export function parquetPath(provider, file) {
+export function parquetPath(provider, file, subdir = "raw") {
   if (process.env.WDA_DATASET_PATH) {
     return path
-      .join(process.env.WDA_DATASET_PATH, provider, "raw", file)
+      .join(process.env.WDA_DATASET_PATH, provider, subdir, file)
       .replace(/\\/g, "/");
   }
-  const flatName = `raw__${file.replace(/\//g, "__")}`;
+  const flatName = `${subdir}__${file.replace(/\//g, "__")}`;
   if (process.env.WDA_PUBLIC_DATASET_URL) {
     return `${process.env.WDA_PUBLIC_DATASET_URL}/${provider}/${flatName}`;
   }
