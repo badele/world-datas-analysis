@@ -6,6 +6,10 @@ title: Vigilo — Toutes les villes
 import { createVigiloMap } from "../components/vigilo-map.js";
 import { createMultiSelect } from "../components/wda-multiselect.js";
 import { initVigiloDB } from "../components/vigilo-db.js";
+import {
+  initChartActions,
+  initBlockActions,
+} from "../components/wda-chart-actions.js";
 import * as Plot from "npm:@observablehq/plot";
 ```
 
@@ -113,7 +117,7 @@ for (const s of stats
   display(
     html`<div class="meta-item">
       <div class="meta-label">
-        <a href="vigilo/${s.id}">${s.display_name}</a>
+        <a href="../vigilo/${s.id}">${s.display_name}</a>
       </div>
       <div class="meta-value">
         ${Number(s.count).toLocaleString("fr-FR")} signalements
@@ -176,33 +180,58 @@ const observations = (
 const obsWithCoords = observations.filter(
   (d) => d.latitude != null && d.longitude != null && d.latitude !== "",
 );
-let mapLat = 46.5,
-  mapLon = 2.35,
-  mapZoom = 5;
+// One centroid per city → equal weight regardless of observation count
+let mapBounds = null;
 if (obsWithCoords.length) {
-  const lats = obsWithCoords.map((d) => +d.latitude).sort((a, b) => a - b);
-  const lons = obsWithCoords.map((d) => +d.longitude).sort((a, b) => a - b);
-  mapLat = (lats[0] + lats[lats.length - 1]) / 2;
-  mapLon = (lons[0] + lons[lons.length - 1]) / 2;
-  const span = Math.max(
-    lats[lats.length - 1] - lats[0],
-    lons[lons.length - 1] - lons[0],
-  );
-  if (span > 0)
-    mapZoom = Math.max(4, Math.min(13, Math.round(Math.log2(0.5 / span) + 10)));
+  const cityMap = new Map();
+  for (const d of obsWithCoords) {
+    const key = d.geonames_city || `${d.latitude},${d.longitude}`;
+    if (!cityMap.has(key)) cityMap.set(key, { latSum: 0, lonSum: 0, n: 0 });
+    const c = cityMap.get(key);
+    c.latSum += +d.latitude;
+    c.lonSum += +d.longitude;
+    c.n++;
+  }
+  const centroids = [...cityMap.values()].map((c) => ({
+    lat: c.latSum / c.n,
+    lon: c.lonSum / c.n,
+  }));
+  const lats = centroids.map((c) => c.lat).sort((a, b) => a - b);
+  const lons = centroids.map((c) => c.lon).sort((a, b) => a - b);
+  mapBounds = [
+    [lons[0], lats[0]],
+    [lons[lons.length - 1], lats[lats.length - 1]],
+  ];
 }
-const mapDiv = display(document.createElement("div"));
+const mapBlock = document.createElement("div");
+mapBlock.className = "wda-chart-block";
+mapBlock.id = "chart-carte-toutes-villes";
+const mapTitleEl = document.createElement("p");
+mapTitleEl.className = "wda-chart-title";
+mapTitleEl.textContent = "Carte de tous les signalements";
+const mapSubEl = document.createElement("p");
+mapSubEl.className = "wda-chart-subtitle";
+mapSubEl.textContent =
+  "Heatmap de densité (zoom arrière) et points individuels (zoom avant). Toutes instances confondues.";
+const mapDiv = document.createElement("div");
 mapDiv.className = "vigilo-map";
+const mapSourceEl = document.createElement("p");
+mapSourceEl.className = "wda-chart-source";
+mapSourceEl.innerHTML = `Source : <a href="dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.`;
+mapBlock.append(mapTitleEl, mapSubEl, mapDiv, mapSourceEl);
+display(mapBlock);
+initBlockActions(mapBlock);
+
 const map = createVigiloMap(mapDiv, observations, {
-  center: [mapLon, mapLat],
-  zoom: mapZoom,
+  bounds: mapBounds,
+  padding: 30,
 });
 invalidation.then(() => map.remove());
 ```
 
-<div class="source-note">
-  Source : <a href="dataset/vigilo">Dataset Vigilo</a> — signalements collectés par des collectifs cyclistes locaux via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.
-</div>
+```js
+initChartActions();
+```
 
 <div class="see-also">
   <h3>Voir aussi</h3>

@@ -6,6 +6,10 @@ title: Vigilo — Instance
 import { createVigiloMap } from "../components/vigilo-map.js";
 import { createMultiSelect } from "../components/wda-multiselect.js";
 import { initVigiloDB } from "../components/vigilo-db.js";
+import {
+  initChartActions,
+  initBlockActions,
+} from "../components/wda-chart-actions.js";
 import * as Plot from "npm:@observablehq/plot";
 import * as d3 from "npm:d3";
 ```
@@ -48,7 +52,7 @@ const observations = _obsResult.toArray().map((r) => ({
 }));
 
 const _scopeResult = await conn.query(`
-  SELECT id, display_name, is_active, country, department,
+  SELECT id, display_name, iso, is_active, country, department,
          map_center_string, map_zoom
   FROM read_parquet('scopes.parquet')
   WHERE id = '${scopeId}'
@@ -59,6 +63,7 @@ const scopeMeta =
     ? {
         id: _scopeRows[0].id,
         display_name: _scopeRows[0].display_name,
+        iso: _scopeRows[0].iso,
         is_active: _scopeRows[0].is_active,
         country: _scopeRows[0].country,
         department: _scopeRows[0].department,
@@ -157,8 +162,30 @@ const cities = [
   </div>
   <div class="meta-item">
     <div class="meta-label">Source</div>
-    <div class="meta-value"><a href="dataset/vigilo">Dataset Vigilo</a> (<a href="https://vigilo.city" target="_blank">vigilo.city</a>)</div>
+    <div class="meta-value"><a href="dataset/vigilo">Dataset Vigilo</a></div>
   </div>
+
+```js
+{
+  const _slug = (scopeLabel + "-" + (scopeMeta.iso ?? ""))
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  display(
+    html`<div class="meta-item">
+      <div class="meta-label">Lien externe</div>
+      <div class="meta-value">
+        <a href="https://vigilo.city/fr/villes/${_slug}" target="_blank"
+          >Plus d'informations sur vigilo.city →</a
+        >
+      </div>
+    </div>`,
+  );
+}
+```
+
 </div>
 </div>
 
@@ -273,29 +300,37 @@ const filtered =
 const obsWithCoords = observations.filter(
   (d) => d.latitude != null && d.longitude != null && d.latitude !== "",
 );
-let clat = 46.5,
-  clon = 2.35,
-  autoZoom = 11;
+let mapBounds = null;
 if (obsWithCoords.length) {
-  const lats = obsWithCoords.map((d) => +d.latitude).sort((a, b) => a - b);
-  const lons = obsWithCoords.map((d) => +d.longitude).sort((a, b) => a - b);
-  clat = (lats[0] + lats[lats.length - 1]) / 2;
-  clon = (lons[0] + lons[lons.length - 1]) / 2;
-  const span = Math.max(
-    lats[lats.length - 1] - lats[0],
-    lons[lons.length - 1] - lons[0],
-  );
-  if (span > 0)
-    autoZoom = Math.max(
-      9,
-      Math.min(14, Math.round(Math.log2(0.5 / span) + 10)),
-    );
+  const lats = obsWithCoords.map((d) => +d.latitude);
+  const lons = obsWithCoords.map((d) => +d.longitude);
+  mapBounds = [
+    [Math.min(...lons), Math.min(...lats)],
+    [Math.max(...lons), Math.max(...lats)],
+  ];
 }
-const mapDiv = display(document.createElement("div"));
+const mapBlock = document.createElement("div");
+mapBlock.className = "wda-chart-block";
+mapBlock.id = "chart-carte-des-signalements";
+const mapTitleEl = document.createElement("p");
+mapTitleEl.className = "wda-chart-title";
+mapTitleEl.textContent = "Carte des signalements";
+const mapSubEl = document.createElement("p");
+mapSubEl.className = "wda-chart-subtitle";
+mapSubEl.textContent =
+  "Heatmap de densité (zoom arrière) et points individuels (zoom avant).";
+const mapDiv = document.createElement("div");
 mapDiv.className = "vigilo-map";
+const mapSourceEl = document.createElement("p");
+mapSourceEl.className = "wda-chart-source";
+mapSourceEl.innerHTML = `Source : <a href="dataset/vigilo">Dataset Vigilo</a> — données collectées via <a href="https://vigilo.city" target="_blank">vigilo.city</a>.`;
+mapBlock.append(mapTitleEl, mapSubEl, mapDiv, mapSourceEl);
+display(mapBlock);
+initBlockActions(mapBlock);
+
 const map = createVigiloMap(mapDiv, filtered, {
-  center: [clon, clat],
-  zoom: autoZoom,
+  bounds: mapBounds,
+  padding: 40,
 });
 invalidation.then(() => map.remove());
 ```
@@ -471,7 +506,6 @@ display(
 </div>
 
 ```js
-import { initChartActions } from "../components/wda-chart-actions.js";
 initChartActions();
 ```
 

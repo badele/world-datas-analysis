@@ -12,28 +12,14 @@ function loadImage(url) {
   });
 }
 
-async function downloadChart(block) {
-  const svg = [...block.querySelectorAll("svg")].find(
-    (s) => parseInt(s.getAttribute("width") || "0") > 100,
-  );
-  if (!svg) return;
-
-  const svgW = svg.viewBox?.baseVal?.width || svg.clientWidth || 640;
-  const svgH = svg.viewBox?.baseVal?.height || svg.clientHeight || 400;
-
+async function composeAndDownload(contentW, contentH, drawContent, block) {
   const titleText =
     block.querySelector(".wda-chart-title")?.textContent?.trim() || "";
   const subtitleText =
     block.querySelector(".wda-chart-subtitle")?.textContent?.trim() || "";
   const sourceEl = block.querySelector(".wda-chart-source");
   const sourceText = sourceEl?.textContent?.trim() || "";
-
-  // Use actual rendered width of source element for the separator line
-  const screenSvgW = svg.getBoundingClientRect().width || svgW;
-  const domToSvg = svgW / screenSvgW;
-  const sourceLineW = sourceEl
-    ? sourceEl.getBoundingClientRect().width * domToSvg
-    : 0;
+  const sourceLineW = sourceEl ? sourceEl.getBoundingClientRect().width : 0;
 
   const scale = 2;
   const pad = 20;
@@ -41,22 +27,13 @@ async function downloadChart(block) {
   const subtitleH = subtitleText ? 20 : 0;
   const gapH = titleH || subtitleH ? 10 : 0;
   const sourceH = sourceText ? 28 : 0;
-  const totalW = svgW + pad * 2;
-  const totalH = pad + titleH + subtitleH + gapH + svgH + sourceH + pad;
+  const totalW = contentW + pad * 2;
+  const totalH = pad + titleH + subtitleH + gapH + contentH + sourceH + pad;
 
-  const serializer = new XMLSerializer();
-  const svgUrl = URL.createObjectURL(
-    new Blob([serializer.serializeToString(svg)], { type: "image/svg+xml" }),
-  );
   const logoUrl = URL.createObjectURL(
     new Blob([LOGO_SVG], { type: "image/svg+xml" }),
   );
-
-  const [chartImg, logoImg] = await Promise.all([
-    loadImage(svgUrl),
-    loadImage(logoUrl),
-  ]);
-  URL.revokeObjectURL(svgUrl);
+  const logoImg = await loadImage(logoUrl);
   URL.revokeObjectURL(logoUrl);
 
   const canvas = document.createElement("canvas");
@@ -82,16 +59,15 @@ async function downloadChart(block) {
   }
   y += gapH;
 
-  ctx.drawImage(chartImg, pad, y, svgW, svgH);
+  drawContent(ctx, pad, y, contentW, contentH);
 
-  // WDA logo — top-right, aligned with title row
   const logoW = 58,
     logoH = 20;
   ctx.globalAlpha = 0.5;
   ctx.drawImage(logoImg, totalW - pad - logoW, pad - 4, logoW, logoH);
   ctx.globalAlpha = 1;
 
-  y += svgH;
+  y += contentH;
   if (sourceText) {
     ctx.strokeStyle = "#3d3d6b";
     ctx.lineWidth = 0.5;
@@ -111,6 +87,54 @@ async function downloadChart(block) {
     a.download = `wda-${filename}.png`;
     a.click();
   });
+}
+
+async function downloadChart(block) {
+  // SVG chart
+  const svg = [...block.querySelectorAll("svg")].find(
+    (s) => parseInt(s.getAttribute("width") || "0") > 100,
+  );
+  if (svg) {
+    const svgW = svg.viewBox?.baseVal?.width || svg.clientWidth || 640;
+    const svgH = svg.viewBox?.baseVal?.height || svg.clientHeight || 400;
+    const serializer = new XMLSerializer();
+    const svgUrl = URL.createObjectURL(
+      new Blob([serializer.serializeToString(svg)], { type: "image/svg+xml" }),
+    );
+    const chartImg = await loadImage(svgUrl);
+    URL.revokeObjectURL(svgUrl);
+    await composeAndDownload(
+      svgW,
+      svgH,
+      (ctx, x, y, w, h) => ctx.drawImage(chartImg, x, y, w, h),
+      block,
+    );
+    return;
+  }
+
+  // MapLibre GL canvas — trigger repaint, wait for frame, then read via toDataURL
+  const mapEl = block.querySelector(".vigilo-map");
+  const mapCanvas = block.querySelector(".maplibregl-canvas");
+  if (mapCanvas) {
+    const mapInstance = mapEl?._wdaMap;
+    if (mapInstance) {
+      await new Promise((resolve) => {
+        mapInstance.once("render", resolve);
+        mapInstance.triggerRepaint();
+        // fallback if render event never fires (e.g. headless)
+        setTimeout(resolve, 300);
+      });
+    }
+    const rect = mapCanvas.getBoundingClientRect();
+    const dataUrl = mapCanvas.toDataURL();
+    const mapImg = await loadImage(dataUrl);
+    await composeAndDownload(
+      rect.width,
+      rect.height,
+      (ctx, x, y, cw, ch) => ctx.drawImage(mapImg, x, y, cw, ch),
+      block,
+    );
+  }
 }
 
 function shareChart(block) {
@@ -145,34 +169,42 @@ function toggleFullscreen(block, btn) {
       btn.title = document.fullscreenElement
         ? "Quitter le plein écran"
         : "Plein écran";
+      // MapLibre uses ResizeObserver but needs a nudge after fullscreen transition
+      const mapInstance = block.querySelector(".vigilo-map")?._wdaMap;
+      if (mapInstance) setTimeout(() => mapInstance.resize(), 50);
     },
     { once: false },
   );
 }
 
-export function initChartActions() {
-  document.querySelectorAll(".wda-chart-block").forEach((block) => {
-    if (block.querySelector(".wda-chart-actions")) return;
+function processBlock(block) {
+  if (block.querySelector(".wda-chart-actions")) return;
 
-    const bar = document.createElement("div");
-    bar.className = "wda-chart-actions";
-    bar.innerHTML = `
+  const bar = document.createElement("div");
+  bar.className = "wda-chart-actions";
+  bar.innerHTML = `
       <button class="wda-action-btn" data-action="download" title="Télécharger l'image">${ICON_DOWNLOAD}</button>
       <button class="wda-action-btn" data-action="share" title="Partager">${ICON_SHARE}</button>
       <button class="wda-action-btn" data-action="fullscreen" title="Plein écran">${ICON_FULLSCREEN}</button>
     `;
 
-    bar.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-action]");
-      if (!btn) return;
-      if (btn.dataset.action === "download") downloadChart(block);
-      else if (btn.dataset.action === "share") shareChart(block);
-      else if (btn.dataset.action === "fullscreen")
-        toggleFullscreen(block, btn);
-    });
-
-    const source = block.querySelector(".wda-chart-source");
-    if (source) block.insertBefore(bar, source);
-    else block.appendChild(bar);
+  bar.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    if (btn.dataset.action === "download") downloadChart(block);
+    else if (btn.dataset.action === "share") shareChart(block);
+    else if (btn.dataset.action === "fullscreen") toggleFullscreen(block, btn);
   });
+
+  const source = block.querySelector(".wda-chart-source");
+  if (source) block.insertBefore(bar, source);
+  else block.appendChild(bar);
+}
+
+export function initBlockActions(block) {
+  processBlock(block);
+}
+
+export function initChartActions() {
+  document.querySelectorAll(".wda-chart-block").forEach(processBlock);
 }

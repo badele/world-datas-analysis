@@ -10,15 +10,25 @@ const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 export function createVigiloMap(
   container,
   observations,
-  { center = [2.35, 46.5], zoom = 5 } = {},
+  { center = [2.35, 46.5], zoom = 5, bounds = null, padding = 40 } = {},
 ) {
-  const map = new maplibregl.Map({
+  const mapOptions = {
     container,
     style: MAP_STYLE,
-    center,
-    zoom,
     attributionControl: { compact: true },
-  });
+    preserveDrawingBuffer: true,
+  };
+  if (bounds) {
+    mapOptions.bounds = bounds;
+    mapOptions.fitBoundsOptions = { padding };
+  } else {
+    mapOptions.center = center;
+    mapOptions.zoom = zoom;
+  }
+  const map = new maplibregl.Map(mapOptions);
+
+  // Expose map instance so wda-chart-actions can trigger repaint before PNG export
+  container._wdaMap = map;
 
   map.on("load", () => {
     const geojson = {

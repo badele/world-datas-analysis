@@ -505,15 +505,7 @@ display(
     stats
       .filter((d) => d.count > 0)
       .map((d) => ({
-        Instance: {
-          href: `https://vigilo.city/fr/villes/${(d.display_name + "-" + d.iso)
-            .normalize("NFD")
-            .replace(/[̀-ͯ]/g, "")
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "")}`,
-          text: d.display_name,
-        },
+        Instance: { href: `vigilo/${d.id}`, text: d.display_name },
         Statut: d.is_active ? "Actif" : "Inactif",
         Signalements: Number(d.count),
         "Première obs.": fmt(d.first_ts),
@@ -534,7 +526,6 @@ display(
         Instance: ({ href, text }) =>
           Object.assign(document.createElement("a"), {
             href,
-            target: "_blank",
             textContent: text,
             style: "white-space: nowrap",
           }),
